@@ -1,16 +1,16 @@
 <?php
 /**
- * Bakame.Uri (http://uri.thephpleague.com)
+ * League.Uri (http://uri.thephpleague.com)
  *
- * @package    Bakame\Uri
- * @subpackage Bakame\Uri\Interfaces
+ * @package    League\Uri
+ * @subpackage League\Uri\Interfaces
  * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @copyright  2016 Ignace Nyamagana Butera
- * @license    https://github.com/bakame-php/uri-interfaces/blob/master/LICENSE (MIT License)
- * @version    4.2.0
- * @link       https://github.com/bakame-php/uri-interfaces/
+ * @license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
+ * @version    1.0.0
+ * @link       https://github.com/thephpleague/uri-interfaces/
  */
-namespace Bakame\Uri\Interfaces;
+namespace League\Uri\Interfaces;
 
 use InvalidArgumentException;
 
@@ -22,10 +22,11 @@ use InvalidArgumentException;
  * state of the current instance and return an instance that contains the
  * changed state.
  *
- * @package Bakame.uri
- * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @since   4.0.0
- * @see     https://tools.ietf.org/html/rfc3986
+ * @see        https://tools.ietf.org/html/rfc3986
+ * @package    League\Uri
+ * @subpackage League\Uri\Interfaces
+ * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ * @since      1.0.0
  */
 interface Uri
 {

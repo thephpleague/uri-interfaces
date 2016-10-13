@@ -1,7 +1,45 @@
 # Changelog
 
-All Notable changes to `Bakame\Uri\Interfaces` will be documented in this file
+All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## Next
+## 0.1.0 - 2016-10-17
 
-- first release
+### Added
+
+- `League\Uri\Interfaces\Component::getContent`
+- `League\Uri\Interfaces\Component::withContent`
+- `League\Uri\Interfaces\Component::isDefined`
+
+### Fixed
+
+- Renamed `League\Uri\Interfaces\Collection` to `League\Uri\Interfaces\CollectionComponent`
+- Renamed `League\Uri\Interfaces\Path` to `League\Uri\Interfaces\PathComponent`
+
+### Deprecated
+
+- None
+
+### Removed
+
+- `League\Uri\Interfaces\UriPart`
+- `League\Uri\Interfaces\HierarchicalComponent`
+- `League\Uri\Interfaces\Scheme`
+- `League\Uri\Interfaces\User`
+- `League\Uri\Interfaces\Pass`
+- `League\Uri\Interfaces\UserInfo`
+- `League\Uri\Interfaces\Host`
+- `League\Uri\Interfaces\Port`
+- `League\Uri\Interfaces\Path::withoutEmptySegments`
+- `League\Uri\Interfaces\Path::hasTrailingSlash`
+- `League\Uri\Interfaces\Path::withTrailingSlash`
+- `League\Uri\Interfaces\Path::withoutTrailingSlash`
+- `League\Uri\Interfaces\Path::getTypecode`
+- `League\Uri\Interfaces\Path::withTypecode`
+- `League\Uri\Interfaces\Path::FTP_TYPE_ASCII`
+- `League\Uri\Interfaces\Path::FTP_TYPE_BINARY`
+- `League\Uri\Interfaces\Path::FTP_TYPE_DIRECTORY`
+- `League\Uri\Interfaces\Path::FTP_TYPE_EMPTY`
+- `League\Uri\Interfaces\HierarchicalPath`
+- `League\Uri\Interfaces\DataPath`
+- `League\Uri\Interfaces\Query`
+- `League\Uri\Interfaces\Fragment`

@@ -1,10 +1,15 @@
 {
-    "name": "bakame/uri-interfaces",
+    "name": "league/uri-interfaces",
     "type": "library",
     "description" : "Common interface for URI",
-    "keywords": ["url", "uri", "rfc3986", "parse_url", "http", "https", "ws", "ftp", "data-uri", "file"],
+    "keywords": [
+        "url",
+        "uri",
+        "rfc3986",
+        "rfc3987"
+    ],
     "license": "MIT",
-    "homepage": "http://github.com/bakame-php/uri-interfaces",
+    "homepage": "http://github.com/thephpleague/uri-interfaces",
     "authors": [
         {
             "name" : "Ignace Nyamagana Butera",
@@ -20,7 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Bakame\\Uri\\Interfaces\\": "src/"
+            "League\\Uri\\Interfaces\\": "src/"
         }
     },
     "scripts": {

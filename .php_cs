@@ -1,7 +1,7 @@
 <?php
 
 $header = <<<'EOF'
-This file is part of Bakame\Uri\Interfaces, a common URI Interface package
+This file is part of League\Uri\Interfaces, a common URI Interface package
 
 @copyright 2016 Ignace Nyamagana Butera. All rights reserved
 @license MIT See LICENSE.md at the root of the project for more info

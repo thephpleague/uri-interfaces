@@ -1,32 +1,42 @@
 <?php
 /**
- * Bakame.Uri (http://uri.thephpleague.com)
+ * League.Uri (http://uri.thephpleague.com)
  *
- * @package    Bakame\Uri
- * @subpackage Bakame\Uri\Interfaces
+ * @package    League\Uri
+ * @subpackage League\Uri\Interfaces
  * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @copyright  2016 Ignace Nyamagana Butera
- * @license    https://github.com/bakame-php/uri-interfaces/blob/master/LICENSE (MIT License)
+ * @license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
  * @version    1.0.0
- * @link       https://github.com/bakame-php/uri-interfaces/
+ * @link       https://github.com/thephpleague/uri-interfaces/
  */
-namespace Bakame\Uri\Interfaces;
+namespace League\Uri\Interfaces;
+
+use InvalidArgumentException;
 
 /**
- * Value object representing a URI component.
+ * Value object representing a URI component or subcomponent
  *
  * Instances of this interface are considered immutable; all methods that
  * might change state MUST be implemented such that they retain the internal
  * state of the current instance and return an instance that contains the
  * changed state.
  *
- * @package    Bakame\Uri
- * @subpackage Bakame\Uri\Interfaces
+ * @see        https://tools.ietf.org/html/rfc3986#section-3
+ * @package    League\Uri
+ * @subpackage League\Uri\Interfaces
  * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since      1.0.0
  */
-interface UriComponent
+interface Component
 {
+    /**
+     * Returns whether or not the component is defined.
+     *
+     * @return bool
+     */
+    public function isDefined();
+
     /**
      * Returns the instance content.
      *
@@ -39,13 +49,6 @@ interface UriComponent
      * @return string|null
      */
     public function getContent();
-
-    /**
-     * Tell whether the istance is defined or not.
-     *
-     * @return bool
-     */
-    public function isNull();
 
     /**
      * Returns the instance string representation.
@@ -82,6 +85,8 @@ interface UriComponent
      * an instance that contains the modified data
      *
      * @param string|null $content
+     *
+     * @throws InvalidArgumentException for transformations that would result in a invalid object.
      *
      * @return static
      */
