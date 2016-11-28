@@ -15,7 +15,7 @@ namespace League\Uri\Interfaces;
 use InvalidArgumentException;
 
 /**
- * Value object representing a URI component or subcomponent
+ * Value object representing a URI component.
  *
  * Instances of this interface are considered immutable; all methods that
  * might change state MUST be implemented such that they retain the internal
@@ -30,6 +30,10 @@ use InvalidArgumentException;
  */
 interface Component
 {
+    const RFC3986 = 'RFC3986';
+
+    const RFC3987 = 'RFC3987';
+
     /**
      * Returns whether or not the component is defined.
      *
@@ -41,14 +45,18 @@ interface Component
      * Returns the instance content.
      *
      * If the instance is defined, the value returned MUST be percent-encoded,
-     * but MUST NOT double-encode any characters. To determine what characters
-     * to encode, please refer to RFC 3986, Sections 2 and 3.
+     * but MUST NOT double-encode any characters depending on the encoding type selected.
+     *
+     * To determine what characters to encode, please refer to RFC 3986, Sections 2 and 3.
+     * or RFC 3987 Section 3. By default the content is encoded according to RFC3986
      *
      * If the instance is not defined null is returned
      *
+     * @param int $enc_type
+     *
      * @return string|null
      */
-    public function getContent();
+    public function getContent($enc_type = self::RFC3986);
 
     /**
      * Returns the instance string representation.
@@ -70,6 +78,8 @@ interface Component
      * characters. To determine what characters to encode, please refer to RFC 3986,
      * Sections 2 and 3.
      *
+     * If the instance is not defined an empty string is returned
+     *
      * @return string
      */
     public function getUriComponent();
@@ -77,16 +87,17 @@ interface Component
     /**
      * Returns an instance with the specified content.
      *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.
-     *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the modified data
+     * an instance that contains the specified content.
+     *
+     * Users can provide both encoded and decoded content characters.
+     *
+     * A null value is equivalent to removing the component content.
      *
      * @param string|null $content
      *
-     * @throws InvalidArgumentException for transformations that would result in a invalid object.
+     * @throws InvalidArgumentException for invalid component or transformations
+     *                                  that would result in a object in invalid state.
      *
      * @return static
      */

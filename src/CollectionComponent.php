@@ -17,7 +17,7 @@ use InvalidArgumentException;
 use IteratorAggregate;
 
 /**
- * Value object representing a Collection.
+ * Value object representing a Collection Component.
  *
  * Instances of this interface are considered immutable; all methods that
  * might change state MUST be implemented such that they retain the internal
@@ -63,7 +63,7 @@ interface CollectionComponent extends Countable, Component, IteratorAggregate
      * @param callable $callable the callback function to use
      * @param int      $flag     flag to determine what argument are sent to callback
      *
-     * @throws InvalidArgumentException for transformations that would result in a invalid object.
+     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
      *
      * @return static
      */
@@ -76,6 +76,8 @@ interface CollectionComponent extends Countable, Component, IteratorAggregate
      * an instance that contains the modified component
      *
      * @param array $keys the list of keys to remove from the collection
+     *
+     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
      *
      * @return static
      */

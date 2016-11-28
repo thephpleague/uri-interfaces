@@ -196,7 +196,8 @@ interface Uri
      *
      * @param string $scheme The scheme to use with the new instance.
      *
-     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
+     * @throws InvalidArgumentException for invalid component or transformations
+     *                                  that would result in a object in invalid state.
      *
      * @return self A new instance with the specified scheme.
      */
@@ -215,7 +216,8 @@ interface Uri
      * @param string      $user     The user name to use for authority.
      * @param null|string $password The password associated with $user.
      *
-     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
+     * @throws InvalidArgumentException for invalid component or transformations
+     *                                  that would result in a object in invalid state.
      *
      * @return self A new instance with the specified user information.
      */
@@ -231,7 +233,9 @@ interface Uri
      *
      * @param string $host The hostname to use with the new instance.
      *
-     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
+     * @throws InvalidArgumentException for invalid component or transformations
+     *                                  that would result in a object in invalid state.
+     *
      *
      * @return self A new instance with the specified host.
      */
@@ -252,7 +256,8 @@ interface Uri
      * @param null|int $port The port to use with the new instance; a null value
      *                       removes the port information.
      *
-     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
+     * @throws InvalidArgumentException for invalid component or transformations
+     *                                  that would result in a object in invalid state.
      *
      * @return self A new instance with the specified port.
      */
@@ -268,17 +273,13 @@ interface Uri
      * rootless (not starting with a slash). Implementations MUST support all
      * three syntaxes.
      *
-     * If the path is intended to be domain-relative rather than path relative then
-     * it must begin with a slash ("/"). Paths not starting with a slash ("/")
-     * are assumed to be relative to some base path known to the application or
-     * consumer.
-     *
      * Users can provide both encoded and decoded path characters.
      * Implementations ensure the correct encoding as outlined in getPath().
      *
      * @param string $path The path to use with the new instance.
      *
-     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
+     * @throws InvalidArgumentException for invalid component or transformations
+     *                                  that would result in a object in invalid state.
      *
      * @return self A new instance with the specified path.
      */
@@ -297,7 +298,8 @@ interface Uri
      *
      * @param string $query The query string to use with the new instance.
      *
-     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
+     * @throws InvalidArgumentException for invalid component or transformations
+     *                                  that would result in a object in invalid state.
      *
      * @return self A new instance with the specified query string.
      */
@@ -316,7 +318,8 @@ interface Uri
      *
      * @param string $fragment The fragment to use with the new instance.
      *
-     * @throws InvalidArgumentException for transformations that would result in a object in invalid state.
+     * @throws InvalidArgumentException for invalid component or transformations
+     *                                  that would result in a object in invalid state.
      *
      * @return self A new instance with the specified fragment.
      */
@@ -332,7 +335,7 @@ interface Uri
      *
      * - If a scheme is present, it MUST be suffixed by ":".
      * - If an authority is present, it MUST be prefixed by "//".
-     * - The path can be concatenated without delimiters.
+     * - The path is concatenated without delimiters.
      * - If a query is present, it MUST be prefixed by "?".
      * - If a fragment is present, it MUST be prefixed by "#".
      *
