@@ -2,7 +2,7 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## Next
+## 0.3.0 - 2016-12-01
 
 ### Added
 
