@@ -30,9 +30,11 @@ use InvalidArgumentException;
  */
 interface Component
 {
-    const RFC3986 = 'RFC3986';
+    const RFC3986_ENCODING = 2;
 
-    const RFC3987 = 'RFC3987';
+    const RFC3987_ENCODING = 3;
+
+    const NO_ENCODING = 255;
 
     /**
      * Returns whether or not the component is defined.
@@ -56,7 +58,7 @@ interface Component
      *
      * @return string|null
      */
-    public function getContent($enc_type = self::RFC3986);
+    public function getContent($enc_type = self::RFC3986_ENCODING);
 
     /**
      * Returns the instance string representation.

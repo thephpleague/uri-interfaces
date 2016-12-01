@@ -2,6 +2,27 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## Next
+
+### Added
+
+- `League\Uri\Interfaces\Component::NO_ENCODING` to remove any specific encoding
+- `League\Uri\Interfaces\Component::RFC3986_ENCODING` to specify encoding according to RFC3986 rules
+- `League\Uri\Interfaces\Component::RFC3987_ENCODING` to specify encoding according to RFC3987 rules
+
+### Fixed
+
+- Update `Component::getContent` optional parameter default.
+
+### Deprecated
+
+- None
+
+### Removed
+
+- `League\Uri\Interfaces\Component::RFC3986`
+- `League\Uri\Interfaces\Component::RFC3987`
+
 ## 0.2.0 - 2016-11-29
 
 ### Added
