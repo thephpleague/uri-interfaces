@@ -31,7 +31,14 @@ use InvalidArgumentException;
 interface PathComponent extends Component
 {
     /**
-     * Returns whether or not the path is absolute or relative
+     * Returns whether or not the path is empty
+     *
+     * @return bool
+     */
+    public function isEmpty();
+
+    /**
+     * Returns whether or not the path is absolute or rootless
      *
      * @return bool
      */
