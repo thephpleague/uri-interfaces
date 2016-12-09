@@ -28,7 +28,7 @@ use InvalidArgumentException;
  * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since      1.0.0
  */
-interface PathComponent extends Component
+interface Path extends Component
 {
     /**
      * Returns whether or not the path is empty
@@ -45,7 +45,7 @@ interface PathComponent extends Component
     public function isAbsolute();
 
     /**
-     * Returns an instance with a leading slash
+     * Returns a absolute path instance.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the path component with a leading slash
@@ -57,7 +57,7 @@ interface PathComponent extends Component
     public function withLeadingSlash();
 
     /**
-     * Returns an instance without a leading slash
+     * Returns a rootless path instance.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the path component without a leading slash
@@ -69,7 +69,7 @@ interface PathComponent extends Component
     public function withoutLeadingSlash();
 
     /**
-     * Returns an instance without dot segments
+     * Returns a path instance without dot segments.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the path component normalized by removing

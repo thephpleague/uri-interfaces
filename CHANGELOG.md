@@ -2,11 +2,12 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## Next
+## 0.4.0 - 2016-12-09
 
 ### Added
 
-- `League\Uri\Interfaces\PathComponent::isEmpty`
+- `League\Uri\Interfaces\Path` replaces `League\Uri\Interfaces\PathComponent`
+- `League\Uri\Interfaces\Path::isEmpty`
 
 ### Fixed
 
@@ -19,6 +20,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Removed
 
 - `League\Uri\Interfaces\CollectionComponent`
+- `League\Uri\Interfaces\PathComponent`
 
 ## 0.3.0 - 2016-12-01
 
