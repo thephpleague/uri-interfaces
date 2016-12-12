@@ -2,6 +2,24 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## Next
+
+### Added
+
+- None
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- `League\Uri\Interfaces\Component`. The interface is moved to the League URI Components package.
+
 ## 0.4.0 - 2016-12-09
 
 ### Added
