@@ -1,7 +1,6 @@
 {
     "name": "league/uri-interfaces",
-    "type": "library",
-    "description" : "Common interface for URI",
+    "description" : "Common interface for URI representation",
     "keywords": [
         "url",
         "uri",

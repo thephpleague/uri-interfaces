@@ -1,7 +1,7 @@
 Uri Interfaces
 =======
 
-This package contains Interfaces to be use to represents URI objects and URI components objects according to [RFC 3986](http://tools.ietf.org/html/rfc3986).
+This package contains an interface to represents URI objects according to [RFC 3986](http://tools.ietf.org/html/rfc3986).
 
 System Requirements
 -------
@@ -20,30 +20,51 @@ $ composer require league/uri-interfaces
 Documentation
 --------
 
-The following interfaces are defined:
+### League\Uri\Interfaces\Uri
 
-### 1. League\Uri\Interfaces\Component
+The `Uri` interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI. It also specifies a `__toString()` method for casting the modeled URI to its string representation.
 
-This interface models URI Components as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). This interface provides methods for interacting with any type of URI components in a predicable way.  It also specifies a `__toString()` method for casting the modeled URI component to its string representation.
+#### Accessing URI properties
 
+The `Uri` interface defines the following methods to access the URI string representation, its individual parts and components.
 
-### 1.2 League\Uri\Interfaces\CollectionComponent
+~~~php
+<?php
 
-This interface extends:
+public Uri::__toString(): string
+public Uri::getScheme(void): string
+public Uri::getUserInfo(void): string
+public Uri::getHost(void): string
+public Uri::getPort(void): int|null
+public Uri::getAuthority(void): string
+public Uri::getPath(void): string
+public Uri::getQuery(void): string
+public Uri::getFragment(void): string
+~~~
 
-- The `Countable` Interface
-- The `IteratorAggregate` Interface
-- The `Component` Interface
+#### Modifying URI properties
 
-And provides extra methods for filtering and removing items from such components based on their index or values.
+The `Uri` interface defines the following modifying methods. these methods **must** be implemented such that they retain the internal state of the current instance and return an instance that contains the changed state.
 
-### 1.3 League\Uri\Interfaces\PathComponent
+Delimiter characters are not part of the URI component and **must not** be added to the modifying method submitted value. If present they will be treated as part of the URI component content.
 
-This interface extends the Component interface and provides extra methods to represent any type of Path component.
+**These methods will trigger a `InvalidArgumentException` exception if the resulting URI is not valid. The validation is scheme dependent.**
 
-### 2. League\Uri\Interfaces\Uri
+~~~php
+<?php
 
-Uri interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI. It also specifies a `__toString()` method for casting the modeled URI to its string representation. This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But, unlike the `UriInterface`, this interface does not require the `http` and `https` schemes to be supported. The supported schemes are determined by the concrete class which implements this interface.
+public Uri::withScheme(string $scheme): self
+public Uri::withUserInfo(string $user [, string $password = null]): self
+public Uri::withHost(string $host): self
+public Uri::withPort(int|null $port): self
+public Uri::withPath(string $path): self
+public Uri::withQuery(string $query): self
+public Uri::withFragment(string $fragment): self
+~~~
+
+#### Relation with [PSR-7](http://www.php-fig.org/psr/psr-7/#3-5-psr-http-message-uriinterface)
+
+This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But, unlike the `UriInterface`, this interface does not require the `http` and `https` schemes to be supported. The supported schemes are determined by the each concrete implementation.
 
 Contributing
 -------
