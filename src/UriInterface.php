@@ -9,8 +9,12 @@
  * @license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
  * @version    1.0.0
  * @link       https://github.com/thephpleague/uri-interfaces/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
-namespace League\Uri\Interfaces;
+
+namespace League\Uri;
 
 use InvalidArgumentException;
 
@@ -201,7 +205,7 @@ interface Uri
      *
      * @return self A new instance with the specified scheme.
      */
-    public function withScheme($scheme);
+    public function withScheme(string $scheme);
 
     /**
      * Return an instance with the specified user information.
@@ -221,7 +225,7 @@ interface Uri
      *
      * @return self A new instance with the specified user information.
      */
-    public function withUserInfo($user, $password = null);
+    public function withUserInfo(string $user, ?string $password = null);
 
     /**
      * Return an instance with the specified host.
@@ -239,7 +243,7 @@ interface Uri
      *
      * @return self A new instance with the specified host.
      */
-    public function withHost($host);
+    public function withHost(string $host);
 
     /**
      * Return an instance with the specified port.
@@ -261,7 +265,7 @@ interface Uri
      *
      * @return self A new instance with the specified port.
      */
-    public function withPort($port);
+    public function withPort(?int $port);
 
     /**
      * Return an instance with the specified path.
@@ -283,7 +287,7 @@ interface Uri
      *
      * @return self A new instance with the specified path.
      */
-    public function withPath($path);
+    public function withPath(string $path);
 
     /**
      * Return an instance with the specified query string.
@@ -303,7 +307,7 @@ interface Uri
      *
      * @return self A new instance with the specified query string.
      */
-    public function withQuery($query);
+    public function withQuery(string $query);
 
     /**
      * Return an instance with the specified URI fragment.
@@ -323,7 +327,7 @@ interface Uri
      *
      * @return self A new instance with the specified fragment.
      */
-    public function withFragment($fragment);
+    public function withFragment(string $fragment);
 
     /**
      * Return the string representation as a URI reference.
