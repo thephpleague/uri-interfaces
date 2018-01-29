@@ -8,7 +8,7 @@ System Requirements
 
 You need:
 
-- **PHP >= 5.3.0** but the latest stable version of PHP is recommended
+- **PHP >= 7.2.0** but the latest stable version of PHP is recommended
 
 Install
 --------
@@ -20,26 +20,26 @@ $ composer require league/uri-interfaces
 Documentation
 --------
 
-### League\Uri\Interfaces\Uri
+### League\Uri\UriInterface
 
-The `Uri` interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI. It also specifies a `__toString()` method for casting the modeled URI to its string representation.
+The `UriInterface` interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI. It also specifies a `__toString()` method for casting the modeled URI to its string representation.
 
 #### Accessing URI properties
 
-The `Uri` interface defines the following methods to access the URI string representation, its individual parts and components.
+The `UriInterface` interface defines the following methods to access the URI string representation, its individual parts and components.
 
 ~~~php
 <?php
 
-public Uri::__toString(): string
-public Uri::getScheme(void): string
-public Uri::getUserInfo(void): string
-public Uri::getHost(void): string
-public Uri::getPort(void): int|null
-public Uri::getAuthority(void): string
-public Uri::getPath(void): string
-public Uri::getQuery(void): string
-public Uri::getFragment(void): string
+public UriInterface::__toString(void): string
+public UriInterface::getScheme(void): string
+public UriInterface::getUserInfo(void): string
+public UriInterface::getHost(void): string
+public UriInterface::getPort(void): ?int
+public UriInterface::getAuthority(void): string
+public UriInterface::getPath(void): string
+public UriInterface::getQuery(void): string
+public UriInterface::getFragment(void): string
 ~~~
 
 #### Modifying URI properties
@@ -53,18 +53,64 @@ Delimiter characters are not part of the URI component and **must not** be added
 ~~~php
 <?php
 
-public Uri::withScheme(string $scheme): self
-public Uri::withUserInfo(string $user [, string $password = null]): self
-public Uri::withHost(string $host): self
-public Uri::withPort(int|null $port): self
-public Uri::withPath(string $path): self
-public Uri::withQuery(string $query): self
-public Uri::withFragment(string $fragment): self
+public UriInterface::withScheme(string $scheme): self
+public UriInterface::withUserInfo(string $user [, string $password = null]): self
+public UriInterface::withHost(string $host): self
+public UriInterface::withPort(?int $port): self
+public UriInterface::withPath(string $path): self
+public UriInterface::withQuery(string $query): self
+public UriInterface::withFragment(string $fragment): self
 ~~~
 
 #### Relation with [PSR-7](http://www.php-fig.org/psr/psr-7/#3-5-psr-http-message-uriinterface)
 
-This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But, unlike the `UriInterface`, this interface does not require the `http` and `https` schemes to be supported. The supported schemes are determined by the each concrete implementation.
+This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But, unlike the `UriInterface`, this interface does not require the `http` and `https` schemes to be supported. The supported schemes are determined by each concrete implementation.
+
+### League\Uri\EncodingInterface
+
+The encoding interface hodls constatns to facilitate common operations on URI objects. the purpose is to provide constatns for referring character encoding used on URI objects. How character encoding is done is **not** within the scope of the interface.
+
+~~~php
+<?php
+
+interface EncodingInterface
+{
+    const NO_ENCODING = 0;
+    const RFC1738_ENCODING = PHP_QUERY_RFC1738;
+    const RFC3986_ENCODING = PHP_QUERY_RFC3986;
+    const RFC3987_ENCODING = 3;
+}
+~~~
+
+### League\Uri\ComponentInterface
+
+This interface is used to normalized URI component representation while taking into account each component specificity.
+
+The `ComponentInterface` interface models generic URI components as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with the  URI component. It also specifies a `__toString()` method for casting the URI component to its string representation. This interface extends `EncodingInterface` to ease URI component character encoding string representation.
+
+#### Accessing URI component content
+
+The `ComponentInterface` interface defines the following methods to access the URI component string representation.
+
+~~~php
+
+public ComponentInterface::__toString(void): string
+public ComponentInterface::getContent(int $enc_type = self::RFC3986_ENCODING): null|int|string
+public ComponentInterface::getUriComponent(void): string
+~~~
+
+#### Modifying URI component content
+
+The `ComponentInterface` interface defines the following modifying method. this method **must** be implemented such that it retains the internal state of the current instance and return an instance that contains the changed state.
+
+Delimiter characters are not part of the URI component and **must not** be added to the modifying method submitted value. If present they will be treated as part of the URI component content.
+
+**This method will trigger a `InvalidArgumentException` exception if the resulting URI component is not valid. The validation is URI component dependent.**
+
+~~~php
+
+public ComponentInterface::withContent(null|int|string $content): self
+~~~
 
 Contributing
 -------
