@@ -205,7 +205,7 @@ interface UriInterface
      *
      * @return self A new instance with the specified scheme.
      */
-    public function withScheme(string $scheme);
+    public function withScheme($scheme);
 
     /**
      * Return an instance with the specified user information.
@@ -225,7 +225,7 @@ interface UriInterface
      *
      * @return self A new instance with the specified user information.
      */
-    public function withUserInfo(string $user, $password = null);
+    public function withUserInfo($user, $password = null);
 
     /**
      * Return an instance with the specified host.
@@ -243,7 +243,7 @@ interface UriInterface
      *
      * @return self A new instance with the specified host.
      */
-    public function withHost(string $host);
+    public function withHost($host);
 
     /**
      * Return an instance with the specified port.
@@ -287,7 +287,7 @@ interface UriInterface
      *
      * @return self A new instance with the specified path.
      */
-    public function withPath(string $path);
+    public function withPath($path);
 
     /**
      * Return an instance with the specified query string.
@@ -307,7 +307,7 @@ interface UriInterface
      *
      * @return self A new instance with the specified query string.
      */
-    public function withQuery(string $query);
+    public function withQuery($query);
 
     /**
      * Return an instance with the specified URI fragment.
@@ -327,7 +327,7 @@ interface UriInterface
      *
      * @return self A new instance with the specified fragment.
      */
-    public function withFragment(string $fragment);
+    public function withFragment($fragment);
 
     /**
      * Return the string representation as a URI reference.
