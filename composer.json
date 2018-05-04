@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "League\\Uri\\Interfaces\\": "src/"
+            "League\\Uri\\": "src/"
         }
     },
     "scripts": {
