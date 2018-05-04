@@ -7,7 +7,7 @@
  * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @copyright  2016 Ignace Nyamagana Butera
  * @license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
- * @version    1.0.0
+ * @version    2.0.0
  * @link       https://github.com/thephpleague/uri-interfaces/
  *
  * For the full copyright and license information, please view the LICENSE
@@ -30,9 +30,9 @@ use InvalidArgumentException;
  * @package    League\Uri
  * @subpackage League\Uri\Interfaces
  * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @since      1.0.0
+ * @since      2.0.0
  */
-interface Uri
+interface UriInterface
 {
     /**
      * Retrieve the scheme component of the URI.
@@ -225,7 +225,7 @@ interface Uri
      *
      * @return self A new instance with the specified user information.
      */
-    public function withUserInfo(string $user, ?string $password = null);
+    public function withUserInfo(string $user, $password = null);
 
     /**
      * Return an instance with the specified host.
@@ -265,7 +265,7 @@ interface Uri
      *
      * @return self A new instance with the specified port.
      */
-    public function withPort(?int $port);
+    public function withPort($port);
 
     /**
      * Return an instance with the specified path.
