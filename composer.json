@@ -25,10 +25,11 @@
     "autoload": {
         "psr-4": {
             "League\\Uri\\": "src/"
-        }
+        },
+        "files": ["src/Interfaces/deprecated.php"]
     },
     "scripts": {
-        "phpcs": "php-cs-fixer fix -v --diff --dry-run;"
+        "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;"
     },
     "extra": {
         "branch-alias": {

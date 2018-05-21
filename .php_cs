@@ -1,5 +1,20 @@
 <?php
 
+$header = <<<EOF
+League.Uri (http://uri.thephpleague.com)
+
+@package    League\Uri
+@subpackage League\Uri\Interfaces
+@author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
+@copyright  2016 Ignace Nyamagana Butera
+@license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
+@version    2.0.0
+@link       https://github.com/thephpleague/uri-interfaces/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+EOF;
+
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__.'/src')
 ;
@@ -10,6 +25,12 @@ return PhpCsFixer\Config::create()
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'none'],
+        'header_comment' => [
+            'commentType' => 'PHPDoc',
+            'header' => $header,
+            'location' => 'after_open',
+            'separate' => 'both',
+        ],
         'new_with_braces' => true,
         'no_blank_lines_after_phpdoc' => true,
         'no_empty_phpdoc' => true,
