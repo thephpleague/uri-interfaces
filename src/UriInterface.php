@@ -1,4 +1,5 @@
 <?php
+
 /**
  * League.Uri (http://uri.thephpleague.com)
  *
@@ -9,8 +10,12 @@
  * @license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
  * @version    1.0.0
  * @link       https://github.com/thephpleague/uri-interfaces/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
-namespace League\Uri\Interfaces;
+
+namespace League\Uri;
 
 use InvalidArgumentException;
 
@@ -28,7 +33,7 @@ use InvalidArgumentException;
  * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since      1.0.0
  */
-interface Uri
+interface UriInterface
 {
     /**
      * Retrieve the scheme component of the URI.
