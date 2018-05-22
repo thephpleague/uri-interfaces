@@ -8,7 +8,7 @@ League.Uri (http://uri.thephpleague.com)
 @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
 @copyright  2016 Ignace Nyamagana Butera
 @license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
-@version    1.0.0
+@version    1.1.0
 @link       https://github.com/thephpleague/uri-interfaces/
 
 For the full copyright and license information, please view the LICENSE
