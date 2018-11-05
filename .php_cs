@@ -20,7 +20,6 @@ $finder = PhpCsFixer\Finder::create()
 ;
 
 return PhpCsFixer\Config::create()
-    ->setUsingCache(false)
     ->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
@@ -37,14 +36,16 @@ return PhpCsFixer\Config::create()
         'no_empty_comment' => true,
         'no_leading_import_slash' => true,
         'no_trailing_comma_in_singleline_array' => true,
+        'no_superfluous_phpdoc_tags' => true,
         'no_unused_imports' => true,
-        'ordered_imports' => ['importsOrder' => null, 'sortAlgorithm' => 'alpha'],
+        'ordered_imports' => ['imports_order' => ['class', 'function', 'const'], 'sort_algorithm' => 'alpha'],
         'phpdoc_add_missing_param_annotation' => ['only_untyped' => false],
         'phpdoc_align' => true,
         'phpdoc_no_empty_return' => true,
         'phpdoc_order' => true,
         'phpdoc_scalar' => true,
         'phpdoc_to_comment' => true,
+        'phpdoc_summary' => true,
         'psr0' => true,
         'psr4' => true,
         'return_type_declaration' => ['space_before' => 'none'],

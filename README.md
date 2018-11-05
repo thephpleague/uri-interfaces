@@ -20,7 +20,10 @@ $ composer require league/uri-interfaces
 Documentation
 --------
 
-### League\Uri\Interfaces\Uri
+**WARNING: since version 1.1.1 The `League\Uri\Interfaces\Uri` extends the `League\Uri\UriInterface` interface.  
+You shoud implements the `League\Uri\UriInterface`**.
+
+### League\Uri\UriInterface
 
 The `Uri` interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI. It also specifies a `__toString()` method for casting the modeled URI to its string representation.
 
@@ -64,7 +67,7 @@ public Uri::withFragment(string $fragment): self
 
 #### Relation with [PSR-7](http://www.php-fig.org/psr/psr-7/#3-5-psr-http-message-uriinterface)
 
-This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But, unlike the `UriInterface`, this interface does not require the `http` and `https` schemes to be supported. The supported schemes are determined by the each concrete implementation.
+This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But, unlike the `UriInterface`, this interface does not require the `http` and `https` schemes to be supported. The supported schemes are determined by each concrete implementation.
 
 Contributing
 -------
