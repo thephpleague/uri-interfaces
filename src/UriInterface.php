@@ -1,44 +1,42 @@
 <?php
 
 /**
- * League.Uri (http://uri.thephpleague.com)
+ * League.Uri (https://uri.thephpleague.com)
  *
- * @package    League\Uri
- * @subpackage League\Uri\Interfaces
- * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @copyright  2016 Ignace Nyamagana Butera
- * @license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
- * @version    2.0.0
- * @link       https://github.com/thephpleague/uri-interfaces/
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace League\Uri;
 
-use InvalidArgumentException;
+use JsonSerializable;
+use League\Uri\Exception\InvalidUri;
 
-/**
- * Value object representing a URI.
- *
- * Instances of this interface are considered immutable; all methods that
- * might change state MUST be implemented such that they retain the internal
- * state of the current instance and return an instance that contains the
- * changed state.
- *
- * @see        https://tools.ietf.org/html/rfc3986
- * @package    League\Uri
- * @subpackage League\Uri\Interfaces
- * @author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
- * @since      2.0.0
- */
-interface UriInterface
+interface UriInterface extends JsonSerializable
 {
+    /**
+     * Returns the string representation as a URI reference.
+     *
+     * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     */
+    public function __toString(): string;
+
+    /**
+     * Returns the string representation as a URI reference.
+     *
+     * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     * @see ::__toString
+     */
+    public function jsonSerialize(): string;
+
     /**
      * Retrieve the scheme component of the URI.
      *
-     * If no scheme is present, this method MUST return an empty string.
+     * If no scheme is present, this method MUST return a null value.
      *
      * The value returned MUST be normalized to lowercase, per RFC 3986
      * Section 3.1.
@@ -48,36 +46,28 @@ interface UriInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
      *
-     * @return string The URI scheme.
+     * @return ?string
      */
-    public function getScheme();
+    public function getScheme(): ?string;
 
     /**
      * Retrieve the authority component of the URI.
      *
-     * If no authority information is present, this method MUST return an empty
-     * string.
-     *
-     * The authority syntax of the URI is:
-     *
-     * <pre>
-     * [user-info@]host[:port]
-     * </pre>
+     * If no scheme is present, this method MUST return a null value.
      *
      * If the port component is not set or is the standard port for the current
      * scheme, it SHOULD NOT be included.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
      *
-     * @return string The URI authority, in "[user-info@]host[:port]" format.
+     * @return ?string
      */
-    public function getAuthority();
+    public function getAuthority(): ?string;
 
     /**
      * Retrieve the user information component of the URI.
      *
-     * If no user information is present, this method MUST return an empty
-     * string.
+     * If no scheme is present, this method MUST return a null value.
      *
      * If a user is present in the URI, this will return that value;
      * additionally, if the password is also present, it will be appended to the
@@ -86,23 +76,45 @@ interface UriInterface
      * The trailing "@" character is not part of the user information and MUST
      * NOT be added.
      *
-     * @return string The URI user information, in "username[:password]" format.
+     * @return ?string
      */
-    public function getUserInfo();
+    public function getUserInfo(): ?string;
+
+    /**
+     * Retrieve the user component of the URI.
+     *
+     * If no user is present, this method MUST return a null value.
+     *
+     * The trailing "@" and/or ":" characters are not part of the user and MUST NOT be added.
+     *
+     * @return ?string
+     */
+    public function getUser(): ?string;
+
+    /**
+     * Retrieve the pass component of the URI.
+     *
+     * If no user is present, or no pass is present this method MUST return a null value.
+     *
+     * The trailing "@" characters are not part of the user and MUST NOT be added.
+     *
+     * @return ?string
+     */
+    public function getPass(): ?string;
 
     /**
      * Retrieve the host component of the URI.
      *
-     * If no host is present, this method MUST return an empty string.
+     * If no host is present this method MUST return a null value.
      *
      * The value returned MUST be normalized to lowercase, per RFC 3986
      * Section 3.2.2.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
      *
-     * @return string The URI host.
+     * @return ?string
      */
-    public function getHost();
+    public function getHost(): ?string;
 
     /**
      * Retrieve the port component of the URI.
@@ -117,9 +129,9 @@ interface UriInterface
      * If no port is present, but a scheme is present, this method MAY return
      * the standard port for that scheme, but SHOULD return null.
      *
-     * @return null|int The URI port.
+     * @return ?int
      */
-    public function getPort();
+    public function getPort(): ?int;
 
     /**
      * Retrieve the path component of the URI.
@@ -145,14 +157,13 @@ interface UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      *
-     * @return string The URI path.
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * Retrieve the query string of the URI.
      *
-     * If no query string is present, this method MUST return an empty string.
+     * If no host is present this method MUST return a null value.
      *
      * The leading "?" character is not part of the query and MUST NOT be
      * added.
@@ -168,14 +179,14 @@ interface UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
      *
-     * @return string The URI query string.
+     * @return ?string
      */
-    public function getQuery();
+    public function getQuery(): ?string;
 
     /**
      * Retrieve the fragment component of the URI.
      *
-     * If no fragment is present, this method MUST return an empty string.
+     * If no host is present this method MUST return a null value.
      *
      * The leading "#" character is not part of the fragment and MUST NOT be
      * added.
@@ -187,9 +198,9 @@ interface UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      *
-     * @return string The URI fragment.
+     * @return ?string
      */
-    public function getFragment();
+    public function getFragment(): ?string;
 
     /**
      * Return an instance with the specified scheme.
@@ -197,14 +208,14 @@ interface UriInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified scheme.
      *
-     * An empty scheme is equivalent to removing the scheme.
+     * A null value provided for the scheme is equivalent to removing the scheme
+     * information.
      *
-     * @param string $scheme The scheme to use with the new instance.
+     * @param ?string $scheme
      *
-     * @throws InvalidArgumentException for invalid component or transformations
-     *                                  that would result in a object in invalid state.
-     *
-     * @return self A new instance with the specified scheme.
+     * @throws InvalidUri for invalid component or transformations
+     *                    that would result in a object in invalid state.
+     * @return static
      */
     public function withScheme($scheme);
 
@@ -215,16 +226,15 @@ interface UriInterface
      * an instance that contains the specified user information.
      *
      * Password is optional, but the user information MUST include the
-     * user; an empty string for the user is equivalent to removing user
+     * user; a null value for the user is equivalent to removing user
      * information.
      *
-     * @param string      $user     The user name to use for authority.
-     * @param null|string $password The password associated with $user.
+     * @param ?string $user
+     * @param ?string $password
      *
-     * @throws InvalidArgumentException for invalid component or transformations
-     *                                  that would result in a object in invalid state.
-     *
-     * @return self A new instance with the specified user information.
+     * @throws InvalidUri for invalid component or transformations
+     *                    that would result in a object in invalid state.
+     * @return static
      */
     public function withUserInfo($user, $password = null);
 
@@ -234,15 +244,14 @@ interface UriInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified host.
      *
-     * An empty host value is equivalent to removing the host.
+     * A null value provided for the host is equivalent to removing the host
+     * information.
      *
-     * @param string $host The hostname to use with the new instance.
+     * @param ?string $host
      *
-     * @throws InvalidArgumentException for invalid component or transformations
-     *                                  that would result in a object in invalid state.
-     *
-     *
-     * @return self A new instance with the specified host.
+     * @throws InvalidUri for invalid component or transformations
+     *                    that would result in a object in invalid state.
+     * @return static
      */
     public function withHost($host);
 
@@ -252,19 +261,14 @@ interface UriInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the specified port.
      *
-     * Implementations MUST raise an exception for ports outside the
-     * established TCP and UDP port ranges.
-     *
      * A null value provided for the port is equivalent to removing the port
      * information.
      *
-     * @param null|int $port The port to use with the new instance; a null value
-     *                       removes the port information.
+     * @param ?int $port
      *
-     * @throws InvalidArgumentException for invalid component or transformations
-     *                                  that would result in a object in invalid state.
-     *
-     * @return self A new instance with the specified port.
+     * @throws InvalidUri for invalid component or transformations
+     *                    that would result in a object in invalid state.
+     * @return static
      */
     public function withPort($port);
 
@@ -281,12 +285,11 @@ interface UriInterface
      * Users can provide both encoded and decoded path characters.
      * Implementations ensure the correct encoding as outlined in getPath().
      *
-     * @param string $path The path to use with the new instance.
+     * @param string $path
      *
-     * @throws InvalidArgumentException for invalid component or transformations
-     *                                  that would result in a object in invalid state.
-     *
-     * @return self A new instance with the specified path.
+     * @throws InvalidUri for invalid component or transformations
+     *                    that would result in a object in invalid state.
+     * @return static
      */
     public function withPath($path);
 
@@ -299,14 +302,14 @@ interface UriInterface
      * Users can provide both encoded and decoded query characters.
      * Implementations ensure the correct encoding as outlined in getQuery().
      *
-     * An empty query string value is equivalent to removing the query string.
+     * A null value provided for the query is equivalent to removing the query
+     * information.
      *
-     * @param string $query The query string to use with the new instance.
+     * @param ?string $query The query string to use with the new instance.
      *
-     * @throws InvalidArgumentException for invalid component or transformations
-     *                                  that would result in a object in invalid state.
-     *
-     * @return self A new instance with the specified query string.
+     * @throws InvalidUri for invalid component or transformations
+     *                    that would result in a object in invalid state.
+     * @return static
      */
     public function withQuery($query);
 
@@ -319,34 +322,14 @@ interface UriInterface
      * Users can provide both encoded and decoded fragment characters.
      * Implementations ensure the correct encoding as outlined in getFragment().
      *
-     * An empty fragment value is equivalent to removing the fragment.
+     * A null value provided for the fragment is equivalent to removing the fragment
+     * information.
      *
-     * @param string $fragment The fragment to use with the new instance.
+     * @param ?string $fragment
      *
-     * @throws InvalidArgumentException for invalid component or transformations
-     *                                  that would result in a object in invalid state.
-     *
-     * @return self A new instance with the specified fragment.
+     * @throws InvalidUri for invalid component or transformations
+     *                    that would result in a object in invalid state.
+     * @return static
      */
     public function withFragment($fragment);
-
-    /**
-     * Return the string representation as a URI reference.
-     *
-     * Depending on which components of the URI are present, the resulting
-     * string is either a full URI or relative reference according to RFC 3986,
-     * Section 4.1. The method concatenates the various components of the URI,
-     * using the appropriate delimiters:
-     *
-     * - If a scheme is present, it MUST be suffixed by ":".
-     * - If an authority is present, it MUST be prefixed by "//".
-     * - The path is concatenated without delimiters.
-     * - If a query is present, it MUST be prefixed by "?".
-     * - If a fragment is present, it MUST be prefixed by "#".
-     *
-     * @see http://tools.ietf.org/html/rfc3986#section-4.1
-     *
-     * @return string
-     */
-    public function __toString();
 }
