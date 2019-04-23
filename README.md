@@ -8,7 +8,7 @@ System Requirements
 
 You need:
 
-- **PHP >= 5.3.0** but the latest stable version of PHP is recommended
+- **PHP >= 7.1.3** but the latest stable version of PHP is recommended
 
 Install
 --------
@@ -32,14 +32,15 @@ The `UriInterface` interface defines the following methods to access the URI str
 <?php
 
 public UriInterface::__toString(void): string
-public UriInterface::getScheme(void): string
-public UriInterface::getUserInfo(void): string
-public UriInterface::getHost(void): string
+public UriInterface::jsonSerialize(void): string
+public UriInterface::getScheme(void): ?string
+public UriInterface::getUserInfo(void): ?string
+public UriInterface::getHost(void): ?string
 public UriInterface::getPort(void): ?int
-public UriInterface::getAuthority(void): string
+public UriInterface::getAuthority(void): ?string
 public UriInterface::getPath(void): string
-public UriInterface::getQuery(void): string
-public UriInterface::getFragment(void): string
+public UriInterface::getQuery(void): ?string
+public UriInterface::getFragment(void): ?string
 ~~~
 
 #### Modifying URI properties
@@ -48,24 +49,57 @@ The `Uri` interface defines the following modifying methods. these methods **mus
 
 Delimiter characters are not part of the URI component and **must not** be added to the modifying method submitted value. If present they will be treated as part of the URI component content.
 
-**These methods will trigger a `InvalidArgumentException` exception if the resulting URI is not valid. The validation is scheme dependent.**
+**These methods will trigger a `InvalidUri` exception if the resulting URI is not valid. The validation is scheme dependent.**
 
 ~~~php
 <?php
 
-public UriInterface::withScheme(string $scheme): self
-public UriInterface::withUserInfo(string $user [, string $password = null]): self
-public UriInterface::withHost(string $host): self
+public UriInterface::withScheme(?string $scheme): self
+public UriInterface::withUserInfo(?string $user [, string $password = null]): self
+public UriInterface::withHost(?string $host): self
 public UriInterface::withPort(?int $port): self
 public UriInterface::withPath(string $path): self
-public UriInterface::withQuery(string $query): self
-public UriInterface::withFragment(string $fragment): self
+public UriInterface::withQuery(?string $query): self
+public UriInterface::withFragment(?string $fragment): self
 ~~~
 
 #### Relation with [PSR-7](http://www.php-fig.org/psr/psr-7/#3-5-psr-http-message-uriinterface)
 
-This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But, unlike the `UriInterface`, this interface does not require the `http` and `https` schemes to be supported. The supported schemes are determined by each concrete implementation.
+This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But, differs on the following keys:
 
+- This interface does not require the `http` and `https` schemes to be supported.
+- Setter and Getter component methods, with the exception of the path component, accept and can return the `null` value.
+
+### League\Uri\ComponentInterface
+
+The `ComponentInterface` interface models generic URI components as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with an URI component, which will obviate the need for repeated parsing of the URI component. It also specifies a `__toString()` method for casting the modeled URI component to its string representation.
+
+#### Accessing URI properties
+
+The `ComponentInterface` interface defines the following methods to access the URI component content.
+
+~~~php
+<?php
+
+public ComponentInterface::__toString(void): string
+public ComponentInterface::getContent(void): ?string
+public ComponentInterface::getUriComponent(void): ?string
+public ComponentInterface::jsonSerialize(void): ?string
+~~~
+
+#### Modifying URI properties
+
+The `ComponentInterface` interface defines the following modifying method. this method **must** be implemented such that it retains the internal state of the current instance and return an instance that contains the changed state.
+
+~~~php
+<?php
+
+public ComponentInterface::withContent($content);(void): static
+~~~
+
+### League\Uri\HostInterface and League\Uri\PathInterface
+
+Because there are multiple type of Host and Path components theses interface which all extends the `ComponentInterface` interface are added to ease implementing the underlying component with the default behavior expected from each component.
 
 Contributing
 -------
