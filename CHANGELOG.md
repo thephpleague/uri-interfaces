@@ -2,6 +2,42 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## 1.1.1 - 2018-11-05
+
+### Added
+
+- None
+
+### Fixed
+
+- Make `League\Uri\Interfaces\Uri` implements `League\Uri\UriInterface`
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
+## 1.1.0 - 2018-05-22
+
+### Added
+
+- `League\Uri\UriInterface`.
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- `League\Uri\Interfaces\Uri` use `League\Uri\UriInterface` instead.
+
+### Removed
+
+- None
+
 ## 1.0.0 - 2017-01-04
 
 ### Added

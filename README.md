@@ -72,19 +72,19 @@ This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But,
 
 ### League\Uri\ComponentInterface
 
-The `ComponentInterface` interface models generic URI components as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with an URI component, which will obviate the need for repeated parsing of the URI component. It also specifies a `__toString()` method for casting the modeled URI component to its string representation.
+The `UriComponentInterface` interface models generic URI components as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with an URI component, which will obviate the need for repeated parsing of the URI component. It also specifies a `__toString()` method for casting the modeled URI component to its string representation.
 
 #### Accessing URI properties
 
-The `ComponentInterface` interface defines the following methods to access the URI component content.
+The `UriComponentInterface` interface defines the following methods to access the URI component content.
 
 ~~~php
 <?php
 
-public ComponentInterface::__toString(void): string
-public ComponentInterface::getContent(void): ?string
-public ComponentInterface::getUriComponent(void): ?string
-public ComponentInterface::jsonSerialize(void): ?string
+public UriComponentInterface::__toString(void): string
+public UriComponentInterface::getContent(void): ?string
+public UriComponentInterface::getUriComponent(void): ?string
+public UriComponentInterface::jsonSerialize(void): ?string
 ~~~
 
 #### Modifying URI properties
@@ -94,7 +94,7 @@ The `ComponentInterface` interface defines the following modifying method. this 
 ~~~php
 <?php
 
-public ComponentInterface::withContent($content);(void): static
+public UriComponentInterface::withContent($content): static
 ~~~
 
 ### League\Uri\HostInterface and League\Uri\PathInterface
