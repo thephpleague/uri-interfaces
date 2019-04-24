@@ -1,15 +1,9 @@
 <?php
 
 $header = <<<EOF
-League.Uri (http://uri.thephpleague.com)
+League.Uri (https://uri.thephpleague.com)
 
-@package    League\Uri
-@subpackage League\Uri\Interfaces
-@author     Ignace Nyamagana Butera <nyamsprod@gmail.com>
-@copyright  2016 Ignace Nyamagana Butera
-@license    https://github.com/thephpleague/uri-interfaces/blob/master/LICENSE (MIT License)
-@version    1.1.0
-@link       https://github.com/thephpleague/uri-interfaces/
+(c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
 
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
@@ -35,6 +29,7 @@ return PhpCsFixer\Config::create()
         'no_empty_phpdoc' => true,
         'no_empty_comment' => true,
         'no_leading_import_slash' => true,
+        'no_superfluous_phpdoc_tags' => true,
         'no_trailing_comma_in_singleline_array' => true,
         'no_superfluous_phpdoc_tags' => true,
         'no_unused_imports' => true,
