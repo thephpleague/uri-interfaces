@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace League\Uri\Contract;
 
 use JsonSerializable;
-use League\Uri\Exception\InvalidUri;
+use League\Uri\Exception\MalformedUri;
+use League\Uri\Exception\MissingIdnSupport;
 
 interface UriInterface extends JsonSerializable
 {
@@ -213,8 +214,8 @@ interface UriInterface extends JsonSerializable
      *
      * @param ?string $scheme
      *
-     * @throws InvalidUri for invalid component or transformations
-     *                    that would result in a object in invalid state.
+     * @throws MalformedUri for invalid component or transformations
+     *                      that would result in a object in invalid state.
      * @return static
      */
     public function withScheme($scheme);
@@ -232,8 +233,8 @@ interface UriInterface extends JsonSerializable
      * @param ?string $user
      * @param ?string $password
      *
-     * @throws InvalidUri for invalid component or transformations
-     *                    that would result in a object in invalid state.
+     * @throws MalformedUri for invalid component or transformations
+     *                      that would result in a object in invalid state.
      * @return static
      */
     public function withUserInfo($user, $password = null);
@@ -249,8 +250,11 @@ interface UriInterface extends JsonSerializable
      *
      * @param ?string $host
      *
-     * @throws InvalidUri for invalid component or transformations
-     *                    that would result in a object in invalid state.
+     * @throws MalformedUri      for invalid component or transformations
+     *                           that would result in a object in invalid state.
+     * @throws MissingIdnSupport for component or transformations
+     *                           requiring IDN support when IDN support is not present
+     *                           or misconfigured.
      * @return static
      */
     public function withHost($host);
@@ -266,8 +270,8 @@ interface UriInterface extends JsonSerializable
      *
      * @param ?int $port
      *
-     * @throws InvalidUri for invalid component or transformations
-     *                    that would result in a object in invalid state.
+     * @throws MalformedUri for invalid component or transformations
+     *                      that would result in a object in invalid state.
      * @return static
      */
     public function withPort($port);
@@ -287,8 +291,8 @@ interface UriInterface extends JsonSerializable
      *
      * @param string $path
      *
-     * @throws InvalidUri for invalid component or transformations
-     *                    that would result in a object in invalid state.
+     * @throws MalformedUri for invalid component or transformations
+     *                      that would result in a object in invalid state.
      * @return static
      */
     public function withPath($path);
@@ -307,8 +311,8 @@ interface UriInterface extends JsonSerializable
      *
      * @param ?string $query The query string to use with the new instance.
      *
-     * @throws InvalidUri for invalid component or transformations
-     *                    that would result in a object in invalid state.
+     * @throws MalformedUri for invalid component or transformations
+     *                      that would result in a object in invalid state.
      * @return static
      */
     public function withQuery($query);
@@ -327,8 +331,8 @@ interface UriInterface extends JsonSerializable
      *
      * @param ?string $fragment
      *
-     * @throws InvalidUri for invalid component or transformations
-     *                    that would result in a object in invalid state.
+     * @throws MalformedUri for invalid component or transformations
+     *                      that would result in a object in invalid state.
      * @return static
      */
     public function withFragment($fragment);

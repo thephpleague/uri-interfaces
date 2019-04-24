@@ -32,11 +32,6 @@
             "League\\Uri\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "LeagueTest\\Uri\\": "tests"
-        }
-    },
     "scripts": {
         "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
         "phpstan": "phpstan analyse -l max -c phpstan.src.neon src",

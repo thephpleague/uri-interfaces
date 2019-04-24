@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\Contract;
 
-use League\Uri\Exception\InvalidUriComponent;
+use League\Uri\Exception\MalformedUriComponent;
 
-interface PathInterface extends ComponentInterface
+interface PathInterface extends UriComponentInterface
 {
     /**
      * Returns whether or not the path is absolute or relative.
@@ -29,8 +29,8 @@ interface PathInterface extends ComponentInterface
      * an instance that contains the path component normalized by removing
      * the dot segment.
      *
-     * @throws InvalidUriComponent for invalid component or transformations
-     *                             that would result in a object in invalid state.
+     * @throws MalformedUriComponent for invalid component or transformations
+     *                               that would result in a object in invalid state.
      *
      * @return static
      */
@@ -42,8 +42,8 @@ interface PathInterface extends ComponentInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the path component with a leading slash
      *
-     * @throws InvalidUriComponent for invalid component or transformations
-     *                             that would result in a object in invalid state.
+     * @throws MalformedUriComponent for invalid component or transformations
+     *                               that would result in a object in invalid state.
      *
      * @return static
      */
@@ -55,8 +55,8 @@ interface PathInterface extends ComponentInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the path component without a leading slash
      *
-     * @throws InvalidUriComponent for invalid component or transformations
-     *                             that would result in a object in invalid state.
+     * @throws MalformedUriComponent for invalid component or transformations
+     *                               that would result in a object in invalid state.
      *
      * @return static
      */

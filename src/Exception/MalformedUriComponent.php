@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\Exception;
 
-class InvalidUriComponent extends UriException
+use InvalidArgumentException;
+use League\Uri\Contract\UriException;
+
+class MalformedUriComponent extends InvalidArgumentException implements UriException
 {
 }

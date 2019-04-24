@@ -14,9 +14,10 @@ declare(strict_types=1);
 namespace League\Uri\Contract;
 
 use JsonSerializable;
-use League\Uri\Exception\InvalidUriComponent;
+use League\Uri\Exception\MalformedUriComponent;
+use League\Uri\Exception\MissingIdnSupport;
 
-interface ComponentInterface extends JsonSerializable
+interface UriComponentInterface extends JsonSerializable
 {
     /**
      * Returns the instance content.
@@ -76,9 +77,12 @@ interface ComponentInterface extends JsonSerializable
      * A null value is equivalent to removing the component content.
      *
      *
-     * @throws InvalidUriComponent for invalid component or transformations
-     *                             that would result in a object in invalid state.
+     * @throws MalformedUriComponent for invalid component or transformations
+     *                               that would result in a object in invalid state.
      *
+     * @throws MissingIdnSupport for component or transformations
+     *                           requiring IDN support when IDN support is not present
+     *                           or misconfigured.
      * @return static
      */
     public function withContent($content);

@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\Exception;
 
-use InvalidArgumentException;
+use League\Uri\Contract\UriException;
+use RuntimeException;
 
-class UriException extends InvalidArgumentException
+class MissingIdnSupport extends RuntimeException implements UriException
 {
 }

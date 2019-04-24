@@ -11,8 +11,10 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Exception;
+namespace League\Uri\Contract;
 
-class InvalidUri extends UriException
+use Throwable;
+
+interface UriException extends Throwable
 {
 }

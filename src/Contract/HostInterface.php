@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\Contract;
 
-interface HostInterface extends ComponentInterface
+interface HostInterface extends UriComponentInterface
 {
     /**
      * Returns the Host ascii representation.
