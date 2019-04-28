@@ -16,6 +16,6 @@ namespace League\Uri\Exception;
 use InvalidArgumentException;
 use League\Uri\Contract\UriException;
 
-class MalformedUriComponent extends InvalidArgumentException implements UriException
+class SyntaxError extends InvalidArgumentException implements UriException
 {
 }
