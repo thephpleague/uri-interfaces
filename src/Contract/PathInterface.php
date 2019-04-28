@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\Contract;
 
-use League\Uri\Exception\MalformedUriComponent;
+use League\Uri\Exception\SyntaxError;
 
 interface PathInterface extends UriComponentInterface
 {
@@ -29,8 +29,8 @@ interface PathInterface extends UriComponentInterface
      * an instance that contains the path component normalized by removing
      * the dot segment.
      *
-     * @throws MalformedUriComponent for invalid component or transformations
-     *                               that would result in a object in invalid state.
+     * @throws SyntaxError for invalid component or transformations
+     *                     that would result in a object in invalid state.
      *
      * @return static
      */
@@ -42,8 +42,8 @@ interface PathInterface extends UriComponentInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the path component with a leading slash
      *
-     * @throws MalformedUriComponent for invalid component or transformations
-     *                               that would result in a object in invalid state.
+     * @throws SyntaxError for invalid component or transformations
+     *                     that would result in a object in invalid state.
      *
      * @return static
      */
@@ -55,8 +55,8 @@ interface PathInterface extends UriComponentInterface
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the path component without a leading slash
      *
-     * @throws MalformedUriComponent for invalid component or transformations
-     *                               that would result in a object in invalid state.
+     * @throws SyntaxError for invalid component or transformations
+     *                     that would result in a object in invalid state.
      *
      * @return static
      */
