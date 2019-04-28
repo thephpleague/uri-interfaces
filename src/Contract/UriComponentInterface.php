@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace League\Uri\Contract;
 
 use JsonSerializable;
-use League\Uri\Exception\MalformedUriComponent;
+use League\Uri\Exception\SyntaxError;
 use League\Uri\Exception\MissingIdnSupport;
 
 interface UriComponentInterface extends JsonSerializable
@@ -77,8 +77,8 @@ interface UriComponentInterface extends JsonSerializable
      * A null value is equivalent to removing the component content.
      *
      *
-     * @throws MalformedUriComponent for invalid component or transformations
-     *                               that would result in a object in invalid state.
+     * @throws SyntaxError for invalid component or transformations
+     *                     that would result in a object in invalid state.
      *
      * @throws MissingIdnSupport for component or transformations
      *                           requiring IDN support when IDN support is not present
