@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace League\Uri\Contract;
 
 use JsonSerializable;
+use League\Uri\Exception\IdnSupportMissing;
 use League\Uri\Exception\SyntaxError;
-use League\Uri\Exception\MissingIdnSupport;
 
 interface UriInterface extends JsonSerializable
 {
@@ -250,9 +250,9 @@ interface UriInterface extends JsonSerializable
      *
      * @param ?string $host
      *
-     * @throws SyntaxError      for invalid component or transformations
-     *                          that would result in a object in invalid state.
-     * @throws MissingIdnSupport for component or transformations
+     * @throws SyntaxError       for invalid component or transformations
+     *                           that would result in a object in invalid state.
+     * @throws IdnSupportMissing for component or transformations
      *                           requiring IDN support when IDN support is not present
      *                           or misconfigured.
      * @return static

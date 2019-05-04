@@ -16,6 +16,6 @@ namespace League\Uri\Exception;
 use League\Uri\Contract\UriException;
 use RuntimeException;
 
-class MissingIdnSupport extends RuntimeException implements UriException
+class IdnSupportMissing extends RuntimeException implements UriException
 {
 }
