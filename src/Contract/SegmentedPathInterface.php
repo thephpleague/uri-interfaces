@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Uri\Contract;
 
 use Countable;
+use Iterator;
 use IteratorAggregate;
 use League\Uri\Exception\OffsetOutOfBounds;
 
@@ -33,7 +34,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
     /**
      * Iterate over the path segment.
      */
-    public function getIterator(): iterable;
+    public function getIterator(): Iterator;
 
     /**
      * Returns parent directory's path.
@@ -69,17 +70,13 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
 
     /**
      * Appends a segment to the path.
-     *
-     * @return static
      */
-    public function append($segment);
+    public function append(string $segment): self;
 
     /**
      * Prepends a segment to the path.
-     *
-     * @return static
      */
-    public function prepend($segment);
+    public function prepend(string $segment): self;
 
     /**
      * Returns an instance with the modified segment.
@@ -90,11 +87,11 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * If $key is non-negative, the added segment will be the segment at $key position from the start.
      * If $key is negative, the added segment will be the segment at $key position from the end.
      *
-     * @throws OffsetOutOfBounds If the key is invalid
+     * @param ?string $segment
      *
-     * @return static
+     * @throws OffsetOutOfBounds If the key is invalid
      */
-    public function withSegment(int $key, $segment);
+    public function withSegment(int $key, ?string $segment): self;
 
     /**
      * Returns an instance without the specified segment.
@@ -105,14 +102,11 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * If $key is non-negative, the removed segment will be the segment at $key position from the start.
      * If $key is negative, the removed segment will be the segment at $key position from the end.
      *
-     * @param int $key     required key to remove
      * @param int ...$keys remaining keys to remove
      *
      * @throws OffsetOutOfBounds If the key is invalid
-     *
-     * @return static
      */
-    public function withoutSegment(int $key, int ...$keys);
+    public function withoutSegment(int $key, int ...$keys): self;
 
     /**
      * Returns an instance without duplicate delimiters.
@@ -120,10 +114,8 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the path component normalized by removing
      * multiple consecutive empty segment
-     *
-     * @return static
      */
-    public function withoutEmptySegments();
+    public function withoutEmptySegments(): self;
 
     /**
      * Returns an instance with the specified parent directory's path.
@@ -131,9 +123,9 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      *
-     * @return static
+     * @param ?string $path
      */
-    public function withDirname($path);
+    public function withDirname(?string $path): self;
 
     /**
      * Returns an instance with the specified basename.
@@ -141,9 +133,9 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      *
-     * @return static
+     * @param ?string $basename
      */
-    public function withBasename($basename);
+    public function withBasename(?string $basename): self;
 
     /**
      * Returns an instance with the specified basename extension.
@@ -151,7 +143,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      *
-     * @return static
+     * @param ?string $extension
      */
-    public function withExtension($extension);
+    public function withExtension(?string $extension): self;
 }

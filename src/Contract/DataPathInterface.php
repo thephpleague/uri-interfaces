@@ -69,20 +69,16 @@ interface DataPathInterface extends PathInterface
      *
      * This method MUST retain the state of the current instance, and return
      * an instance where the data part is base64 encoded
-     *
-     * @return static
      */
-    public function toBinary();
+    public function toBinary(): self;
 
     /**
      * Returns an instance where the data part is url encoded following RFC3986 rules.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance where the data part is url encoded
-     *
-     * @return static
      */
-    public function toAscii();
+    public function toAscii(): self;
 
     /**
      * Return an instance with the specified mediatype parameters.
@@ -93,8 +89,6 @@ interface DataPathInterface extends PathInterface
      * Users must provide encoded characters.
      *
      * An empty parameters value is equivalent to removing the parameter.
-     *
-     * @return static
      */
-    public function withParameters(string $parameters);
+    public function withParameters(string $parameters): self;
 }

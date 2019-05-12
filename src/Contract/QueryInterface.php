@@ -68,7 +68,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-get
      */
-    public function get(string $key);
+    public function get(string $key): ?string;
 
     /**
      * Returns all the values associated to the given parameter as an array or all
@@ -109,10 +109,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the query component with a different separator
-     *
-     * @return static
      */
-    public function withSeparator(string $separator);
+    public function withSeparator(string $separator): self;
 
     /**
      * Sort the query string by offset, maintaining offset to data correlations.
@@ -121,10 +119,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * an instance that contains the modified query
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-sort
-     *
-     * @return static
      */
-    public function sort();
+    public function sort(): self;
 
     /**
      * Returns an instance without duplicate key/value pair.
@@ -132,10 +128,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the query component normalized by removing
      * duplicate pairs whose key/value are the same.
-     *
-     * @return static
      */
-    public function withoutDuplicates();
+    public function withoutDuplicates(): self;
 
     /**
      * Returns an instance without empty key/value where the value is the null value.
@@ -145,10 +139,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * empty pairs.
      *
      * A pair is considered empty if its value is equal to the null value
-     *
-     * @return static
      */
-    public function withoutEmptyPairs();
+    public function withoutEmptyPairs(): self;
 
     /**
      * Returns an instance where numeric indices associated to PHP's array like key are removed.
@@ -158,10 +150,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * are removed from the pair key value.
      *
      * ie.: toto[3]=bar[3]&foo=bar becomes toto[]=bar[3]&foo=bar
-     *
-     * @return static
      */
-    public function withoutNumericIndices();
+    public function withoutNumericIndices(): self;
 
     /**
      * Returns an instance with the a new key/value pair added to it.
@@ -172,10 +162,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * If the pair already exists the value will replace the existing value.
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-set
-     *
-     * @return static
      */
-    public function withPair(string $key, $value);
+    public function withPair(string $key, string $value): self;
 
     /**
      * Returns an instance with the new pairs set to it.
@@ -184,10 +172,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * an instance that contains the modified query
      *
      * @see ::withPair
-     *
-     * @return static
      */
-    public function merge($query);
+    public function merge(string $query): self;
 
     /**
      * Returns an instance without the specified keys.
@@ -195,24 +181,18 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified component
      *
-     * @param string $key     the first key to remove
-     * @param string ...$keys the list of remaining keys to remove
-     *
-     * @return static
+     * @param string ...$keys
      */
-    public function withoutPair(string $key, string ...$keys);
+    public function withoutPair(string $key, string ...$keys): self;
 
     /**
      * Returns a new instance with a specified key/value pair appended as a new pair.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified query
-     *
-     * @param mixed $value must be a scalar or the null value
-     *
-     * @return static
+     * @param ?string $value
      */
-    public function appendTo(string $key, $value);
+    public function appendTo(string $key, ?string $value): self;
 
     /**
      * Returns an instance with the new pairs appended to it.
@@ -221,10 +201,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * an instance that contains the modified query
      *
      * If the pair already exists the value will be added to it.
-     *
-     * @return static
      */
-    public function append($query);
+    public function append(string $query): self;
 
     /**
      * Returns an instance without the specified params.
@@ -234,8 +212,6 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * PHP's mangled is not taken into account.
      *
      * @param string ...$offsets
-     *
-     * @return static
      */
-    public function withoutParam(string $offset, string ...$offsets);
+    public function withoutParam(string $offset, string ...$offsets): self;
 }

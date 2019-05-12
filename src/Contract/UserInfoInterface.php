@@ -38,9 +38,8 @@ interface UserInfoInterface extends UriComponentInterface
      *
      * An empty user is equivalent to removing the user information.
      *
-     * @param null|mixed $pass
-     *
-     * @return static
+     * @param ?string $user
+     * @param ?string $pass
      */
-    public function withUserInfo($user, $pass = null);
+    public function withUserInfo(?string $user, ?string $pass = null): self;
 }
