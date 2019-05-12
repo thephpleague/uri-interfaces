@@ -31,10 +31,8 @@ interface PathInterface extends UriComponentInterface
      *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     *
-     * @return static
      */
-    public function withoutDotSegments();
+    public function withoutDotSegments(): self;
 
     /**
      * Returns an instance with a leading slash.
@@ -44,10 +42,8 @@ interface PathInterface extends UriComponentInterface
      *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     *
-     * @return static
      */
-    public function withLeadingSlash();
+    public function withLeadingSlash(): self;
 
     /**
      * Returns an instance without a leading slash.
@@ -57,8 +53,6 @@ interface PathInterface extends UriComponentInterface
      *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     *
-     * @return static
      */
-    public function withoutLeadingSlash();
+    public function withoutLeadingSlash(): self;
 }

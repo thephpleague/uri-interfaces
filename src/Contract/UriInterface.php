@@ -46,8 +46,6 @@ interface UriInterface extends JsonSerializable
      * added.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
-     *
-     * @return ?string
      */
     public function getScheme(): ?string;
 
@@ -60,8 +58,6 @@ interface UriInterface extends JsonSerializable
      * scheme, it SHOULD NOT be included.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
-     *
-     * @return ?string
      */
     public function getAuthority(): ?string;
 
@@ -76,8 +72,6 @@ interface UriInterface extends JsonSerializable
      *
      * The trailing "@" character is not part of the user information and MUST
      * NOT be added.
-     *
-     * @return ?string
      */
     public function getUserInfo(): ?string;
 
@@ -87,8 +81,6 @@ interface UriInterface extends JsonSerializable
      * If no user is present, this method MUST return a null value.
      *
      * The trailing "@" and/or ":" characters are not part of the user and MUST NOT be added.
-     *
-     * @return ?string
      */
     public function getUser(): ?string;
 
@@ -98,8 +90,6 @@ interface UriInterface extends JsonSerializable
      * If no user is present, or no pass is present this method MUST return a null value.
      *
      * The trailing "@" characters are not part of the user and MUST NOT be added.
-     *
-     * @return ?string
      */
     public function getPass(): ?string;
 
@@ -112,8 +102,6 @@ interface UriInterface extends JsonSerializable
      * Section 3.2.2.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
-     *
-     * @return ?string
      */
     public function getHost(): ?string;
 
@@ -129,8 +117,6 @@ interface UriInterface extends JsonSerializable
      *
      * If no port is present, but a scheme is present, this method MAY return
      * the standard port for that scheme, but SHOULD return null.
-     *
-     * @return ?int
      */
     public function getPort(): ?int;
 
@@ -157,7 +143,6 @@ interface UriInterface extends JsonSerializable
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
-     *
      */
     public function getPath(): string;
 
@@ -179,8 +164,6 @@ interface UriInterface extends JsonSerializable
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
-     *
-     * @return ?string
      */
     public function getQuery(): ?string;
 
@@ -198,8 +181,6 @@ interface UriInterface extends JsonSerializable
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
-     *
-     * @return ?string
      */
     public function getFragment(): ?string;
 
@@ -216,9 +197,8 @@ interface UriInterface extends JsonSerializable
      *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     * @return static
      */
-    public function withScheme($scheme);
+    public function withScheme(?string $scheme): self;
 
     /**
      * Return an instance with the specified user information.
@@ -235,9 +215,8 @@ interface UriInterface extends JsonSerializable
      *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     * @return static
      */
-    public function withUserInfo($user, $password = null);
+    public function withUserInfo(?string $user, ?string $password = null): self;
 
     /**
      * Return an instance with the specified host.
@@ -255,9 +234,8 @@ interface UriInterface extends JsonSerializable
      * @throws IdnSupportMissing for component or transformations
      *                           requiring IDN support when IDN support is not present
      *                           or misconfigured.
-     * @return static
      */
-    public function withHost($host);
+    public function withHost(?string $host): self;
 
     /**
      * Return an instance with the specified port.
@@ -272,9 +250,8 @@ interface UriInterface extends JsonSerializable
      *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     * @return static
      */
-    public function withPort($port);
+    public function withPort(?int $port): self;
 
     /**
      * Return an instance with the specified path.
@@ -289,13 +266,10 @@ interface UriInterface extends JsonSerializable
      * Users can provide both encoded and decoded path characters.
      * Implementations ensure the correct encoding as outlined in getPath().
      *
-     * @param string $path
-     *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     * @return static
      */
-    public function withPath($path);
+    public function withPath(string $path): self;
 
     /**
      * Return an instance with the specified query string.
@@ -309,13 +283,12 @@ interface UriInterface extends JsonSerializable
      * A null value provided for the query is equivalent to removing the query
      * information.
      *
-     * @param ?string $query The query string to use with the new instance.
+     * @param ?string $query
      *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     * @return static
      */
-    public function withQuery($query);
+    public function withQuery(?string $query): self;
 
     /**
      * Return an instance with the specified URI fragment.
@@ -333,7 +306,6 @@ interface UriInterface extends JsonSerializable
      *
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in a object in invalid state.
-     * @return static
      */
-    public function withFragment($fragment);
+    public function withFragment(?string $fragment): self;
 }

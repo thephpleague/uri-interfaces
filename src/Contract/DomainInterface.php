@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Uri\Contract;
 
 use Countable;
+use Iterator;
 use IteratorAggregate;
 use League\Uri\Exception\OffsetOutOfBounds;
 use function count;
@@ -28,7 +29,7 @@ interface DomainInterface extends Countable, HostInterface, IteratorAggregate
     /**
      * Iterate over the Domain labels.
      */
-    public function getIterator(): iterable;
+    public function getIterator(): Iterator;
 
     /**
      * Retrieves a single host label.
@@ -50,26 +51,26 @@ interface DomainInterface extends Countable, HostInterface, IteratorAggregate
     /**
      * Prepends a label to the host.
      */
-    public function prepend($label);
+    public function prepend(string $label): self;
 
     /**
      * Appends a label to the host.
      */
-    public function append($label);
+    public function append(string $label): self;
 
     /**
      * Returns an instance with its Root label.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2.2
      */
-    public function withRootLabel();
+    public function withRootLabel(): self;
 
     /**
      * Returns an instance without its Root label.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2.2
      */
-    public function withoutRootLabel();
+    public function withoutRootLabel(): self;
 
     /**
      * Returns an instance with the modified label.
@@ -82,7 +83,7 @@ interface DomainInterface extends Countable, HostInterface, IteratorAggregate
      *
      * @throws OffsetOutOfBounds If the key is invalid
      */
-    public function withLabel(int $key, $label);
+    public function withLabel(int $key, string $label): self;
 
     /**
      * Returns an instance without the specified label.
@@ -97,5 +98,5 @@ interface DomainInterface extends Countable, HostInterface, IteratorAggregate
      *
      * @throws OffsetOutOfBounds If the key is invalid
      */
-    public function withoutLabel(int $key, int ...$keys);
+    public function withoutLabel(int $key, int ...$keys): self;
 }

@@ -77,13 +77,13 @@ interface UriComponentInterface extends JsonSerializable
      * A null value is equivalent to removing the component content.
      *
      *
-     * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     * @param ?string $content
      *
+     * @throws SyntaxError       for invalid component or transformations
+     *                           that would result in a object in invalid state.
      * @throws IdnSupportMissing for component or transformations
      *                           requiring IDN support when IDN support is not present
      *                           or misconfigured.
-     * @return static
      */
-    public function withContent($content);
+    public function withContent(?string $content): self;
 }
