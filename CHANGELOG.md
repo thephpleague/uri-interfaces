@@ -2,6 +2,43 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## Next - TBD
+
+### Added
+
+- `League\Uri\Contract\AuthorityInterface`
+- `League\Uri\Contract\FragmentInterface`
+- `League\Uri\Contract\DataPathInterface`
+- `League\Uri\Contract\DomainInterface`
+- `League\Uri\Contract\HostInterface`
+- `League\Uri\Contract\PathInterface`
+- `League\Uri\Contract\PortInterface`
+- `League\Uri\Contract\QueryInterface`
+- `League\Uri\Contract\SegmentedPathInterface`
+- `League\Uri\Contract\UriException`
+- `League\Uri\Contract\UriComponentInterface`
+- `League\Uri\Contract\UriInterface`
+- `League\Uri\Contract\UserInfoInterface`
+- `League\Uri\Exception\EncodingNotFound`
+- `League\Uri\Exception\IdnSupportMissing`
+- `League\Uri\Exception\OffsetOutOfBounds`
+- `League\Uri\Exception\PathTypeNotFound`
+- `League\Uri\Exception\SyntaxError`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- `League\Uri\Interfaces` namespace
+- `League\Uri\UriInterface`
+- support for `PHP7.0`
+
 ## 1.1.1 - 2018-11-05
 
 ### Added
