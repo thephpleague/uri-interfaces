@@ -20,7 +20,7 @@ $ composer require league/uri-interfaces
 Documentation
 --------
 
-### League\Uri\UriInterface
+### League\Uri\Contract\UriInterface
 
 The `UriInterface` interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI. It also specifies a `__toString()` method for casting the modeled URI to its string representation.
 
@@ -49,7 +49,7 @@ The `Uri` interface defines the following modifying methods. these methods **mus
 
 Delimiter characters are not part of the URI component and **must not** be added to the modifying method submitted value. If present they will be treated as part of the URI component content.
 
-**These methods will trigger a `InvalidUri` exception if the resulting URI is not valid. The validation is scheme dependent.**
+**These methods will trigger a `League\Uri\Contract\UriException` exception if the resulting URI is not valid. The validation is scheme dependent.**
 
 ~~~php
 <?php
@@ -70,7 +70,7 @@ This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But,
 - This interface does not require the `http` and `https` schemes to be supported.
 - Setter and Getter component methods, with the exception of the path component, accept and can return the `null` value.
 
-### League\Uri\ComponentInterface
+### League\Uri\Contract\UriComponentInterface
 
 The `UriComponentInterface` interface models generic URI components as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with an URI component, which will obviate the need for repeated parsing of the URI component. It also specifies a `__toString()` method for casting the modeled URI component to its string representation.
 
@@ -89,17 +89,28 @@ public UriComponentInterface::jsonSerialize(void): ?string
 
 #### Modifying URI properties
 
-The `ComponentInterface` interface defines the following modifying method. this method **must** be implemented such that it retains the internal state of the current instance and return an instance that contains the changed state.
+The `UriComponentInterface` interface defines the following modifying method. this method **must** be implemented such that it retains the internal state of the current instance and return an instance that contains the changed state.
 
 ~~~php
 <?php
 
-public UriComponentInterface::withContent($content): static
+public UriComponentInterface::withContent(?string $content): static
 ~~~
 
-### League\Uri\HostInterface and League\Uri\PathInterface
+### UriComponentInterface extended interfaces
 
-Because there are multiple type of Host and Path components theses interface which all extends the `ComponentInterface` interface are added to ease implementing the underlying component with the default behavior expected from each component.
+Because each URI component has specific needs most have specialized interface which all extends the `UriComponentInterface` interface. The following interfaces also exist:
+
+- `League\Uri\Contract\UserInfoInterface`
+- `League\Uri\Contract\HostInterface`
+- `League\Uri\Contract\DomainInterface`
+- `League\Uri\Contract\PortInterface`
+- `League\Uri\Contract\AuthorityInterface`
+- `League\Uri\Contract\PathInterface`
+- `League\Uri\Contract\DataPathInterface`
+- `League\Uri\Contract\SegmentedPathInterface`
+- `League\Uri\Contract\QueryInterface`
+- `League\Uri\Contract\FragmentInterface`
 
 Contributing
 -------
