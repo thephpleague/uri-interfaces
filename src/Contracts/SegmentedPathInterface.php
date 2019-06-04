@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Contract;
+namespace League\Uri\Contracts;
 
 use Countable;
 use Iterator;
 use IteratorAggregate;
-use League\Uri\Exception\OffsetOutOfBounds;
+use League\Uri\Exceptions\SyntaxError;
 
 interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInterface
 {
@@ -89,7 +89,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * @param ?string $segment
      *
-     * @throws OffsetOutOfBounds If the key is invalid
+     * @throws SyntaxError If the key is invalid
      */
     public function withSegment(int $key, ?string $segment): self;
 
@@ -104,7 +104,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * @param int ...$keys remaining keys to remove
      *
-     * @throws OffsetOutOfBounds If the key is invalid
+     * @throws SyntaxError If the key is invalid
      */
     public function withoutSegment(int $key, int ...$keys): self;
 

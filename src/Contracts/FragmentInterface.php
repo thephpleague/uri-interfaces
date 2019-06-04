@@ -11,10 +11,12 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Contract;
+namespace League\Uri\Contracts;
 
-use Throwable;
-
-interface UriException extends Throwable
+interface FragmentInterface extends UriComponentInterface
 {
+    /**
+     * Returns the decoded fragment.
+     */
+    public function decoded(): ?string;
 }

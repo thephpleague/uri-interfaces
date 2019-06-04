@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Contract;
+namespace League\Uri\Contracts;
 
 use Countable;
 use Iterator;

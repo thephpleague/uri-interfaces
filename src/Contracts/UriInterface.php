@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Contract;
+namespace League\Uri\Contracts;
 
 use JsonSerializable;
-use League\Uri\Exception\IdnSupportMissing;
-use League\Uri\Exception\SyntaxError;
+use League\Uri\Exceptions\IdnSupportMissing;
+use League\Uri\Exceptions\SyntaxError;
 
 interface UriInterface extends JsonSerializable
 {

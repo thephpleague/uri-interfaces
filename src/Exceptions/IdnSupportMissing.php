@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Exception;
+namespace League\Uri\Exceptions;
 
-use League\Uri\Contract\UriException;
+use League\Uri\Contracts\UriException;
 use RuntimeException;
 
 class IdnSupportMissing extends RuntimeException implements UriException
