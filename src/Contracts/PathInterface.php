@@ -11,16 +11,26 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Contract;
+namespace League\Uri\Contracts;
 
-use League\Uri\Exception\SyntaxError;
+use League\Uri\Exceptions\SyntaxError;
 
 interface PathInterface extends UriComponentInterface
 {
     /**
+     * Returns the decoded path.
+     */
+    public function decoded(): string;
+
+    /**
      * Returns whether or not the path is absolute or relative.
      */
     public function isAbsolute(): bool;
+
+    /**
+     * Returns whether or not the path has a trailing delimiter.
+     */
+    public function hasTrailingSlash(): bool;
 
     /**
      * Returns an instance without dot segments.
@@ -55,4 +65,26 @@ interface PathInterface extends UriComponentInterface
      *                     that would result in a object in invalid state.
      */
     public function withoutLeadingSlash(): self;
+
+    /**
+     * Returns an instance with a trailing slash.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the path component with a trailing slash
+     *
+     * @throws SyntaxError for invalid component or transformations
+     *                     that would result in a object in invalid state.
+     */
+    public function withTrailingSlash(): self;
+
+    /**
+     * Returns an instance without a trailing slash.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the path component without a trailing slash
+     *
+     * @throws SyntaxError for invalid component or transformations
+     *                     that would result in a object in invalid state.
+     */
+    public function withoutTrailingSlash(): self;
 }

@@ -11,8 +11,10 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Exception;
+namespace League\Uri\Contracts;
 
-class EncodingNotFound extends SyntaxError
+use Throwable;
+
+interface UriException extends Throwable
 {
 }

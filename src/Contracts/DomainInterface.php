@@ -11,13 +11,12 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Contract;
+namespace League\Uri\Contracts;
 
 use Countable;
 use Iterator;
 use IteratorAggregate;
-use League\Uri\Exception\OffsetOutOfBounds;
-use function count;
+use League\Uri\Exceptions\SyntaxError;
 
 interface DomainInterface extends Countable, HostInterface, IteratorAggregate
 {
@@ -81,7 +80,7 @@ interface DomainInterface extends Countable, HostInterface, IteratorAggregate
      * If $key is non-negative, the added label will be the label at $key position from the start.
      * If $key is negative, the added label will be the label at $key position from the end.
      *
-     * @throws OffsetOutOfBounds If the key is invalid
+     * @throws SyntaxError If the key is invalid
      */
     public function withLabel(int $key, string $label): self;
 
@@ -96,7 +95,7 @@ interface DomainInterface extends Countable, HostInterface, IteratorAggregate
      *
      * @param int ...$keys
      *
-     * @throws OffsetOutOfBounds If the key is invalid
+     * @throws SyntaxError If the key is invalid
      */
     public function withoutLabel(int $key, int ...$keys): self;
 }

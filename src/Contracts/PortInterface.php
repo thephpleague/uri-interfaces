@@ -11,8 +11,12 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Exception;
+namespace League\Uri\Contracts;
 
-class PathTypeNotFound extends SyntaxError
+interface PortInterface extends UriComponentInterface
 {
+    /**
+     * Returns the integer representation of the Port.
+     */
+    public function toInt(): ?int;
 }
