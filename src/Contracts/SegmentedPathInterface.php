@@ -20,12 +20,6 @@ use League\Uri\Exceptions\SyntaxError;
 
 interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInterface
 {
-    public const IS_ABSOLUTE = 1;
-
-    public const IS_RELATIVE = 0;
-
-    public const SEPARATOR = '/';
-
     /**
      * Returns the total number of segments in the path.
      */
