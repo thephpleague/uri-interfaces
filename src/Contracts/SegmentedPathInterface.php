@@ -54,8 +54,6 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
     /**
      * Retrieves a single path segment.
      *
-     * Retrieves a single path segment.
-     *
      * If the segment offset has not been set, returns null.
      */
     public function get(int $offset): ?string;
@@ -65,8 +63,10 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * If a value is specified only the keys associated with
      * the given value will be returned
+     *
+     * @param ?string $segment
      */
-    public function keys(string $segment): array;
+    public function keys(?string $segment = null): array;
 
     /**
      * Appends a segment to the path.

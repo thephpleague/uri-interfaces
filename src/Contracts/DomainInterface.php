@@ -38,9 +38,11 @@ interface DomainInterface extends Countable, HostInterface, IteratorAggregate
     public function get(int $offset): ?string;
 
     /**
-     * Returns the associated key for a specific label.
+     * Returns the associated key for a specific label or all the keys.
+     *
+     * @param ?string $label
      */
-    public function keys(string $label): array;
+    public function keys(?string $label = null): array;
 
     /**
      * Tells whether the domain is absolute.
