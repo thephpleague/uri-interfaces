@@ -18,7 +18,7 @@ use Iterator;
 use IteratorAggregate;
 use League\Uri\Exceptions\SyntaxError;
 
-interface DomainInterface extends Countable, HostInterface, IteratorAggregate
+interface DomainHostInterface extends Countable, HostInterface, IteratorAggregate
 {
     /**
      * Returns the labels total number.
