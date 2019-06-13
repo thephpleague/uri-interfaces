@@ -16,11 +16,6 @@ namespace League\Uri\Contracts;
 interface UserInfoInterface extends UriComponentInterface
 {
     /**
-     * Returns the decoded component.
-     */
-    public function decoded(): ?string;
-
-    /**
      * Returns the user component part.
      */
     public function getUser(): ?string;

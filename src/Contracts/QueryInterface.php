@@ -87,10 +87,16 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * second argument with the difference that variable names are
      * not mangled.
      *
+     * If a key is submitted it will returns the value attached to it or null
+     *
      * @see http://php.net/parse_str
      * @see https://wiki.php.net/rfc/on_demand_name_mangling
+     *
+     * @param  ?string $key
+     * @return mixed   the collection of stored PHP variables or the empty array if no input is given,
+     *                     the single value of a stored PHP variable or null if the variable is not present in the collection
      */
-    public function toParams(): array;
+    public function params(?string $key = null);
 
     /**
      * Returns the RFC1738 encoded query.
