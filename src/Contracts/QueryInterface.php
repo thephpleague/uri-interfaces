@@ -211,16 +211,6 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function append(string $query): self;
 
     /**
-     * Returns an instance with the a new key/value param added.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the modified query
-     *
-     * If the param already exists the value will replace the existing value.
-     */
-    public function withParam(string $key, string $value): self;
-
-    /**
      * Returns an instance without the specified params.
      *
      * This method MUST retain the state of the current instance, and return
