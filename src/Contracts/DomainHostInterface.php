@@ -99,5 +99,5 @@ interface DomainHostInterface extends Countable, HostInterface, IteratorAggregat
      *
      * @throws SyntaxError If the key is invalid
      */
-    public function withoutLabel(int $key, int ...$keys): self;
+    public function withoutLabel(int ...$keys): self;
 }
