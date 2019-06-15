@@ -189,7 +189,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * @param string ...$keys
      */
-    public function withoutPair(string $key, string ...$keys): self;
+    public function withoutPair(string ...$keys): self;
 
     /**
      * Returns a new instance with a specified key/value pair appended as a new pair.
@@ -211,13 +211,23 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function append(string $query): self;
 
     /**
+     * Returns an instance with the a new key/value param added.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the modified query
+     *
+     * If the param already exists the value will replace the existing value.
+     */
+    public function withParam(string $key, string $value): self;
+
+    /**
      * Returns an instance without the specified params.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified component without PHP's value.
      * PHP's mangled is not taken into account.
      *
-     * @param string ...$offsets
+     * @param string ...$keys
      */
-    public function withoutParam(string $offset, string ...$offsets): self;
+    public function withoutParam(string ...$keys): self;
 }
