@@ -76,24 +76,6 @@ interface UriInterface extends JsonSerializable
     public function getUserInfo(): ?string;
 
     /**
-     * Retrieve the user component of the URI.
-     *
-     * If no user is present, this method MUST return a null value.
-     *
-     * The trailing "@" and/or ":" characters are not part of the user and MUST NOT be added.
-     */
-    public function getUser(): ?string;
-
-    /**
-     * Retrieve the pass component of the URI.
-     *
-     * If no user is present, or no pass is present this method MUST return a null value.
-     *
-     * The trailing "@" characters are not part of the user and MUST NOT be added.
-     */
-    public function getPass(): ?string;
-
-    /**
      * Retrieve the host component of the URI.
      *
      * If no host is present this method MUST return a null value.
