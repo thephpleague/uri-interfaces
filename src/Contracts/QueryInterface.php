@@ -38,9 +38,9 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * The key of each pair is a string
      * The value of each pair is a scalar or the null value
      *
-     * @return Iterator
+     * @return Iterator<int, array{0:string, 1:string|null}>
      */
-    public function getIterator(): iterable;
+    public function getIterator(): Iterator;
 
     /**
      * Returns an iterator allowing to go through all key/value pairs contained in this object.
@@ -50,19 +50,19 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * The key of each pair is a string
      * The value of each pair is a scalar or the null value
      *
-     * @return Iterator
+     * @return Iterator<string, string|null>
      */
     public function pairs(): Iterable;
 
     /**
-     * Tell whether a parameter with a specific name exists.
+     * Tells whether a pair with a specific name exists.
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-has
      */
     public function has(string $key): bool;
 
     /**
-     * Returns the first value associated to the given parameter.
+     * Returns the first value associated to the given pair name.
      *
      * If no value is found null is returned
      *
@@ -71,12 +71,14 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function get(string $key): ?string;
 
     /**
-     * Returns all the values associated to the given parameter as an array or all
+     * Returns all the values associated to the given pair name as an array or all
      * the instance pairs.
      *
      * If no value is found an empty array is returned
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-getall
+     *
+     * @return array<int, string|null>
      */
     public function getAll(string $key): array;
 
@@ -119,7 +121,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function withSeparator(string $separator): self;
 
     /**
-     * Sort the query string by offset, maintaining offset to data correlations.
+     * Sorts the query string by offset, maintaining offset to data correlations.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified query
@@ -168,8 +170,10 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * If the pair already exists the value will replace the existing value.
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-set
+     *
+     * @param ?string $value
      */
-    public function withPair(string $key, string $value): self;
+    public function withPair(string $key, ?string $value): self;
 
     /**
      * Returns an instance with the new pairs set to it.
@@ -196,6 +200,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified query
+     *
      * @param ?string $value
      */
     public function appendTo(string $key, ?string $value): self;

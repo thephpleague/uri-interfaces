@@ -33,7 +33,7 @@ interface HostInterface extends UriComponentInterface
     public function getIpVersion(): ?string;
 
     /**
-     * Returns the IP component If the Host is an IP adress.
+     * Returns the IP component If the Host is an IP address.
      *
      * If the host is a not an IP this method will return null
      */
