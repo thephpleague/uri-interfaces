@@ -50,9 +50,9 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * The key of each pair is a string
      * The value of each pair is a scalar or the null value
      *
-     * @return Iterator<string, string|null>
+     * @return iterable<string, string|null>
      */
-    public function pairs(): Iterable;
+    public function pairs(): iterable;
 
     /**
      * Tells whether a pair with a specific name exists.

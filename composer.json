@@ -37,6 +37,11 @@
         "phpstan": "phpstan analyse -l max -c phpstan.src.neon src",
         "test": ["@phpcs", "@phpstan"]
     },
+    "scripts-descriptions": {
+        "phpcs":"Runs coding style test suite",
+        "phpstan":"Runs php static code analysis compliance test",
+        "test": "Runs all the test suite"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.x-dev"
