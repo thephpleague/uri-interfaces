@@ -22,7 +22,12 @@ Documentation
 
 ### League\Uri\Contract\UriInterface
 
-The `UriInterface` interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986). The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI. It also specifies a `__toString()` method for casting the modeled URI to its string representation.
+The `UriInterface` interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986).
+The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI.
+It also specifies:
+ 
+ - a `__toString()` method for casting the modeled URI to its string representation.
+ - a `jsonSerialize()` method to improve interoperability with [WHATWG URL Living standard](https://url.spec.whatwg.org/)
 
 #### Accessing URI properties
 
@@ -69,6 +74,7 @@ This interface exposes the same methods as `Psr\Http\Message\UriInterface`. But,
 
 - This interface does not require the `http` and `https` schemes to be supported.
 - Setter and Getter component methods, with the exception of the path component, accept and can return the `null` value.
+- If no scheme is present, you are not required to fallback to `http` and `https` schemes specific validation rules.
 
 ### League\Uri\Contract\UriComponentInterface
 
