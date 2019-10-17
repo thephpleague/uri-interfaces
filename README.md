@@ -107,16 +107,17 @@ public UriComponentInterface::withContent(?string $content): static
 
 Because each URI component has specific needs most have specialized interface which all extends the `UriComponentInterface` interface. The following interfaces also exist:
 
+- `League\Uri\Contract\AuthorityInterface`
+- `League\Uri\Contract\DataPathInterface`
+- `League\Uri\Contract\DomainHostInterface`
+- `League\Uri\Contract\FragmentInterface`
 - `League\Uri\Contract\UserInfoInterface`
 - `League\Uri\Contract\HostInterface`
-- `League\Uri\Contract\DomainInterface`
-- `League\Uri\Contract\PortInterface`
-- `League\Uri\Contract\AuthorityInterface`
+- `League\Uri\Contract\IpHostInterface`
 - `League\Uri\Contract\PathInterface`
-- `League\Uri\Contract\DataPathInterface`
-- `League\Uri\Contract\SegmentedPathInterface`
+- `League\Uri\Contract\PortInterface`
 - `League\Uri\Contract\QueryInterface`
-- `League\Uri\Contract\FragmentInterface`
+- `League\Uri\Contract\SegmentedPathInterface`
 
 Contributing
 -------
