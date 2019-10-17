@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "php" : "^7.1.3",
+        "php" : "^7.1",
         "ext-json": "*"
     },
     "require-dev": {
@@ -33,8 +33,8 @@
         }
     },
     "scripts": {
-        "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes;",
-        "phpstan": "phpstan analyse -l max -c phpstan.src.neon src",
+        "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes --ansi",
+        "phpstan": "phpstan analyse -l max -c phpstan.src.neon src --ansi",
         "test": ["@phpcs", "@phpstan"]
     },
     "scripts-descriptions": {

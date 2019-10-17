@@ -2,27 +2,26 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## Next - TBD
+## 2.0.0 - 2019-10-17
 
 ### Added
 
 - `League\Uri\Contract\AuthorityInterface`
-- `League\Uri\Contract\FragmentInterface`
 - `League\Uri\Contract\DataPathInterface`
-- `League\Uri\Contract\DomainInterface`
+- `League\Uri\Contract\DomainHostInterface`
+- `League\Uri\Contract\FragmentInterface`
 - `League\Uri\Contract\HostInterface`
+- `League\Uri\Contract\IpHostInterface`
 - `League\Uri\Contract\PathInterface`
 - `League\Uri\Contract\PortInterface`
 - `League\Uri\Contract\QueryInterface`
 - `League\Uri\Contract\SegmentedPathInterface`
-- `League\Uri\Contract\UriException`
 - `League\Uri\Contract\UriComponentInterface`
+- `League\Uri\Contract\UriException`
 - `League\Uri\Contract\UriInterface`
 - `League\Uri\Contract\UserInfoInterface`
 - `League\Uri\Exception\EncodingNotFound`
 - `League\Uri\Exception\IdnSupportMissing`
-- `League\Uri\Exception\OffsetOutOfBounds`
-- `League\Uri\Exception\PathTypeNotFound`
 - `League\Uri\Exception\SyntaxError`
 
 ### Fixed
