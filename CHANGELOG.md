@@ -2,6 +2,24 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## 2.0.1 - 2019-12-17
+
+### Added
+
+- Nothing
+
+### Fixed
+
+- Remove useless docblock from `League\Uri\Contract\IpHostInterface::withoutZoneIdentifier`
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 2.0.0 - 2019-10-17
 
 ### Added
