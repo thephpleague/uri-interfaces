@@ -4,6 +4,7 @@
 /.gitattributes    export-ignore
 /.github           export-ignore
 /.gitignore        export-ignore
+/phpstan.src.neon  export-ignore
 /.php_cs           export-ignore
 /README.md         export-ignore
 /CHANGELOG.md      export-ignore
