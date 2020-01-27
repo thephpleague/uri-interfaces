@@ -13,9 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Exceptions;
 
-use InvalidArgumentException;
 use League\Uri\Contracts\UriException;
 
-class SyntaxError extends InvalidArgumentException implements UriException
+class SyntaxError extends \InvalidArgumentException implements UriException
 {
 }
