@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
-use Countable;
-use Iterator;
-use IteratorAggregate;
 use League\Uri\Exceptions\SyntaxError;
 
-interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInterface
+/**
+ * @extends \IteratorAggregate<string>
+ */
+interface SegmentedPathInterface extends \Countable, \IteratorAggregate, PathInterface
 {
     /**
      * Returns the total number of segments in the path.
@@ -27,8 +27,10 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
 
     /**
      * Iterate over the path segment.
+     *
+     * @return \Iterator<string>
      */
-    public function getIterator(): Iterator;
+    public function getIterator(): \Iterator;
 
     /**
      * Returns parent directory's path.
@@ -59,6 +61,8 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * the given value will be returned
      *
      * @param ?string $segment
+     *
+     * @return int[]
      */
     public function keys(?string $segment = null): array;
 
