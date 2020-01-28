@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
-use Countable;
-use Iterator;
-use IteratorAggregate;
 use League\Uri\Exceptions\SyntaxError;
 
-interface DomainHostInterface extends Countable, HostInterface, IteratorAggregate
+/**
+ * @extends \IteratorAggregate<string>
+ */
+interface DomainHostInterface extends \Countable, HostInterface, \IteratorAggregate
 {
     /**
      * Returns the labels total number.
@@ -27,8 +27,10 @@ interface DomainHostInterface extends Countable, HostInterface, IteratorAggregat
 
     /**
      * Iterate over the Domain labels.
+     *
+     * @return \Iterator<string>
      */
-    public function getIterator(): Iterator;
+    public function getIterator(): \Iterator;
 
     /**
      * Retrieves a single host label.
@@ -41,6 +43,8 @@ interface DomainHostInterface extends Countable, HostInterface, IteratorAggregat
      * Returns the associated key for a specific label or all the keys.
      *
      * @param ?string $label
+     *
+     * @return int[]
      */
     public function keys(?string $label = null): array;
 

@@ -13,11 +13,10 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
-use Countable;
-use Iterator;
-use IteratorAggregate;
-
-interface QueryInterface extends Countable, IteratorAggregate, UriComponentInterface
+/**
+ * @extends \IteratorAggregate<array{0:string, 1:string|null}>
+ */
+interface QueryInterface extends \Countable, \IteratorAggregate, UriComponentInterface
 {
     /**
      * Returns the query separator.
@@ -38,9 +37,9 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * The key of each pair is a string
      * The value of each pair is a scalar or the null value
      *
-     * @return Iterator<int, array{0:string, 1:string|null}>
+     * @return \Iterator<int, array{0:string, 1:string|null}>
      */
-    public function getIterator(): Iterator;
+    public function getIterator(): \Iterator;
 
     /**
      * Returns an iterator allowing to go through all key/value pairs contained in this object.
