@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
-use SplFileObject;
-
 interface DataPathInterface extends PathInterface
 {
     /**
@@ -62,7 +60,7 @@ interface DataPathInterface extends PathInterface
     /**
      * Save the data to a specific file.
      */
-    public function save(string $path, string $mode = 'w'): SplFileObject;
+    public function save(string $path, string $mode = 'w'): \SplFileObject;
 
     /**
      * Returns an instance where the data part is base64 encoded.
