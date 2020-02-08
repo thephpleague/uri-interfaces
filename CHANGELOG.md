@@ -2,6 +2,24 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## 2.1.0 - 2020-02-08
+
+### Added
+
+- `League\Uri\Exceptions\FileinfoSupportMissing` based on the work of [Nicolas Grekas](https://github.com/nicolas-grekas)
+
+### Fixed
+
+- Improved docblock.
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 2.0.1 - 2019-12-17
 
 ### Added
