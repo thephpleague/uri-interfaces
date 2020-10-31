@@ -16,13 +16,18 @@
             "homepage" : "https://nyamsprod.com"
         }
     ],
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/nyamsprod"
+        }
+    ],
     "require": {
-        "php" : "^7.1|^8.0",
+        "php" : "^7.1 || ^8.0",
         "ext-json": "*"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.0",
-        "phpunit/phpunit" : "^7.0|^8.0",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12"

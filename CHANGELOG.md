@@ -2,6 +2,24 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## 2.2.0 - 2020-10-31
+
+### Added
+
+- Support for PHP8 thanks to of [someniatko](https://github.com/someniatko)
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 2.1.0 - 2020-02-08
 
 ### Added
