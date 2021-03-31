@@ -2,6 +2,24 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## Next - TBD
+
+### Added
+
+- `::toString` method to Uri and Component interfaces
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 2.2.0 - 2020-10-31
 
 ### Added
