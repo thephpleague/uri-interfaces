@@ -6,7 +6,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Added
 
-- `::toString` method to Uri and Component interfaces
+- IDNA processing classes
 
 ### Fixed
 
