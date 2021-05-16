@@ -24,7 +24,6 @@ use function rawurldecode;
 use const INTL_IDNA_VARIANT_UTS46;
 
 /**
- * @internal
  * @see https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/uidna_8h.html
  */
 final class Idna
