@@ -18,7 +18,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Removed
 
-- None
+- Support for PHP7.1
 
 ## 2.2.0 - 2020-10-31
 
