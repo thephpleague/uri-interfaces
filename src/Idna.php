@@ -29,7 +29,24 @@ use const INTL_IDNA_VARIANT_UTS46;
 final class Idna
 {
     private const REGEXP_IDNA_PATTERN = '/[^\x20-\x7f]/';
-    private const MAX_DOMAIN_LENGTH = 255;
+    private const MAX_DOMAIN_LENGTH = 253;
+    private const MAX_LABEL_LENGTH = 63;
+
+    /**
+     * General registered name regular expression.
+     *
+     * @see https://tools.ietf.org/html/rfc3986#section-3.2.2
+     * @see https://regex101.com/r/fptU8V/1
+     */
+    private const REGEXP_REGISTERED_NAME = '/
+        (?(DEFINE)
+            (?<unreserved>[a-z0-9_~\-])   # . is missing as it is used to separate labels
+            (?<sub_delims>[!$&\'()*+,;=])
+            (?<encoded>%[A-F0-9]{2})
+            (?<reg_name>(?:(?&unreserved)|(?&sub_delims)|(?&encoded))*)
+        )
+            ^(?:(?&reg_name)\.)*(?&reg_name)\.?$
+        /ix';
 
     /**
      * IDNA options.
@@ -46,6 +63,7 @@ final class Idna
     /**
      * IDNA errors.
      */
+    public const ERROR_NONE                   = 0;
     public const ERROR_EMPTY_LABEL            = 1;
     public const ERROR_LABEL_TOO_LONG         = 2;
     public const ERROR_DOMAIN_NAME_TOO_LONG   = 4;
@@ -100,18 +118,20 @@ final class Idna
     {
         $domain = rawurldecode($domain);
 
+        if (1 !== preg_match(self::REGEXP_REGISTERED_NAME, $domain)) {
+            throw IdnaConversionFailed::dueToIDNAError($domain, IdnaInfo::fromIntl([
+                'result' => $domain,
+                'isTransitionalDifferent' => false,
+                'errors' => self::ERROR_DISALLOWED,
+            ]));
+        }
+
         if (1 !== preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
-            $errors = 0;
-            if (strlen($domain) >= self::MAX_DOMAIN_LENGTH) {
-                $errors = self::ERROR_DOMAIN_NAME_TOO_LONG;
-            }
-
-            $info = IdnaInfo::fromIntl(['result' => strtolower($domain), 'isTransitionalDifferent' => false, 'errors' => $errors]);
-            if (0 !== $info->errors()) {
-                throw IdnaConversionFailed::dueToIDNAError($domain, $info);
-            }
-
-            return $info;
+            return self::createIdnaInfo($domain, [
+                'result' => strtolower($domain),
+                'isTransitionalDifferent' => false,
+                'errors' => self::validateDomainAndLabelLength($domain),
+            ]);
         }
 
         self::supportsIdna();
@@ -119,7 +139,7 @@ final class Idna
         /* @param-out array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
         idn_to_ascii($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
         if ([] === $idnaInfo) {
-            throw  IdnaConversionFailed::dueToInvalidHost($domain);
+            throw IdnaConversionFailed::dueToInvalidHost($domain);
         }
 
         /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
@@ -135,8 +155,16 @@ final class Idna
      */
     public static function toUnicode(string $domain, int $options): IdnaInfo
     {
+        if (1 !== preg_match(self::REGEXP_REGISTERED_NAME, $domain)) {
+            throw IdnaConversionFailed::dueToIDNAError($domain, IdnaInfo::fromIntl([
+                'result' => $domain,
+                'isTransitionalDifferent' => false,
+                'errors' => self::ERROR_DISALLOWED,
+            ]));
+        }
+
         if (false === stripos($domain, 'xn--')) {
-            return IdnaInfo::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => 0]);
+            return IdnaInfo::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => self::ERROR_NONE]);
         }
 
         self::supportsIdna();
@@ -144,7 +172,7 @@ final class Idna
         /* @param-out array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
         idn_to_utf8($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
         if ([] === $idnaInfo) {
-            throw new SyntaxError(sprintf('Host `%s` is not a valid IDN host', $domain));
+            throw IdnaConversionFailed::dueToInvalidHost($domain);
         }
 
         /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
@@ -162,5 +190,38 @@ final class Idna
         }
 
         return $info;
+    }
+
+    /**
+     * Adapted from https://github.com/TRowbotham/idna
+     *
+     * @see https://github.com/TRowbotham/idna/blob/master/src/Idna.php#L236
+     */
+    private static function validateDomainAndLabelLength(string $domain): int
+    {
+        $labels = explode('.', $domain);
+        $maxDomainSize = self::MAX_DOMAIN_LENGTH;
+        $length = count($labels);
+
+        // If the last label is empty and it is not the first label, then it is the root label.
+        // Increase the max size by 1, making it 254, to account for the root label's "."
+        // delimiter. This also means we don't need to check the last label's length for being too
+        // long.
+        if ($length > 1 && $labels[$length - 1] === '') {
+            ++$maxDomainSize;
+            array_pop($labels);
+        }
+
+        if (strlen($domain) > $maxDomainSize) {
+            return self::ERROR_DOMAIN_NAME_TOO_LONG;
+        }
+
+        foreach ($labels as $label) {
+            if (strlen($label) > self::MAX_LABEL_LENGTH) {
+                return self::ERROR_LABEL_TOO_LONG;
+            }
+        }
+
+        return self::ERROR_NONE;
     }
 }
