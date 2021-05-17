@@ -193,7 +193,7 @@ final class Idna
     }
 
     /**
-     * Adapted from https://github.com/TRowbotham/idna
+     * Adapted from https://github.com/TRowbotham/idna.
      *
      * @see https://github.com/TRowbotham/idna/blob/master/src/Idna.php#L236
      */
