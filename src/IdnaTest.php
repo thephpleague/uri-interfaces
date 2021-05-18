@@ -40,6 +40,8 @@ final class IdnaTest extends TestCase
             'invalid IDN domain' => ['a⒈com'],
             'invalid IDN domain full size' => ['％００.com'],
             'invalid IDN domain full size rawurlencode ' => ['%ef%bc%85%ef%bc%94%ef%bc%91.com'],
+            'invalid character in host ' => ['to to.com'],
+            'contains disallow character' => ['bébé.'.str_repeat('A', 70).'.'.str_repeat('A', 200)],
         ];
     }
 
