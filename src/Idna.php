@@ -118,24 +118,29 @@ final class Idna
     {
         $domain = rawurldecode($domain);
 
-        if (1 !== preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
-            return self::createIdnaInfo($domain, [
-                'result' => strtolower($domain),
-                'isTransitionalDifferent' => false,
-                'errors' => self::validateDomainAndLabelLength($domain),
-            ]);
+        if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
+            self::supportsIdna();
+
+            /* @param-out array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
+            idn_to_ascii($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
+            if ([] === $idnaInfo) {
+                throw IdnaConversionFailed::dueToInvalidHost($domain);
+            }
+
+            /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
+            return self::createIdnaInfo($domain, $idnaInfo);
         }
 
-        self::supportsIdna();
-
-        /* @param-out array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
-        idn_to_ascii($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
-        if ([] === $idnaInfo) {
-            throw IdnaConversionFailed::dueToInvalidHost($domain);
+        $error = self::ERROR_NONE;
+        if (1 !== preg_match(self::REGEXP_REGISTERED_NAME, $domain)) {
+            $error |= self::ERROR_DISALLOWED;
         }
 
-        /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
-        return self::createIdnaInfo($domain, $idnaInfo);
+        return self::createIdnaInfo($domain, [
+            'result' => strtolower($domain),
+            'isTransitionalDifferent' => false,
+            'errors' => self::validateDomainAndLabelLength($domain) | $error,
+        ]);
     }
 
     /**
@@ -185,6 +190,7 @@ final class Idna
      */
     private static function validateDomainAndLabelLength(string $domain): int
     {
+        $error = self::ERROR_NONE;
         $labels = explode('.', $domain);
         $maxDomainSize = self::MAX_DOMAIN_LENGTH;
         $length = count($labels);
@@ -199,15 +205,17 @@ final class Idna
         }
 
         if (strlen($domain) > $maxDomainSize) {
-            return self::ERROR_DOMAIN_NAME_TOO_LONG;
+            $error |= self::ERROR_DOMAIN_NAME_TOO_LONG;
         }
 
         foreach ($labels as $label) {
             if (strlen($label) > self::MAX_LABEL_LENGTH) {
-                return self::ERROR_LABEL_TOO_LONG;
+                $error |= self::ERROR_LABEL_TOO_LONG;
+
+                break;
             }
         }
 
-        return self::ERROR_NONE;
+        return $error;
     }
 }
