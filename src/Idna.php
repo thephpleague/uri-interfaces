@@ -147,6 +147,8 @@ final class Idna
      */
     public static function toUnicode(string $domain, int $options): IdnaInfo
     {
+        $domain = rawurldecode($domain);
+
         if (false === stripos($domain, 'xn--')) {
             return IdnaInfo::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => self::ERROR_NONE]);
         }
