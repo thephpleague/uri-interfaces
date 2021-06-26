@@ -124,11 +124,15 @@ final class Idna
             /* @param-out array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
             idn_to_ascii($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
             if ([] === $idnaInfo) {
-                throw IdnaConversionFailed::dueToInvalidHost($domain);
+                return IdnaInfo::fromIntl([
+                    'result' => strtolower($domain),
+                    'isTransitionalDifferent' => false,
+                    'errors' => self::validateDomainAndLabelLength($domain),
+                ]);
             }
 
             /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
-            return self::createIdnaInfo($domain, $idnaInfo);
+            return IdnaInfo::fromIntl($idnaInfo);
         }
 
         $error = self::ERROR_NONE;
@@ -136,7 +140,7 @@ final class Idna
             $error |= self::ERROR_DISALLOWED;
         }
 
-        return self::createIdnaInfo($domain, [
+        return IdnaInfo::fromIntl([
             'result' => strtolower($domain),
             'isTransitionalDifferent' => false,
             'errors' => self::validateDomainAndLabelLength($domain) | $error,
@@ -167,20 +171,7 @@ final class Idna
         }
 
         /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
-        return self::createIdnaInfo($domain, $idnaInfo);
-    }
-
-    /**
-     * @param array{result:string, isTransitionalDifferent:bool, errors:int} $idnaInfo
-     */
-    private static function createIdnaInfo(string $domain, array $idnaInfo): IdnaInfo
-    {
-        $info = IdnaInfo::fromIntl($idnaInfo);
-        if (0 !== $info->errors()) {
-            throw IdnaConversionFailed::dueToIDNAError($domain, $info);
-        }
-
-        return $info;
+        return IdnaInfo::fromIntl($idnaInfo);
     }
 
     /**

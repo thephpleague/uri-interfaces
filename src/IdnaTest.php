@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-use League\Uri\Exceptions\IdnaConversionFailed;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,9 +25,9 @@ final class IdnaTest extends TestCase
      */
     public function testToAsciiThrowsException(string $domain): void
     {
-        $this->expectException(IdnaConversionFailed::class);
+        $result = Idna::toAscii($domain, Idna::IDNA2008_ASCII);
 
-        Idna::toAscii($domain, Idna::IDNA2008_ASCII);
+        self::assertNotEmpty($result->errors());
     }
 
     /**
@@ -47,9 +46,9 @@ final class IdnaTest extends TestCase
 
     public function testToUnicodeThrowsException(): void
     {
-        $this->expectException(IdnaConversionFailed::class);
+        $result = Idna::toUnicode('xn--a-ecp.ru', Idna::IDNA2008_UNICODE);
 
-        Idna::toUnicode('xn--a-ecp.ru', Idna::IDNA2008_UNICODE);
+        self::assertNotEmpty($result->errors());
     }
 
     /**
@@ -134,15 +133,15 @@ final class IdnaTest extends TestCase
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainIsTooLong(): void
     {
-        $this->expectException(IdnaConversionFailed::class);
+        $result = Idna::toAscii(str_repeat('A', 255), Idna::IDNA2008_ASCII);
 
-        Idna::toAscii(str_repeat('A', 255), Idna::IDNA2008_ASCII);
+        self::assertNotEmpty($result->errors());
     }
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainLabelIsTooLong(): void
     {
-        $this->expectException(IdnaConversionFailed::class);
+        $result = Idna::toAscii('aa'.str_repeat('A', 64), Idna::IDNA2008_ASCII);
 
-        Idna::toAscii('aa'.str_repeat('A', 64), Idna::IDNA2008_ASCII);
+        self::assertNotEmpty($result->errors());
     }
 }
