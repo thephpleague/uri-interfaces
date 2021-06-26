@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-use League\Uri\Exceptions\IdnaConversionFailed;
 use PHPUnit\Framework\TestCase;
 use function var_export;
 
@@ -43,15 +42,11 @@ final class IdnaInfoTest extends TestCase
 
     public function testInvalidSyntaxAfterIDNConversion(): void
     {
-        try {
-            Idna::toAscii('％００.com', Idna::IDNA2008_ASCII);
-        } catch (IdnaConversionFailed $exception) {
-            /** @var IdnaInfo $result */
-            $result = $exception->idnaInfo();
-            self::assertInstanceOf(IdnaInfo::class, $result);
-            self::assertSame(Idna::ERROR_DISALLOWED, $result->errors());
-            self::assertIsString($result->error(Idna::ERROR_DISALLOWED));
-            self::assertCount(1, $result->errorList());
-        }
+        $result = Idna::toAscii('％００.com', Idna::IDNA2008_ASCII);
+
+        self::assertInstanceOf(IdnaInfo::class, $result);
+        self::assertSame(Idna::ERROR_DISALLOWED, $result->errors());
+        self::assertIsString($result->error(Idna::ERROR_DISALLOWED));
+        self::assertCount(1, $result->errorList());
     }
 }
