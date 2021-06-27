@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace League\Uri;
+namespace League\Uri\Idna;
 
 use League\Uri\Exceptions\IdnaConversionFailed;
 use League\Uri\Exceptions\IdnSupportMissing;

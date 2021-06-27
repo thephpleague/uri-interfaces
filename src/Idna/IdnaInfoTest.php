@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace League\Uri;
+namespace League\Uri\Idna;
 
 use PHPUnit\Framework\TestCase;
 use function var_export;
