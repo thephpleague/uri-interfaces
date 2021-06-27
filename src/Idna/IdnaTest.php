@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace League\Uri;
+namespace League\Uri\Idna;
 
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Uri\Idna
+ * @coversDefaultClass \League\Uri\Idna\Idna
  */
 final class IdnaTest extends TestCase
 {

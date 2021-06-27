@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\Exceptions;
 
-use League\Uri\IdnaInfo;
+use League\Uri\Idna\IdnaInfo;
 
 final class IdnaConversionFailed extends SyntaxError
 {
@@ -28,16 +28,15 @@ final class IdnaConversionFailed extends SyntaxError
 
     public static function dueToIDNAError(string $domain, IdnaInfo $idnaInfo): self
     {
-        return new self(sprintf(
-            'The host `%s` is invalid : %s .',
-            $domain,
-            implode(', ', $idnaInfo->errorList())
-        ), $idnaInfo);
+        return new self(
+            'The host `'.$domain.'` is invalid : '.implode(', ', $idnaInfo->errorList()).' .',
+            $idnaInfo
+        );
     }
 
     public static function dueToInvalidHost(string $domain): self
     {
-        return new self(sprintf('Host `%s` is not a valid IDN host', $domain));
+        return new self('The host `'.$domain.'` is not a valid IDN host');
     }
 
     public function idnaInfo(): ?IdnaInfo
