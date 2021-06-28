@@ -6,13 +6,12 @@ on:
 
 jobs:
     linux_legacy:
-        name: PHPUnit tests on ${{ matrix.php }} ${{ matrix.composer-flags }}
+        name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
         runs-on: ubuntu-18.04
         strategy:
             matrix:
                 php: ['7.2']
                 stability: [prefer-lowest, prefer-stable]
-                composer-flags: [ '' ]
                 phpunit-flags: [ '--coverage-text' ]
         steps:
             - name: Checkout code
@@ -28,9 +27,10 @@ jobs:
             - name: Install dependencies
               run: composer update --no-progress ${{ matrix.composer-flags }}
 
-            - run: composer phpunit
+            - name: Run Test suite
+              run: composer phpunit
     linux_tests:
-        name: PHP on ${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.composer-flags }}
+        name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
         runs-on: ubuntu-20.04
         strategy:
             matrix:
@@ -40,7 +40,6 @@ jobs:
                     -   php: '8.1'
                         flags: "--ignore-platform-req=php"
                         stability: prefer-stable
-                composer-flags: [ '' ]
                 phpunit-flags: [ '--coverage-text' ]
         steps:
             - name: Checkout code
@@ -56,8 +55,13 @@ jobs:
             - name: Install dependencies
               run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress ${{ matrix.flags }}
 
-            - run: composer phpunit
-            - run: composer phpstan
+            - name: Run Test suite
+              run: composer phpunit
+
+            - name: Run static analysis
+              run: composer phpstan
               if: ${{ matrix.php == '8.0' }}
-            - run: composer phpcs
+
+            - name: Run codind style check
+              run: composer phpcs
               if: ${{ matrix.php == '8.0' }}
