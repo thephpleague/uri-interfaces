@@ -63,6 +63,6 @@
     },
     "suggest": {
         "ext-intl": "to use the IDNA feature",
-        "symfony/intl": "to use the IDNA feature via Symfony Polyfill"
+        "symfony/polyfill-intl-idn": "to use the IDNA feature via Symfony Polyfill"
     }
 }
