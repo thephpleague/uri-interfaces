@@ -8,7 +8,7 @@
         "rfc3987"
     ],
     "license": "MIT",
-    "homepage": "http://github.com/thephpleague/uri-interfaces",
+    "homepage": "https://github.com/thephpleague/uri-interfaces",
     "authors": [
         {
             "name" : "Ignace Nyamagana Butera",
