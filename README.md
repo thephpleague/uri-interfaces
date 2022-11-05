@@ -86,12 +86,18 @@ The `UriComponentInterface` interface defines the following methods to access th
 
 ~~~php
 <?php
-
-public UriComponentInterface::__toString(void): string
-public UriComponentInterface::getContent(void): ?string
-public UriComponentInterface::getUriComponent(void): ?string
-public UriComponentInterface::jsonSerialize(void): ?string
+public UriComponentInterface::value(): ?string
+public UriComponentInterface::toString(): ?string
+public UriComponentInterface::__toString(): string
+public UriComponentInterface::getContent(): ?string
+public UriComponentInterface::getUriComponent(): ?string
+public UriComponentInterface::jsonSerialize(): ?string
 ~~~
+
+- `UriComponentInterface::value()` added since version 2.4.0;
+- `UriComponentInterface::toString()` added since version 2.4.0;
+- `UriComponentInterface::getContent()` is deprecated since version 2.4.0 and is replaced by `UriComponentInterface::value()`;
+- `UriComponentInterface::withContent()` is deprecated since version 2.4.0 with no replacement;
 
 #### Modifying URI properties
 

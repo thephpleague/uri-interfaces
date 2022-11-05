@@ -16,7 +16,8 @@ use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
 
 /**
- * @method string|null value() Returns the instance content.
+ * @method string toString() Returns the instance string representation of its value.
+ * @method string|null value() Returns the instance value.
  */
 interface UriComponentInterface extends JsonSerializable
 {
