@@ -42,7 +42,7 @@
         "phpunit": "phpunit --coverage-text",
         "phpcs": "php-cs-fixer fix --dry-run --diff -vvv --allow-risky=yes --ansi",
         "phpcs:fix": "php-cs-fixer fix -vvv --allow-risky=yes --ansi",
-        "phpstan": "phpstan analyse -l max -c phpstan.neon src --ansi --memory-limit 192M",
+        "phpstan": "phpstan analyse -l max -c phpstan.neon src --xdebug --ansi --memory-limit 192M",
         "test": [
             "@phpunit",
             "@phpstan",
