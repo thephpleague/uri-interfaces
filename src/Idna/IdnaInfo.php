@@ -3,8 +3,6 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
- * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -39,19 +37,13 @@ final class IdnaInfo
         Idna::ERROR_CONTEXTO_PUNCTUATION => 'a label does not meet the IDNA CONTEXTO requirements for punctuation characters. Some punctuation characters "Would otherwise have been DISALLOWED" but are allowed in certain contexts',
     ];
 
-    /** @var string */
-    private $result;
-
-    /** @var bool */
-    private $isTransitionalDifferent;
-
-    /** @var int */
-    private $errors;
-
+    private string $result;
+    private bool $isTransitionalDifferent;
+    private int $errors;
     /**
      * @var array<int, string>
      */
-    private $errorList;
+    private array $errorList;
 
     private function __construct(string $result, bool $isTransitionalDifferent, int $errors)
     {
