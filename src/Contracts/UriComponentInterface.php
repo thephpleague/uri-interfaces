@@ -3,8 +3,6 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
- * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -13,12 +11,21 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use JsonSerializable;
 use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
 
-interface UriComponentInterface extends \JsonSerializable
+/**
+ * @method string|null value() Returns the instance content.
+ */
+interface UriComponentInterface extends JsonSerializable
 {
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated since version 2.4.0
+     * @see ::value
+     *
      * Returns the instance content.
      *
      * If the instance is defined, the value returned MUST be encoded according to the
@@ -26,7 +33,7 @@ interface UriComponentInterface extends \JsonSerializable
      * depending on the selected encoding algorithm.
      *
      * To determine what characters to encode, please refer to RFC 3986, Sections 2 and 3.
-     * or RFC 3987 Section 3. By default the content is encoded according to RFC3986
+     * or RFC 3987 Section 3. By default, the content is encoded according to RFC3986
      *
      * If the instance is not defined null is returned
      */
@@ -66,6 +73,10 @@ interface UriComponentInterface extends \JsonSerializable
     public function getUriComponent(): string;
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated since version 2.4.0
+     *
      * Returns an instance with the specified content.
      *
      * This method MUST retain the state of the current instance, and return
