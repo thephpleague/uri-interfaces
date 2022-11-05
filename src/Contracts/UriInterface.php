@@ -3,8 +3,6 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
- * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -13,10 +11,11 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use JsonSerializable;
 use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
 
-interface UriInterface extends \JsonSerializable
+interface UriInterface extends JsonSerializable
 {
     /**
      * Returns the string representation as a URI reference.
@@ -191,11 +190,10 @@ interface UriInterface extends \JsonSerializable
      * user; a null value for the user is equivalent to removing user
      * information.
      *
-     * @param ?string $user
-     * @param ?string $password
-     *
+     * @param  ?string     $user
+     * @param  ?string     $password
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                              that would result in a object in invalid state.
      */
     public function withUserInfo(?string $user, ?string $password = null): self;
 
@@ -208,13 +206,12 @@ interface UriInterface extends \JsonSerializable
      * A null value provided for the host is equivalent to removing the host
      * information.
      *
-     * @param ?string $host
-     *
+     * @param  ?string           $host
      * @throws SyntaxError       for invalid component or transformations
-     *                           that would result in a object in invalid state.
+     *                                that would result in a object in invalid state.
      * @throws IdnSupportMissing for component or transformations
-     *                           requiring IDN support when IDN support is not present
-     *                           or misconfigured.
+     *                                requiring IDN support when IDN support is not present
+     *                                or misconfigured.
      */
     public function withHost(?string $host): self;
 
@@ -227,10 +224,9 @@ interface UriInterface extends \JsonSerializable
      * A null value provided for the port is equivalent to removing the port
      * information.
      *
-     * @param ?int $port
-     *
+     * @param  ?int        $port
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                          that would result in a object in invalid state.
      */
     public function withPort(?int $port): self;
 
@@ -264,10 +260,9 @@ interface UriInterface extends \JsonSerializable
      * A null value provided for the query is equivalent to removing the query
      * information.
      *
-     * @param ?string $query
-     *
+     * @param  ?string     $query
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                           that would result in a object in invalid state.
      */
     public function withQuery(?string $query): self;
 
@@ -283,10 +278,9 @@ interface UriInterface extends \JsonSerializable
      * A null value provided for the fragment is equivalent to removing the fragment
      * information.
      *
-     * @param ?string $fragment
-     *
+     * @param  ?string     $fragment
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                              that would result in a object in invalid state.
      */
     public function withFragment(?string $fragment): self;
 }

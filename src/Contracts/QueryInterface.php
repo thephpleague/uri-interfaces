@@ -3,8 +3,6 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
- * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -13,10 +11,13 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use Countable;
+use Iterator;
+
 /**
  * @extends \IteratorAggregate<array{0:string, 1:string|null}>
  */
-interface QueryInterface extends \Countable, \IteratorAggregate, UriComponentInterface
+interface QueryInterface extends Countable, \IteratorAggregate, UriComponentInterface
 {
     /**
      * Returns the query separator.
@@ -37,9 +38,9 @@ interface QueryInterface extends \Countable, \IteratorAggregate, UriComponentInt
      * The key of each pair is a string
      * The value of each pair is a scalar or the null value
      *
-     * @return \Iterator<int, array{0:string, 1:string|null}>
+     * @return Iterator<int, array{0:string, 1:string|null}>
      */
-    public function getIterator(): \Iterator;
+    public function getIterator(): Iterator;
 
     /**
      * Returns an iterator allowing to go through all key/value pairs contained in this object.
@@ -190,7 +191,6 @@ interface QueryInterface extends \Countable, \IteratorAggregate, UriComponentInt
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified component
      *
-     * @param string ...$keys
      */
     public function withoutPair(string ...$keys): self;
 
@@ -221,7 +221,6 @@ interface QueryInterface extends \Countable, \IteratorAggregate, UriComponentInt
      * an instance that contains the modified component without PHP's value.
      * PHP's mangled is not taken into account.
      *
-     * @param string ...$keys
      */
     public function withoutParam(string ...$keys): self;
 }

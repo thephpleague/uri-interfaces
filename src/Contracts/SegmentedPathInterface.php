@@ -3,8 +3,6 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
- * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -13,12 +11,15 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use Countable;
+use Iterator;
+use IteratorAggregate;
 use League\Uri\Exceptions\SyntaxError;
 
 /**
- * @extends \IteratorAggregate<string>
+ * @extends IteratorAggregate<string>
  */
-interface SegmentedPathInterface extends \Countable, \IteratorAggregate, PathInterface
+interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInterface
 {
     /**
      * Returns the total number of segments in the path.
@@ -28,9 +29,9 @@ interface SegmentedPathInterface extends \Countable, \IteratorAggregate, PathInt
     /**
      * Iterate over the path segment.
      *
-     * @return \Iterator<string>
+     * @return Iterator<string>
      */
-    public function getIterator(): \Iterator;
+    public function getIterator(): Iterator;
 
     /**
      * Returns parent directory's path.
@@ -85,8 +86,7 @@ interface SegmentedPathInterface extends \Countable, \IteratorAggregate, PathInt
      * If $key is non-negative, the added segment will be the segment at $key position from the start.
      * If $key is negative, the added segment will be the segment at $key position from the end.
      *
-     * @param ?string $segment
-     *
+     * @param  ?string     $segment
      * @throws SyntaxError If the key is invalid
      */
     public function withSegment(int $key, ?string $segment): self;

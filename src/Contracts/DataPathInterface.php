@@ -3,8 +3,6 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
- * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -12,6 +10,8 @@
 declare(strict_types=1);
 
 namespace League\Uri\Contracts;
+
+use SplFileObject;
 
 interface DataPathInterface extends PathInterface
 {
@@ -60,7 +60,7 @@ interface DataPathInterface extends PathInterface
     /**
      * Save the data to a specific file.
      */
-    public function save(string $path, string $mode = 'w'): \SplFileObject;
+    public function save(string $path, string $mode = 'w'): SplFileObject;
 
     /**
      * Returns an instance where the data part is base64 encoded.

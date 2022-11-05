@@ -3,8 +3,6 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
- * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
- *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -13,12 +11,15 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use Countable;
+use Iterator;
+use IteratorAggregate;
 use League\Uri\Exceptions\SyntaxError;
 
 /**
- * @extends \IteratorAggregate<string>
+ * @extends IteratorAggregate<string>
  */
-interface DomainHostInterface extends \Countable, HostInterface, \IteratorAggregate
+interface DomainHostInterface extends Countable, HostInterface, IteratorAggregate
 {
     /**
      * Returns the labels total number.
@@ -28,9 +29,9 @@ interface DomainHostInterface extends \Countable, HostInterface, \IteratorAggreg
     /**
      * Iterate over the Domain labels.
      *
-     * @return \Iterator<string>
+     * @return Iterator<string>
      */
-    public function getIterator(): \Iterator;
+    public function getIterator(): Iterator;
 
     /**
      * Retrieves a single host label.
@@ -98,8 +99,6 @@ interface DomainHostInterface extends \Countable, HostInterface, \IteratorAggreg
      *
      * If $key is non-negative, the removed label will be the label at $key position from the start.
      * If $key is negative, the removed label will be the label at $key position from the end.
-     *
-     * @param int ...$keys
      *
      * @throws SyntaxError If the key is invalid
      */
