@@ -37,13 +37,13 @@ final class IdnaInfo
         Idna::ERROR_CONTEXTO_PUNCTUATION => 'a label does not meet the IDNA CONTEXTO requirements for punctuation characters. Some punctuation characters "Would otherwise have been DISALLOWED" but are allowed in certain contexts',
     ];
 
-    private string $result;
-    private bool $isTransitionalDifferent;
-    private int $errors;
+    private readonly string $result;
+    private readonly bool $isTransitionalDifferent;
+    private readonly int $errors;
     /**
      * @var array<int, string>
      */
-    private array $errorList;
+    private readonly array $errorList;
 
     private function __construct(string $result, bool $isTransitionalDifferent, int $errors)
     {
@@ -52,9 +52,7 @@ final class IdnaInfo
         $this->isTransitionalDifferent = $isTransitionalDifferent;
         $this->errorList = array_filter(
             self::ERRORS,
-            function (int $error): bool {
-                return 0 !== ($error & $this->errors);
-            },
+            fn (int $error): bool => 0 !== ($error & $this->errors),
             ARRAY_FILTER_USE_KEY
         );
     }
