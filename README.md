@@ -25,9 +25,9 @@ Documentation
 The `UriInterface` interface models generic URIs as specified in [RFC 3986](http://tools.ietf.org/html/rfc3986).
 The interface provides methods for interacting with the various URI parts, which will obviate the need for repeated parsing of the URI.
 It also specifies:
- 
- - a `__toString()` method for casting the modeled URI to its string representation.
- - a `jsonSerialize()` method to improve interoperability with [WHATWG URL Living standard](https://url.spec.whatwg.org/)
+
+- a `__toString()` method for casting the modeled URI to its string representation.
+- a `jsonSerialize()` method to improve interoperability with [WHATWG URL Living standard](https://url.spec.whatwg.org/)
 
 #### Accessing URI properties
 
@@ -128,18 +128,7 @@ Because each URI component has specific needs most have specialized interface wh
 Contributing
 -------
 
-Contributions are welcome and will be fully credited. Please see [CONTRIBUTING](.github/CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
-
-Security
--------
-
-If you discover any security related issues, please email nyamsprod@gmail.com instead of using the issue tracker.
-
-Credits
--------
-
-- [ignace nyamagana butera](https://github.com/nyamsprod)
-- [All Contributors](https://github.com/thephpleague/uri/contributors)
+> ⚠️ this is a sub-split, for development, pull requests and issues, visit: https://github.com/thephpleague/uri-src
 
 License
 -------

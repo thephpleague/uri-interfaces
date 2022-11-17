@@ -3,6 +3,8 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -16,8 +18,8 @@ use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
 
 /**
- * @method string toString() Returns the instance string representation of its value.
- * @method string|null value() Returns the instance value.
+ * @method string      toString() Returns the instance string representation of its value.
+ * @method string|null value()    Returns the instance value.
  */
 interface UriComponentInterface extends JsonSerializable
 {

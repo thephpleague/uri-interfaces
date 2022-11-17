@@ -3,6 +3,8 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -42,7 +44,6 @@ final class IdnaInfoTest extends TestCase
     {
         $result = Idna::toAscii('％００.com', Idna::IDNA2008_ASCII);
 
-        self::assertInstanceOf(IdnaInfo::class, $result);
         self::assertSame(Idna::ERROR_DISALLOWED, $result->errors());
         self::assertIsString($result->error(Idna::ERROR_DISALLOWED));
         self::assertCount(1, $result->errorList());

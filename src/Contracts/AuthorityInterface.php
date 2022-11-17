@@ -3,6 +3,8 @@
 /**
  * League.Uri (https://uri.thephpleague.com)
  *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -41,10 +43,10 @@ interface AuthorityInterface extends UriComponentInterface
      * information.
      *
      * @throws SyntaxError       for invalid component or transformations
-     *                                that would result in a object in invalid state.
+     *                           that would result in a object in invalid state.
      * @throws IdnSupportMissing for component or transformations
-     *                                requiring IDN support when IDN support is not present
-     *                                or misconfigured.
+     *                           requiring IDN support when IDN support is not present
+     *                           or misconfigured.
      */
     public function withHost(?string $host): self;
 
@@ -73,7 +75,7 @@ interface AuthorityInterface extends UriComponentInterface
      * information.
      *
      * @throws SyntaxError for invalid component or transformations
-     *                              that would result in an object in invalid state.
+     *                     that would result in an object in invalid state.
      */
     public function withUserInfo(?string $user, ?string $password = null): self;
 }
