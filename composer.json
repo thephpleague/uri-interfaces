@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "League\\Uri\\": "src/"
+            "League\\Uri\\": ""
         }
     },
     "suggest": {
