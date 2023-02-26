@@ -33,7 +33,7 @@ final class IdnaTest extends TestCase
     /**
      * @return iterable<string,array{0:string}>
      */
-    public function invalidDomainProvider(): iterable
+    public static function invalidDomainProvider(): iterable
     {
         return [
             'invalid IDN domain' => ['a⒈com'],
@@ -65,7 +65,7 @@ final class IdnaTest extends TestCase
     /**
      * @return iterable<string,array{domain:string, expectedDomain:string}>
      */
-    public function toUnicodeProvider(): iterable
+    public static function toUnicodeProvider(): iterable
     {
         return [
             'simple domain' => [
@@ -109,7 +109,7 @@ final class IdnaTest extends TestCase
     /**
      * @return iterable<string,array{domain:string, expectedDomain:string}>
      */
-    public function toAsciiProvider(): iterable
+    public static function toAsciiProvider(): iterable
     {
         return [
             'simple domain' => [
