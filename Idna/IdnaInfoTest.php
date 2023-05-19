@@ -14,20 +14,9 @@ declare(strict_types=1);
 namespace League\Uri\Idna;
 
 use PHPUnit\Framework\TestCase;
-use function var_export;
 
 final class IdnaInfoTest extends TestCase
 {
-    public function testDomainInternalPhpMethod(): void
-    {
-        $infos = ['result' => 'foo.bar', 'isTransitionalDifferent' => false, 'errors' => 0];
-        $result = IdnaInfo::fromIntl($infos);
-        /** @var IdnaInfo $generateResult */
-        $generateResult = eval('return '.var_export($result, true).';');
-
-        self::assertEquals($result, $generateResult);
-    }
-
     public function testItCanBeInstantiatedFromArray(): void
     {
         $infos = ['result' => '', 'isTransitionalDifferent' => false, 'errors' => 0];

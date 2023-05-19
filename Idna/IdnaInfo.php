@@ -69,14 +69,6 @@ final class IdnaInfo
         return new self($infos['result'], $infos['isTransitionalDifferent'], $infos['errors']);
     }
 
-    /**
-     * @param array{result:string, isTransitionalDifferent:bool, errors:int} $properties
-     */
-    public static function __set_state(array $properties): self
-    {
-        return self::fromIntl($properties);
-    }
-
     public function result(): string
     {
         return $this->result;

@@ -2,7 +2,7 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## 2.4.0 - 2023-02-26
+## Next - TBD
 
 ### Added
 
@@ -14,12 +14,14 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Deprecated
 
-- `UriComponentInterface::getContent` is deprecated in favor of `UriComponentInterface::value`
-- `UriComponentInterface::withContent` is deprecated with no replacement use other means to change the value of the component.
+- None
 
 ### Removed
 
 - Support for PHP7
+- Support for `__set_state`
+- `UriComponentInterface::getContent` is removed in favor of `UriComponentInterface::value`
+- `UriComponentInterface::withContent` is removed with no replacement use other means to change the value of the component.
 
 ## 2.3.0 - 2021-06-28
 

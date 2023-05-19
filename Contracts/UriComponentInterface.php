@@ -15,12 +15,30 @@ namespace League\Uri\Contracts;
 
 use JsonSerializable;
 
-/**
- * @method string      toString() Returns the instance string representation of its value.
- * @method string|null value()    Returns the instance value.
- */
 interface UriComponentInterface extends JsonSerializable
 {
+    /**
+     * Returns the instance string representation.
+     *
+     * If the instance is defined, the value returned MUST be percent-encoded,
+     * but MUST NOT double-encode any characters. To determine what characters
+     * to encode, please refer to RFC 3986, Sections 2 and 3.
+     *
+     * If the instance is not defined an empty string is returned
+     */
+    public function value(): ?string;
+
+    /**
+     * Returns the instance string representation.
+     *
+     * If the instance is defined, the value returned MUST be percent-encoded,
+     * but MUST NOT double-encode any characters. To determine what characters
+     * to encode, please refer to RFC 3986, Sections 2 and 3.
+     *
+     * If the instance is not defined an empty string is returned
+     */
+    public function toString(): string;
+
     /**
      * Returns the instance string representation.
      *
