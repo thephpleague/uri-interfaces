@@ -15,11 +15,12 @@ namespace League\Uri\Contracts;
 
 use Countable;
 use Iterator;
+use IteratorAggregate;
 
 /**
- * @extends \IteratorAggregate<array{0:string, 1:string|null}>
+ * @extends IteratorAggregate<array{0:string, 1:string|null}>
  */
-interface QueryInterface extends Countable, \IteratorAggregate, UriComponentInterface
+interface QueryInterface extends Countable, IteratorAggregate, UriComponentInterface
 {
     /**
      * Returns the query separator.

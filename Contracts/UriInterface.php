@@ -30,6 +30,13 @@ interface UriInterface extends JsonSerializable
      * Returns the string representation as a URI reference.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     */
+    public function toString(): string;
+
+    /**
+     * Returns the string representation as a URI reference.
+     *
+     * @see http://tools.ietf.org/html/rfc3986#section-4.1
      * @see ::__toString
      */
     public function jsonSerialize(): string;
