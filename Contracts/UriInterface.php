@@ -16,8 +16,9 @@ namespace League\Uri\Contracts;
 use JsonSerializable;
 use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
+use Stringable;
 
-interface UriInterface extends JsonSerializable
+interface UriInterface extends JsonSerializable, Stringable
 {
     /**
      * Returns the string representation as a URI reference.
