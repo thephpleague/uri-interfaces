@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace League\Uri\Contracts;
 
 use JsonSerializable;
+use Stringable;
 
-interface UriComponentInterface extends JsonSerializable
+interface UriComponentInterface extends JsonSerializable, Stringable
 {
     /**
      * Returns the instance string representation.
@@ -24,7 +25,7 @@ interface UriComponentInterface extends JsonSerializable
      * but MUST NOT double-encode any characters. To determine what characters
      * to encode, please refer to RFC 3986, Sections 2 and 3.
      *
-     * If the instance is not defined an empty string is returned
+     * If the instance is not defined null is returned
      */
     public function value(): ?string;
 
