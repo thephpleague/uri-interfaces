@@ -99,7 +99,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * @param  ?string $key
      * @return mixed   the collection of stored PHP variables or the empty array if no input is given,
-     *                     the single value of a stored PHP variable or null if the variable is not present in the collection
+     *                 the single value of a stored PHP variable or null if the variable is not present in the collection
      */
     public function params(?string $key = null);
 
