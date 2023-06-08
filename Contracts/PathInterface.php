@@ -23,7 +23,7 @@ interface PathInterface extends UriComponentInterface
     public function decoded(): string;
 
     /**
-     * Tells whetherthe path is absolute or relative.
+     * Tells whether the path is absolute or relative.
      */
     public function isAbsolute(): bool;
 

@@ -43,7 +43,7 @@ interface AuthorityInterface extends UriComponentInterface
      * information.
      *
      * @throws SyntaxError       for invalid component or transformations
-     *                           that would result in a object in invalid state.
+     *                           that would result in an object in invalid state.
      * @throws IdnSupportMissing for component or transformations
      *                           requiring IDN support when IDN support is not present
      *                           or misconfigured.
@@ -60,7 +60,7 @@ interface AuthorityInterface extends UriComponentInterface
      * information.
      *
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                     that would result in an object in invalid state.
      */
     public function withPort(?int $port): self;
 

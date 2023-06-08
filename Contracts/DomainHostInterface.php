@@ -45,8 +45,6 @@ interface DomainHostInterface extends Countable, HostInterface, IteratorAggregat
     /**
      * Returns the associated key for a specific label or all the keys.
      *
-     * @param ?string $label
-     *
      * @return int[]
      */
     public function keys(?string $label = null): array;

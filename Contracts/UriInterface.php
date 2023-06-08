@@ -183,10 +183,8 @@ interface UriInterface extends JsonSerializable, Stringable
      * A null value provided for the scheme is equivalent to removing the scheme
      * information.
      *
-     * @param ?string $scheme
-     *
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                     that would result in an object in invalid state.
      */
     public function withScheme(?string $scheme): self;
 
@@ -200,10 +198,8 @@ interface UriInterface extends JsonSerializable, Stringable
      * user; a null value for the user is equivalent to removing user
      * information.
      *
-     * @param  ?string     $user
-     * @param  ?string     $password
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                     that would result in an object in invalid state.
      */
     public function withUserInfo(?string $user, ?string $password = null): self;
 
@@ -216,9 +212,8 @@ interface UriInterface extends JsonSerializable, Stringable
      * A null value provided for the host is equivalent to removing the host
      * information.
      *
-     * @param  ?string           $host
      * @throws SyntaxError       for invalid component or transformations
-     *                           that would result in a object in invalid state.
+     *                           that would result in an object in invalid state.
      * @throws IdnSupportMissing for component or transformations
      *                           requiring IDN support when IDN support is not present
      *                           or misconfigured.
@@ -234,9 +229,8 @@ interface UriInterface extends JsonSerializable, Stringable
      * A null value provided for the port is equivalent to removing the port
      * information.
      *
-     * @param  ?int        $port
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                     that would result in an object in invalid state.
      */
     public function withPort(?int $port): self;
 
@@ -254,7 +248,7 @@ interface UriInterface extends JsonSerializable, Stringable
      * Implementations ensure the correct encoding as outlined in getPath().
      *
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                     that would result in an object in invalid state.
      */
     public function withPath(string $path): self;
 
@@ -270,9 +264,8 @@ interface UriInterface extends JsonSerializable, Stringable
      * A null value provided for the query is equivalent to removing the query
      * information.
      *
-     * @param  ?string     $query
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                     that would result in an object in invalid state.
      */
     public function withQuery(?string $query): self;
 
@@ -288,9 +281,8 @@ interface UriInterface extends JsonSerializable, Stringable
      * A null value provided for the fragment is equivalent to removing the fragment
      * information.
      *
-     * @param  ?string     $fragment
      * @throws SyntaxError for invalid component or transformations
-     *                     that would result in a object in invalid state.
+     *                     that would result in an object in invalid state.
      */
     public function withFragment(?string $fragment): self;
 }

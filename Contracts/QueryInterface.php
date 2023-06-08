@@ -97,9 +97,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * @see http://php.net/parse_str
      * @see https://wiki.php.net/rfc/on_demand_name_mangling
      *
-     * @param  ?string $key
-     * @return mixed   the collection of stored PHP variables or the empty array if no input is given,
-     *                 the single value of a stored PHP variable or null if the variable is not present in the collection
+     * @return mixed the collection of stored PHP variables or the empty array if no input is given,
+     *               the single value of a stored PHP variable or null if the variable is not present in the collection
      */
     public function params(?string $key = null);
 
@@ -165,7 +164,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function withoutNumericIndices(): self;
 
     /**
-     * Returns an instance with the a new key/value pair added to it.
+     * Returns an instance with a new key/value pair added to it.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified query
@@ -173,8 +172,6 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * If the pair already exists the value will replace the existing value.
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-set
-     *
-     * @param ?string $value
      */
     public function withPair(string $key, ?string $value): self;
 
@@ -202,8 +199,6 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified query
-     *
-     * @param ?string $value
      */
     public function appendTo(string $key, ?string $value): self;
 

@@ -17,13 +17,9 @@ use League\Uri\Idna\IdnaInfo;
 
 final class IdnaConversionFailed extends SyntaxError
 {
-    /** @var IdnaInfo|null  */
-    private $idnaInfo;
-
-    private function __construct(string $message, IdnaInfo $idnaInfo = null)
+    private function __construct(string $message, private ?IdnaInfo $idnaInfo = null)
     {
         parent::__construct($message);
-        $this->idnaInfo = $idnaInfo;
     }
 
     public static function dueToIDNAError(string $domain, IdnaInfo $idnaInfo): self

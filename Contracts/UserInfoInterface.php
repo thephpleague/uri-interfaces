@@ -29,11 +29,10 @@ interface UserInfoInterface extends UriComponentInterface
      * Returns an instance with the specified user and/or pass.
      *
      * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified user.
+     * an instance that contains the specified password if the user is specified
+     * otherwise it returns the same instance unchanged.
      *
      * An empty user is equivalent to removing the user information.
-     * @param ?string $user
-     * @param ?string $pass
      */
-    public function withUserInfo(?string $user, ?string $pass = null): self;
+    public function withPass(?string $pass): self;
 }

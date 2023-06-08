@@ -63,9 +63,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * If a value is specified only the keys associated with
      * the given value will be returned
      *
-     * @param ?string $segment
-     *
-     * @return int[]
+     * @return array<int>
      */
     public function keys(?string $segment = null): array;
 
@@ -88,7 +86,6 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * If $key is non-negative, the added segment will be the segment at $key position from the start.
      * If $key is negative, the added segment will be the segment at $key position from the end.
      *
-     * @param  ?string     $segment
      * @throws SyntaxError If the key is invalid
      */
     public function withSegment(int $key, ?string $segment): self;
@@ -101,8 +98,6 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * If $key is non-negative, the removed segment will be the segment at $key position from the start.
      * If $key is negative, the removed segment will be the segment at $key position from the end.
-     *
-     * @param int ...$keys remaining keys to remove
      *
      * @throws SyntaxError If the key is invalid
      */
@@ -122,8 +117,6 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
-     *
-     * @param ?string $path
      */
     public function withDirname(?string $path): self;
 
@@ -132,8 +125,6 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
-     *
-     * @param ?string $basename
      */
     public function withBasename(?string $basename): self;
 
@@ -142,8 +133,6 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
-     *
-     * @param ?string $extension
      */
     public function withExtension(?string $extension): self;
 }
