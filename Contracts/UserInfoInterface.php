@@ -18,12 +18,23 @@ interface UserInfoInterface extends UriComponentInterface
     /**
      * Returns the user component part.
      */
-    public function getUsername(): ?string;
+    public function getUser(): ?string;
 
     /**
      * Returns the pass component part.
      */
-    public function getPassword(): ?string;
+    public function getPass(): ?string;
+
+    /**
+     * Returns an instance with the specified user and/or pass.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the specified new username
+     * otherwise it returns the same instance unchanged.
+     *
+     * A variable equal to null is equivalent to removing the complete user information.
+     */
+    public function withUser(?string $username): self;
 
     /**
      * Returns an instance with the specified user and/or pass.
@@ -34,5 +45,5 @@ interface UserInfoInterface extends UriComponentInterface
      *
      * An empty user is equivalent to removing the user information.
      */
-    public function withPassword(?string $password): self;
+    public function withPass(?string $password): self;
 }
