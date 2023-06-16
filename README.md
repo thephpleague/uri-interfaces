@@ -3,12 +3,14 @@ Uri Interfaces
 
 This package contains an interface to represents URI objects according to [RFC 3986](http://tools.ietf.org/html/rfc3986).
 
+> ⚠️ this is a sub-split, for development, pull requests and issues, visit: https://github.com/thephpleague/uri-src
+
 System Requirements
 -------
 
 You need:
 
-- **PHP >= 7.2** but the latest stable version of PHP is recommended
+- **PHP >= 8.1** but the latest stable version of PHP is recommended
 
 Install
 --------
@@ -37,6 +39,7 @@ The `UriInterface` interface defines the following methods to access the URI str
 <?php
 
 public UriInterface::__toString(void): string
+public UriInterface::toString(void): string
 public UriInterface::jsonSerialize(void): string
 public UriInterface::getScheme(void): ?string
 public UriInterface::getUserInfo(void): ?string
@@ -89,24 +92,8 @@ The `UriComponentInterface` interface defines the following methods to access th
 public UriComponentInterface::value(): ?string
 public UriComponentInterface::toString(): ?string
 public UriComponentInterface::__toString(): string
-public UriComponentInterface::getContent(): ?string
 public UriComponentInterface::getUriComponent(): ?string
 public UriComponentInterface::jsonSerialize(): ?string
-~~~
-
-- `UriComponentInterface::value()` added since version 2.4.0;
-- `UriComponentInterface::toString()` added since version 2.4.0;
-- `UriComponentInterface::getContent()` is deprecated since version 2.4.0 and is replaced by `UriComponentInterface::value()`;
-- `UriComponentInterface::withContent()` is deprecated since version 2.4.0 with no replacement;
-
-#### Modifying URI properties
-
-The `UriComponentInterface` interface defines the following modifying method. this method **must** be implemented such that it retains the internal state of the current instance and return an instance that contains the changed state.
-
-~~~php
-<?php
-
-public UriComponentInterface::withContent(?string $content): static
 ~~~
 
 ### UriComponentInterface extended interfaces
@@ -124,11 +111,6 @@ Because each URI component has specific needs most have specialized interface wh
 - `League\Uri\Contract\PortInterface`
 - `League\Uri\Contract\QueryInterface`
 - `League\Uri\Contract\SegmentedPathInterface`
-
-Contributing
--------
-
-> ⚠️ this is a sub-split, for development, pull requests and issues, visit: https://github.com/thephpleague/uri-src
 
 License
 -------
