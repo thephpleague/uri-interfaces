@@ -7,6 +7,10 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Added
 
 - New method to `UriComponentInterface::value`
+- New method to `UriComponentInterface::toString`
+- New method to `UserInfoInterface::withUser`
+- New method to `UserInfoInterface::withPass`
+- New method to `UriInterface::toString`
 
 ### Fixed
 
@@ -22,6 +26,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - Support for `__set_state`
 - `UriComponentInterface::getContent` is removed in favor of `UriComponentInterface::value`
 - `UriComponentInterface::withContent` is removed with no replacement use other means to change the value of the component.
+- `UserInfoInterface::withUserInfo` is removed in favor of `UserInfoInterface::withUser` and `UserInfoInterface::withPass`.
 
 ## 2.3.0 - 2021-06-28
 
