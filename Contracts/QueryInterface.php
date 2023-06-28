@@ -24,6 +24,8 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
 {
     /**
      * Returns the query separator.
+     *
+     * @return non-empty-string
      */
     public function getSeparator(): string;
 
@@ -58,11 +60,11 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function pairs(): iterable;
 
     /**
-     * Tells whether a pair with a specific name exists.
+     * Tells whether a list of pair with a specific key exists.
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-has
      */
-    public function has(string $key): bool;
+    public function has(string ...$keys): bool;
 
     /**
      * Returns the first value associated to the given pair name.
@@ -92,7 +94,20 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * second argument with the difference that variable names are
      * not mangled.
      *
-     * If a key is submitted it will returns the value attached to it or null
+     * @see http://php.net/parse_str
+     * @see https://wiki.php.net/rfc/on_demand_name_mangling
+     *
+     * @return iterable the collection of stored PHP variables or the empty array if no input is given,
+     */
+    public function parameters(): iterable;
+
+    /**
+     * Returns the value attached to the specific key.
+     *
+     * The result is similar to PHP parse_str with the difference that variable
+     * names are not mangled.
+     *
+     * If a key is submitted it will return the value attached to it or null
      *
      * @see http://php.net/parse_str
      * @see https://wiki.php.net/rfc/on_demand_name_mangling
@@ -100,7 +115,14 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * @return mixed the collection of stored PHP variables or the empty array if no input is given,
      *               the single value of a stored PHP variable or null if the variable is not present in the collection
      */
-    public function params(?string $key = null);
+    public function parameter(string $name): mixed;
+
+    /**
+     * Tells whether a list of variable with specific names exists.
+     *
+     * @see https://url.spec.whatwg.org/#dom-urlsearchparams-has
+     */
+    public function hasParameter(string ...$names): bool;
 
     /**
      * Returns the RFC1738 encoded query.
@@ -220,5 +242,5 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * PHP's mangled is not taken into account.
      *
      */
-    public function withoutParam(string ...$keys): self;
+    public function withoutParameters(string ...$names): self;
 }

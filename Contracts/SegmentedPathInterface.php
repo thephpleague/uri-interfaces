@@ -118,7 +118,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      */
-    public function withDirname(?string $path): self;
+    public function withDirname(string $path): self;
 
     /**
      * Returns an instance with the specified basename.
@@ -126,7 +126,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      */
-    public function withBasename(?string $basename): self;
+    public function withBasename(string $basename): self;
 
     /**
      * Returns an instance with the specified basename extension.
@@ -134,5 +134,5 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      */
-    public function withExtension(?string $extension): self;
+    public function withExtension(string $extension): self;
 }
