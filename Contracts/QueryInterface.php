@@ -130,13 +130,6 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function toRFC1738(): ?string;
 
     /**
-     * Returns the RFC3986 encoded query.
-     *
-     * @see ::getContent
-     */
-    public function toRFC3986(): ?string;
-
-    /**
      * Returns an instance with a different separator.
      *
      * This method MUST retain the state of the current instance, and return
