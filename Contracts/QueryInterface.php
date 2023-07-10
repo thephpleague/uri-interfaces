@@ -188,7 +188,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-set
      */
-    public function withPair(string $key, ?string $value): self;
+    public function withPair(string $key, string|int|null $value): self;
 
     /**
      * Returns an instance with the new pairs set to it.
