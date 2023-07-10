@@ -28,11 +28,6 @@ interface PathInterface extends UriComponentInterface
     public function isAbsolute(): bool;
 
     /**
-     * Tells whether the path has no trailing slash.
-     */
-    public function hasNoTrailingSlash(): bool;
-
-    /**
      * Tells whether the path has a trailing slash.
      */
     public function hasTrailingSlash(): bool;
