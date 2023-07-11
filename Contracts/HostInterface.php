@@ -48,4 +48,9 @@ interface HostInterface extends UriComponentInterface
      * Tells whether the host is an IP Address.
      */
     public function isIp(): bool;
+
+    /**
+     * Tells whether the host is a registered name.
+     */
+    public function isRegisteredName(): bool;
 }
