@@ -138,6 +138,34 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function withSeparator(string $separator): self;
 
     /**
+     * Returns an instance with the new pairs set to it.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the modified query
+     *
+     * @see ::withPair
+     */
+    public function merge(string $query): self;
+
+    /**
+     * Returns an instance with the new pairs appended to it.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the modified query
+     *
+     * If the pair already exists the value will be added to it.
+     */
+    public function append(string $query): self;
+
+    /**
+     * Returns a new instance with a specified key/value pair appended as a new pair.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the modified query
+     */
+    public function appendTo(string $key, ?string $value): self;
+
+    /**
      * Sorts the query string by offset, maintaining offset to data correlations.
      *
      * This method MUST retain the state of the current instance, and return
@@ -191,16 +219,6 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function withPair(string $key, string|int|null $value): self;
 
     /**
-     * Returns an instance with the new pairs set to it.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the modified query
-     *
-     * @see ::withPair
-     */
-    public function merge(string $query): self;
-
-    /**
      * Returns an instance without the specified keys.
      *
      * This method MUST retain the state of the current instance, and return
@@ -208,24 +226,6 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      */
     public function withoutPair(string ...$keys): self;
-
-    /**
-     * Returns a new instance with a specified key/value pair appended as a new pair.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the modified query
-     */
-    public function appendTo(string $key, ?string $value): self;
-
-    /**
-     * Returns an instance with the new pairs appended to it.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the modified query
-     *
-     * If the pair already exists the value will be added to it.
-     */
-    public function append(string $query): self;
 
     /**
      * Returns an instance without the specified params.
