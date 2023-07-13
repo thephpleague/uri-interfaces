@@ -186,7 +186,7 @@ interface UriInterface extends JsonSerializable, Stringable
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in an object in invalid state.
      */
-    public function withScheme(?string $scheme): self;
+    public function withScheme(Stringable|string|null $scheme): self;
 
     /**
      * Return an instance with the specified user information.
@@ -201,7 +201,7 @@ interface UriInterface extends JsonSerializable, Stringable
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in an object in invalid state.
      */
-    public function withUserInfo(?string $user, ?string $password = null): self;
+    public function withUserInfo(Stringable|string|null $user, Stringable|string|null $password = null): self;
 
     /**
      * Return an instance with the specified host.
@@ -218,7 +218,7 @@ interface UriInterface extends JsonSerializable, Stringable
      *                           requiring IDN support when IDN support is not present
      *                           or misconfigured.
      */
-    public function withHost(?string $host): self;
+    public function withHost(Stringable|string|null $host): self;
 
     /**
      * Return an instance with the specified port.
@@ -250,7 +250,7 @@ interface UriInterface extends JsonSerializable, Stringable
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in an object in invalid state.
      */
-    public function withPath(string $path): self;
+    public function withPath(Stringable|string $path): self;
 
     /**
      * Return an instance with the specified query string.
@@ -267,7 +267,7 @@ interface UriInterface extends JsonSerializable, Stringable
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in an object in invalid state.
      */
-    public function withQuery(?string $query): self;
+    public function withQuery(Stringable|string|null $query): self;
 
     /**
      * Return an instance with the specified URI fragment.
@@ -284,5 +284,5 @@ interface UriInterface extends JsonSerializable, Stringable
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in an object in invalid state.
      */
-    public function withFragment(?string $fragment): self;
+    public function withFragment(Stringable|string|null $fragment): self;
 }

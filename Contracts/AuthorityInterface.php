@@ -15,6 +15,7 @@ namespace League\Uri\Contracts;
 
 use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
+use Stringable;
 
 interface AuthorityInterface extends UriComponentInterface
 {
@@ -48,7 +49,7 @@ interface AuthorityInterface extends UriComponentInterface
      *                           requiring IDN support when IDN support is not present
      *                           or misconfigured.
      */
-    public function withHost(?string $host): self;
+    public function withHost(Stringable|string|null $host): self;
 
     /**
      * Return an instance with the specified port.
@@ -77,5 +78,5 @@ interface AuthorityInterface extends UriComponentInterface
      * @throws SyntaxError for invalid component or transformations
      *                     that would result in an object in invalid state.
      */
-    public function withUserInfo(?string $user, ?string $password = null): self;
+    public function withUserInfo(Stringable|string|null $user, Stringable|string|null $password = null): self;
 }

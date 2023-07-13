@@ -17,6 +17,7 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 use League\Uri\Exceptions\SyntaxError;
+use Stringable;
 
 /**
  * @extends IteratorAggregate<string>
@@ -57,12 +58,12 @@ interface DomainHostInterface extends Countable, HostInterface, IteratorAggregat
     /**
      * Prepends a label to the host.
      */
-    public function prepend(string $label): self;
+    public function prepend(Stringable|string $label): self;
 
     /**
      * Appends a label to the host.
      */
-    public function append(string $label): self;
+    public function append(Stringable|string $label): self;
 
     /**
      * Returns an instance with its Root label.
@@ -89,7 +90,7 @@ interface DomainHostInterface extends Countable, HostInterface, IteratorAggregat
      *
      * @throws SyntaxError If the key is invalid
      */
-    public function withLabel(int $key, string $label): self;
+    public function withLabel(int $key, Stringable|string $label): self;
 
     /**
      * Returns an instance without the specified label.

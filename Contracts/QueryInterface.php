@@ -16,6 +16,7 @@ namespace League\Uri\Contracts;
 use Countable;
 use Iterator;
 use IteratorAggregate;
+use Stringable;
 
 /**
  * @extends IteratorAggregate<array{0:string, 1:string|null}>
@@ -145,7 +146,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * @see ::withPair
      */
-    public function merge(string $query): self;
+    public function merge(Stringable|string $query): self;
 
     /**
      * Returns an instance with the new pairs appended to it.
@@ -155,7 +156,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * If the pair already exists the value will be added to it.
      */
-    public function append(string $query): self;
+    public function append(Stringable|string $query): self;
 
     /**
      * Returns a new instance with a specified key/value pair appended as a new pair.
@@ -163,7 +164,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified query
      */
-    public function appendTo(string $key, ?string $value): self;
+    public function appendTo(string $key, Stringable|string|int|bool|null $value): self;
 
     /**
      * Sorts the query string by offset, maintaining offset to data correlations.
@@ -216,7 +217,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-set
      */
-    public function withPair(string $key, string|int|null $value): self;
+    public function withPair(string $key, Stringable|string|int|null $value): self;
 
     /**
      * Returns an instance without the specified keys.

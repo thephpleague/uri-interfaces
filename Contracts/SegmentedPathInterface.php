@@ -17,6 +17,7 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 use League\Uri\Exceptions\SyntaxError;
+use Stringable;
 
 /**
  * @extends IteratorAggregate<string>
@@ -70,12 +71,12 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
     /**
      * Appends a segment to the path.
      */
-    public function append(string $segment): self;
+    public function append(Stringable|string $segment): self;
 
     /**
      * Prepends a segment to the path.
      */
-    public function prepend(string $segment): self;
+    public function prepend(Stringable|string $segment): self;
 
     /**
      * Returns an instance with the modified segment.
@@ -88,7 +89,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * @throws SyntaxError If the key is invalid
      */
-    public function withSegment(int $key, ?string $segment): self;
+    public function withSegment(int $key, Stringable|string|null $segment): self;
 
     /**
      * Returns an instance without the specified segment.
@@ -118,7 +119,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      */
-    public function withDirname(string $path): self;
+    public function withDirname(Stringable|string $path): self;
 
     /**
      * Returns an instance with the specified basename.
@@ -126,7 +127,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      */
-    public function withBasename(string $basename): self;
+    public function withBasename(Stringable|string $basename): self;
 
     /**
      * Returns an instance with the specified basename extension.
@@ -134,5 +135,5 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the extension basename modified.
      */
-    public function withExtension(string $extension): self;
+    public function withExtension(Stringable|string $extension): self;
 }

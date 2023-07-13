@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Uri\Contracts;
 
 use SplFileObject;
+use Stringable;
 
 interface DataPathInterface extends PathInterface
 {
@@ -90,5 +91,5 @@ interface DataPathInterface extends PathInterface
      *
      * An empty parameters value is equivalent to removing the parameter.
      */
-    public function withParameters(string $parameters): self;
+    public function withParameters(Stringable|string $parameters): self;
 }

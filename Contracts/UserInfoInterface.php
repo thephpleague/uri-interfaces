@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use Stringable;
+
 interface UserInfoInterface extends UriComponentInterface
 {
     /**
@@ -34,7 +36,7 @@ interface UserInfoInterface extends UriComponentInterface
      *
      * A variable equal to null is equivalent to removing the complete user information.
      */
-    public function withUser(?string $username): self;
+    public function withUser(Stringable|string|null $username): self;
 
     /**
      * Returns an instance with the specified user and/or pass.
@@ -45,5 +47,5 @@ interface UserInfoInterface extends UriComponentInterface
      *
      * An empty user is equivalent to removing the user information.
      */
-    public function withPass(?string $password): self;
+    public function withPass(Stringable|string|null $password): self;
 }
