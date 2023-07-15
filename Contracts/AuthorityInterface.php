@@ -35,6 +35,17 @@ interface AuthorityInterface extends UriComponentInterface
     public function getUserInfo(): ?string;
 
     /**
+     * Returns an associative array containing all the Authority components.
+     *
+     * The returned a hashmap similar to PHP's parse_url return value
+     *
+     * @link https://tools.ietf.org/html/rfc3986
+     *
+     * @return array{user: ?string, pass : ?string, host: ?string, port: ?int}
+     */
+    public function components(): array;
+
+    /**
      * Return an instance with the specified host.
      *
      * This method MUST retain the state of the current instance, and return

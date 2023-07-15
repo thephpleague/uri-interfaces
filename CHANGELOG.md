@@ -11,6 +11,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - New method to `UserInfoInterface::withUser`
 - New method to `UserInfoInterface::withPass`
 - New method to `UriInterface::toString`
+- New method to `UriInterface::toComponents`
 
 ### Fixed
 
@@ -27,6 +28,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriComponentInterface::getContent` is removed in favor of `UriComponentInterface::value`
 - `UriComponentInterface::withContent` is removed with no replacement use other means to change the value of the component.
 - `UserInfoInterface::withUserInfo` is removed in favor of `UserInfoInterface::withUser` and `UserInfoInterface::withPass`.
+- `HostInfoInterface::labels` is removed with no replacement use the `IteratorAggregate::getIterator` method instead.
+- `SegmentedPathInterface::segments` is removed with no replacement use the `IteratorAggregate::getIterator` method instead.
 
 ## 2.3.0 - 2021-06-28
 

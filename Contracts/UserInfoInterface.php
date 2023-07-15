@@ -28,6 +28,17 @@ interface UserInfoInterface extends UriComponentInterface
     public function getPass(): ?string;
 
     /**
+     * Returns an associative array containing all the User Info components.
+     *
+     * The returned a hashmap similar to PHP's parse_url return value
+     *
+     * @link https://tools.ietf.org/html/rfc3986
+     *
+     * @return array{user: ?string, pass : ?string}
+     */
+    public function components(): array;
+
+    /**
      * Returns an instance with the specified user and/or pass.
      *
      * This method MUST retain the state of the current instance, and return

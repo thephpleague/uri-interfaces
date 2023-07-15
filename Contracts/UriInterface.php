@@ -18,6 +18,9 @@ use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
 use Stringable;
 
+/**
+ * @phpstan-type ComponentMap array{scheme:?string, user:?string, pass:?string, host:?string, port:?int, path:string, query:?string, fragment:?string}
+ */
 interface UriInterface extends JsonSerializable, Stringable
 {
     /**
@@ -173,6 +176,24 @@ interface UriInterface extends JsonSerializable, Stringable
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      */
     public function getFragment(): ?string;
+
+    /**
+     * Returns an associative array containing all the URI components.
+     *
+     * The returned array is similar to PHP's parse_url return value with the following
+     * differences:
+     *
+     * <ul>
+     * <li>All components are present in the returned array</li>
+     * <li>Empty and undefined component are treated differently. And empty component is
+     *   set to the empty string while an undefined component is set to the `null` value.</li>
+     * </ul>
+     *
+     * @link https://tools.ietf.org/html/rfc3986
+     *
+     * @return ComponentMap
+     */
+    public function components(): array;
 
     /**
      * Return an instance with the specified scheme.
