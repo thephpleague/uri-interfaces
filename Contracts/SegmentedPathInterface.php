@@ -66,7 +66,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * @return array<int>
      */
-    public function keys(?string $segment = null): array;
+    public function keys(Stringable|string|null $segment = null): array;
 
     /**
      * Appends a segment to the path.
