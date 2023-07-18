@@ -89,7 +89,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * @throws SyntaxError If the key is invalid
      */
-    public function withSegment(int $key, Stringable|string|null $segment): self;
+    public function withSegment(int $key, Stringable|string $segment): self;
 
     /**
      * Returns an instance without the specified segment.
