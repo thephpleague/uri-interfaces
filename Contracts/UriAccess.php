@@ -18,4 +18,6 @@ use Psr\Http\Message\UriInterface as Psr7UriInterface;
 interface UriAccess
 {
     public function getUri(): UriInterface|Psr7UriInterface;
+
+    public function getUriString(): string;
 }
