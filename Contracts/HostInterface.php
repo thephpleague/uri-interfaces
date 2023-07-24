@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use League\Uri\IPv4Normalizer;
+
 interface HostInterface extends UriComponentInterface
 {
     /**
@@ -24,6 +26,14 @@ interface HostInterface extends UriComponentInterface
      * Returns the unicode representation.
      */
     public function toUnicode(): ?string;
+
+    /**
+     * Normalizes the host content to a IPv4 dot-decimal notation if possible
+     * otherwise returns null.
+     *
+     * @see https://url.spec.whatwg.org/#concept-ipv4-parser
+     */
+    public function toIPv4(?IPv4Normalizer $normalizer = null): ?string;
 
     /**
      * Returns the IP version.
