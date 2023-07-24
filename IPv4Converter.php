@@ -13,18 +13,11 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-use League\Uri\Components\Authority;
-use League\Uri\Components\Host;
-use League\Uri\Contracts\AuthorityInterface;
-use League\Uri\Contracts\HostInterface;
-use League\Uri\Contracts\UriAccess;
-use League\Uri\Contracts\UriInterface;
 use League\Uri\IPv4Calculators\BCMathCalculator;
 use League\Uri\IPv4Calculators\GMPCalculator;
 use League\Uri\IPv4Calculators\IPv4Calculator;
 use League\Uri\IPv4Calculators\MissingIPv4Calculator;
 use League\Uri\IPv4Calculators\NativeCalculator;
-use Psr\Http\Message\UriInterface as Psr7UriInterface;
 use Stringable;
 use function array_pop;
 use function count;
@@ -36,7 +29,7 @@ use function sprintf;
 use function substr;
 use const PHP_INT_SIZE;
 
-final class IPv4Normalizer
+final class IPv4Converter
 {
     private const REGEXP_IPV4_HOST = '/
         (?(DEFINE) # . is missing as it is used to separate labels
@@ -107,58 +100,18 @@ final class IPv4Normalizer
     }
 
     /**
-     * Normalizes the host content to a IPv4 dot-decimal notation if possible
-     * otherwise returns the Host instance unchanged.
+     * Converts a IPv4 hexadecimal or a IPv4 octal notation into a IPv4 dot-decimal notation if possible
+     * otherwise returns null.
      *
      * @see https://url.spec.whatwg.org/#concept-ipv4-parser
      */
     public function normalize(Stringable|string|null $host): ?string
     {
         $hostString = (string) $host;
-        if ('' === $hostString) {
-            return null;
-        }
-
         if (1 !== preg_match(self::REGEXP_IPV4_HOST, $hostString)) {
             return null;
         }
 
-        if (!$host instanceof HostInterface) {
-            $host = Host::new($host);
-        }
-
-        if (!$host->isDomain()) {
-            return null;
-        }
-
-        return $this->convertHost($host->toString());
-    }
-
-    /**
-     * Normalizes the host content to a IPv4 dot-decimal notation if possible
-     * otherwise returns the Host instance unchanged.
-     *
-     * @see https://url.spec.whatwg.org/#concept-ipv4-parser
-     */
-    public function normalizeHost(Stringable|string|null $host): HostInterface
-    {
-        $convertedHost = $this->normalize($host);
-
-        return match (true) {
-            null === $convertedHost => $host instanceof HostInterface ? $host : Host::new($host),
-            default => Host::new($convertedHost),
-        };
-    }
-
-    /**
-     * Converts a IPv4 hexadecimal or a octal notation into a IPv4 dot-decimal notation.
-     *
-     * Returns null if it can not correctly convert the label
-     *
-     * @see https://url.spec.whatwg.org/#concept-ipv4-parser
-     */
-    private function convertHost(string $hostString): ?string
-    {
         if (str_ends_with($hostString, '.')) {
             $hostString = substr($hostString, 0, -1);
         }
@@ -240,129 +193,5 @@ final class IPv4Normalizer
         }
 
         return $output;
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated Since version 7.0.0
-     * @see IPv4Calculator::fromGMP()
-     *
-     * @codeCoverageIgnore
-     *
-     * Returns an instance using a GMP calculator.
-     */
-    public static function createFromGMP(): self
-    {
-        return self::fromGMP();
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated Since version 7.0.0
-     * @see IPv4Calculator::fromBCMath()
-     *
-     * @codeCoverageIgnore
-     *
-     * Returns an instance using a Bcmath calculator.
-     */
-    public static function createFromBCMath(): self
-    {
-        return self::fromBCMath();
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated Since version 7.0.0
-     * @see IPv4Calculator::fromNative()
-     *
-     * @codeCoverageIgnore
-     *
-     * Returns an instance using a PHP native calculator (requires 64bits PHP).
-     */
-    public static function createFromNative(): self
-    {
-        return self::fromNative();
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated Since version 7.0.0
-     * @see IPv4Calculator::fromEnvironment()
-     *
-     * @codeCoverageIgnore
-     *
-     * Returns an instance using a detected calculator depending on the PHP environment.
-     *
-     * @throws MissingIPv4Calculator If no IPv4Calculator implementing object can be used
-     *                               on the platform
-     *
-     * @codeCoverageIgnore
-     */
-    public static function createFromServer(): self
-    {
-        return self::fromEnvironment();
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated Since version 7.0.0
-     * @see Modifier::normalizeIPv4()
-     *
-     * @codeCoverageIgnore
-     *
-     * Normalizes the URI host content to a IPv4 dot-decimal notation if possible
-     * otherwise returns the uri instance unchanged.
-     *
-     * @see https://url.spec.whatwg.org/#concept-ipv4-parser
-     */
-    public function normalizeUri(Stringable|string $uri): UriInterface|Psr7UriInterface
-    {
-        $uri = match (true) {
-            $uri instanceof UriAccess => $uri->getUri(),
-            $uri instanceof UriInterface, $uri instanceof Psr7UriInterface => $uri,
-            default => Uri::new($uri),
-        };
-
-        $host = Host::fromUri($uri);
-        $normalizedHost = $this->normalizeHost($host)->value();
-
-        return match (true) {
-            $normalizedHost === $host->value() => $uri,
-            $uri instanceof Psr7UriInterface => $uri->withHost((string) $normalizedHost),
-            default => $uri->withHost($normalizedHost),
-        };
-    }
-
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated Since version 7.0.0
-     * @see Modifier::normalizeIPv4()
-     *
-     * @codeCoverageIgnore
-     *
-     * Normalizes the authority host content to a IPv4 dot-decimal notation if possible
-     * otherwise returns the uri instance unchanged.
-     *
-     * @see https://url.spec.whatwg.org/#concept-ipv4-parser
-     */
-    public function normalizeAuthority(Stringable|string $authority): AuthorityInterface
-    {
-        if (!$authority instanceof AuthorityInterface) {
-            $authority = Authority::new($authority);
-        }
-
-        $host = Host::fromAuthority($authority);
-        $normalizeHost = $this->normalizeHost($host)->value();
-
-        return match (true) {
-            $normalizeHost === $host->value() => $authority,
-            default => $authority->withHost($normalizeHost),
-        };
     }
 }

@@ -13,16 +13,14 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-use League\Uri\Components\Authority;
-use League\Uri\Components\Host;
 use PHPUnit\Framework\TestCase;
 use function extension_loaded;
 use const PHP_INT_SIZE;
 
 /**
- * @coversDefaultClass \League\Uri\IPv4Normalizer
+ * @coversDefaultClass \League\Uri\IPv4Converter
  */
-final class IPv4HostNormalizerTest extends TestCase
+final class IPv4ConverterTest extends TestCase
 {
     /**
      * @dataProvider providerHost
@@ -35,10 +33,7 @@ final class IPv4HostNormalizerTest extends TestCase
             self::markTestSkipped('The PHP must be compile for a x64 OS or loads the GMP or the BCmath extension.');
         }
 
-        $expected = (null === $expected) ? Host::new() : Host::new($expected);
-        $input = (null === $input) ? Host::new() : Host::new($input);
-
-        self::assertEquals($expected, IPv4Normalizer::fromEnvironment()->normalizeHost($input));
+        self::assertEquals($expected, IPv4Converter::fromEnvironment()->normalize($input) ?? $input);
     }
 
     /**
@@ -52,10 +47,7 @@ final class IPv4HostNormalizerTest extends TestCase
             self::markTestSkipped('The GMP extension is needed to execute this test.');
         }
 
-        $expected = (null === $expected) ? Host::new() : Host::new($expected);
-        $input = (null === $input) ? Host::new() : Host::new($input);
-
-        self::assertEquals($expected, IPv4Normalizer::fromGMP()->normalizeHost($input));
+        self::assertEquals($expected, IPv4Converter::fromGMP()->normalize($input) ?? $input);
     }
 
     /**
@@ -69,10 +61,7 @@ final class IPv4HostNormalizerTest extends TestCase
             self::markTestSkipped('The PHP must be compile for a x64 OS.');
         }
 
-        $expected = (null === $expected) ? Host::new() : Host::new($expected);
-        $input = (null === $input) ? Host::new() : Host::new($input);
-
-        self::assertEquals($expected, IPv4Normalizer::fromNative()->normalizeHost($input));
+        self::assertEquals($expected, IPv4Converter::fromNative()->normalize($input) ?? $input);
     }
 
     /**
@@ -86,9 +75,7 @@ final class IPv4HostNormalizerTest extends TestCase
             self::markTestSkipped('The PHP must be compile with Bcmath extension enabled.');
         }
 
-        $expected = (null === $expected) ? Host::new() : Host::new($expected);
-
-        self::assertEquals($expected, IPv4Normalizer::fromBCMath()->normalizeHost($input));
+        self::assertEquals($expected, IPv4Converter::fromBCMath()->normalize($input) ?? $input);
     }
 
     public static function providerHost(): array
@@ -123,38 +110,5 @@ final class IPv4HostNormalizerTest extends TestCase
             'invalid host (13)' => ['0ffaed', '0ffaed'],
             'invalid host (14)' => ['192.168.1.0x3000000', '192.168.1.0x3000000'],
         ];
-    }
-
-    public function testIpv4NormalizeHostWithPsr7Uri(): void
-    {
-        $uri = Http::new('http://0/test');
-        $newUri = Modifier::from($uri)->normalizeIPv4()->getUri();
-        self::assertSame('0.0.0.0', $newUri->getHost());
-
-        $uri = Http::new('http://11.be/test');
-        $unchangedUri = Modifier::from($uri)->normalizeIPv4()->getUri();
-        self::assertSame($uri, $unchangedUri);
-    }
-
-    public function testIpv4NormalizeHostWithLeagueUri(): void
-    {
-        $uri = Uri::new('http://0/test');
-        $newUri = Modifier::from($uri)->normalizeIPv4()->getUri();
-        self::assertSame('0.0.0.0', $newUri->getHost());
-
-        $uri = Http::new('http://11.be/test');
-        $unchangedUri = Modifier::from($uri)->normalizeIPv4()->getUri();
-        self::assertSame($uri, $unchangedUri);
-    }
-
-    public function testIpv4NormalizeAuthority(): void
-    {
-        $authority = 'hello:word@0:42';
-        $newAuthority = Modifier::from('//'.$authority)->normalizeIPv4()->getUri()->getAuthority();
-        self::assertSame('hello:word@0.0.0.0:42', $newAuthority);
-
-        $unChangedAuthority = Authority::new('hello:word@11.be:42');
-        $newAuthority = Modifier::from('//'.$unChangedAuthority->toString())->normalizeIPv4()->getUri()->getAuthority();
-        self::assertSame($unChangedAuthority->toString(), $newAuthority);
     }
 }

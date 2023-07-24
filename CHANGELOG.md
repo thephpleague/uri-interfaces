@@ -12,6 +12,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - New method to `UserInfoInterface::withPass`
 - New method to `UriInterface::toString`
 - New method to `UriInterface::toComponents`
+- `League\Uri\IPv4Converter` class
 
 ### Fixed
 
