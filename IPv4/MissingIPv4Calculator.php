@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\IPv4Calculators;
+namespace League\Uri\IPv4;
 
 use InvalidArgumentException;
 use League\Uri\Contracts\UriException;

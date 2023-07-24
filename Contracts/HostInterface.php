@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
-use League\Uri\IPv4Calculators\IPv4Calculator;
+use League\Uri\IPv4\IPv4Calculator;
 
 interface HostInterface extends UriComponentInterface
 {

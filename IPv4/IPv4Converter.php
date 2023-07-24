@@ -11,13 +11,8 @@
 
 declare(strict_types=1);
 
-namespace League\Uri;
+namespace League\Uri\IPv4;
 
-use League\Uri\IPv4Calculators\BCMathCalculator;
-use League\Uri\IPv4Calculators\GMPCalculator;
-use League\Uri\IPv4Calculators\IPv4Calculator;
-use League\Uri\IPv4Calculators\MissingIPv4Calculator;
-use League\Uri\IPv4Calculators\NativeCalculator;
 use Stringable;
 use function array_pop;
 use function count;
@@ -26,6 +21,7 @@ use function extension_loaded;
 use function ltrim;
 use function preg_match;
 use function sprintf;
+use function str_ends_with;
 use function substr;
 use const PHP_INT_SIZE;
 

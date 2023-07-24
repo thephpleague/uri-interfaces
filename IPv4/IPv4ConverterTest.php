@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace League\Uri;
+namespace League\Uri\IPv4;
 
 use PHPUnit\Framework\TestCase;
 use function extension_loaded;
 use const PHP_INT_SIZE;
 
 /**
- * @coversDefaultClass \League\Uri\IPv4Converter
+ * @coversDefaultClass \League\Uri\IPv4\IPv4Converter
  */
 final class IPv4ConverterTest extends TestCase
 {
