@@ -25,9 +25,7 @@ final class IdnaTest extends TestCase
      */
     public function testToAsciiThrowsException(string $domain): void
     {
-        $result = Idna::toAscii($domain, Idna::IDNA2008_ASCII);
-
-        self::assertNotEmpty($result->errors());
+        self::assertNotEmpty(Idna::toAscii($domain, Idna::IDNA2008_ASCII)->errors());
     }
 
     /**
@@ -46,9 +44,7 @@ final class IdnaTest extends TestCase
 
     public function testToUnicodeThrowsException(): void
     {
-        $result = Idna::toUnicode('xn--a-ecp.ru', Idna::IDNA2008_UNICODE);
-
-        self::assertNotEmpty($result->errors());
+        self::assertNotEmpty(Idna::toUnicode('xn--a-ecp.ru', Idna::IDNA2008_UNICODE)->errors());
     }
 
     /**
@@ -56,10 +52,7 @@ final class IdnaTest extends TestCase
      */
     public function testToIDN(string $domain, string $expectedDomain): void
     {
-        self::assertSame(
-            $expectedDomain,
-            Idna::toUnicode($domain, Idna::IDNA2008_UNICODE)->result()
-        );
+        self::assertSame($expectedDomain, Idna::toUnicode($domain, Idna::IDNA2008_UNICODE)->result());
     }
 
     /**
@@ -100,10 +93,7 @@ final class IdnaTest extends TestCase
      */
     public function testToAscii(string $domain, string $expectedDomain): void
     {
-        self::assertSame(
-            $expectedDomain,
-            Idna::toAscii($domain, Idna::IDNA2008_ASCII)->result()
-        );
+        self::assertSame($expectedDomain, Idna::toAscii($domain, Idna::IDNA2008_ASCII)->result());
     }
 
     /**
@@ -133,15 +123,11 @@ final class IdnaTest extends TestCase
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainIsTooLong(): void
     {
-        $result = Idna::toAscii(str_repeat('A', 255), Idna::IDNA2008_ASCII);
-
-        self::assertNotEmpty($result->errors());
+        self::assertNotEmpty(Idna::toAscii(str_repeat('A', 255), Idna::IDNA2008_ASCII)->errorList());
     }
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainLabelIsTooLong(): void
     {
-        $result = Idna::toAscii('aa'.str_repeat('A', 64), Idna::IDNA2008_ASCII);
-
-        self::assertNotEmpty($result->errors());
+        self::assertNotEmpty(Idna::toAscii('aa'.str_repeat('A', 64), Idna::IDNA2008_ASCII)->errorList());
     }
 }

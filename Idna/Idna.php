@@ -121,7 +121,6 @@ final class Idna
         if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
             self::supportsIdna();
 
-            /* @param-out array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
             idn_to_ascii($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
             if ([] === $idnaInfo) {
                 return IdnaInfo::fromIntl([
@@ -164,13 +163,11 @@ final class Idna
 
         self::supportsIdna();
 
-        /* @param-out array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
         idn_to_utf8($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
         if ([] === $idnaInfo) {
             throw IdnaConversionFailed::dueToInvalidHost($domain);
         }
 
-        /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
         return IdnaInfo::fromIntl($idnaInfo);
     }
 

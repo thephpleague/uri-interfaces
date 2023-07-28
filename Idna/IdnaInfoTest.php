@@ -26,7 +26,7 @@ final class IdnaInfoTest extends TestCase
         self::assertFalse($result->isTransitionalDifferent());
         self::assertSame(0, $result->errors());
         self::assertNull($result->error(Idna::ERROR_BIDI));
-        self::assertCount(0, $result->errorList());
+        self::assertSame([Idna::ERROR_NONE => 'No error has occurred'], $result->errorList());
     }
 
     public function testInvalidSyntaxAfterIDNConversion(): void

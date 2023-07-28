@@ -22,6 +22,7 @@ use const ARRAY_FILTER_USE_KEY;
 final class IdnaInfo
 {
     private const ERRORS = [
+        Idna::ERROR_NONE => 'No error has occurred',
         Idna::ERROR_EMPTY_LABEL => 'a non-final domain name label (or the whole domain name) is empty',
         Idna::ERROR_LABEL_TOO_LONG => 'a domain name label is longer than 63 bytes',
         Idna::ERROR_DOMAIN_NAME_TOO_LONG => 'a domain name is longer than 255 bytes in its storage form',
@@ -49,11 +50,17 @@ final class IdnaInfo
         private readonly bool $isTransitionalDifferent,
         private readonly int $errors
     ) {
-        $this->errorList = array_filter(
+        $errorList = array_filter(
             self::ERRORS,
             fn (int $error): bool => 0 !== ($error & $this->errors),
             ARRAY_FILTER_USE_KEY
         );
+
+        if (0 === $this->errors) {
+            $errorList[Idna::ERROR_NONE] = self::ERRORS[Idna::ERROR_NONE];
+        }
+
+        $this->errorList = $errorList;
     }
 
     /**
