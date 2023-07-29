@@ -30,7 +30,7 @@ enum IdnaError: int
     case CONTEXTO_PUNCTUATION   = 0x2000;
     case CONTEXTO_DIGITS        = 0x4000;
 
-    public function message(): string
+    public function description(): string
     {
         return match ($this) {
             self::NONE => 'No error has occurred',

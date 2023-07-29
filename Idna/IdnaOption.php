@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\Idna;
 
+use ReflectionClass;
+use ReflectionClassConstant;
+
 /**
  * @see https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/uidna_8h.html
  */
@@ -27,13 +30,37 @@ final class IdnaOption
     private const NONTRANSITIONAL_TO_UNICODE = 0x20;
     private const CHECK_CONTEXTO             = 0x40;
 
-    private function __construct(private readonly int $option)
+
+    private function __construct(private readonly int $value)
     {
+    }
+
+    private static function cases(): array
+    {
+        static $assoc;
+        if (null === $assoc) {
+            $assoc = [];
+            $fooClass = new ReflectionClass(self::class);
+            foreach ($fooClass->getConstants(ReflectionClassConstant::IS_PRIVATE) as $name => $value) {
+                $assoc[$name] = $value;
+            }
+        }
+
+        return $assoc;
     }
 
     public static function new(): self
     {
         return new self(self::DEFAULT);
+    }
+
+    public static function fromBytes(int $bytes): self
+    {
+        return new self(array_reduce(
+            self::cases(),
+            fn (int $value, int $option) => 0 !== ($option & $bytes) ? ($value | $option) : $value,
+            self::DEFAULT
+        ));
     }
 
     public static function forIDNA2008Ascii(): self
@@ -56,76 +83,85 @@ final class IdnaOption
 
     public function toBytes(): int
     {
-        return $this->option;
+        return $this->value;
+    }
+
+    /** array<string, int> */
+    public function list(): array
+    {
+        return array_keys(array_filter(
+            self::cases(),
+            fn (int $value) => 0 !== ($value & $this->value)
+        ));
     }
 
     public function allowUnassigned(): self
     {
-        return new self($this->option | self::ALLOW_UNASSIGNED);
+        return new self($this->value | self::ALLOW_UNASSIGNED);
     }
 
     public function disallowUnassigned(): self
     {
-        return new self($this->option & ~self::ALLOW_UNASSIGNED);
+        return new self($this->value & ~self::ALLOW_UNASSIGNED);
     }
 
     public function useSTD3Rules(): self
     {
-        return new self($this->option | self::USE_STD3_RULES);
+        return new self($this->value | self::USE_STD3_RULES);
     }
 
     public function prohibitSTD3Rules(): self
     {
-        return new self($this->option & ~self::USE_STD3_RULES);
+        return new self($this->value & ~self::USE_STD3_RULES);
     }
 
     public function checkBidi(): self
     {
-        return new self($this->option | self::CHECK_BIDI);
+        return new self($this->value | self::CHECK_BIDI);
     }
 
     public function ignoreBidi(): self
     {
-        return new self($this->option & ~self::CHECK_BIDI);
+        return new self($this->value & ~self::CHECK_BIDI);
     }
 
     public function checkContextJ(): self
     {
-        return new self($this->option | self::CHECK_CONTEXTJ);
+        return new self($this->value | self::CHECK_CONTEXTJ);
     }
 
     public function ignoreContextJ(): self
     {
-        return new self($this->option & ~self::CHECK_CONTEXTJ);
+        return new self($this->value & ~self::CHECK_CONTEXTJ);
     }
 
     public function checkContextO(): self
     {
-        return new self($this->option | self::CHECK_CONTEXTO);
+        return new self($this->value | self::CHECK_CONTEXTO);
     }
 
     public function ignoreContextO(): self
     {
-        return new self($this->option & ~self::CHECK_CONTEXTO);
+        return new self($this->value & ~self::CHECK_CONTEXTO);
     }
 
     public function nonTransitionalToAscii(): self
     {
-        return new self($this->option | self::NONTRANSITIONAL_TO_ASCII);
+        return new self($this->value | self::NONTRANSITIONAL_TO_ASCII);
     }
 
     public function transitionalToAscii(): self
     {
-        return new self($this->option & ~self::NONTRANSITIONAL_TO_ASCII);
+        return new self($this->value & ~self::NONTRANSITIONAL_TO_ASCII);
     }
 
     public function nonTransitionalToUnicode(): self
     {
-        return new self($this->option | self::NONTRANSITIONAL_TO_UNICODE);
+        return new self($this->value | self::NONTRANSITIONAL_TO_UNICODE);
     }
 
     public function transitionalToUnicode(): self
     {
-        return new self($this->option & ~self::NONTRANSITIONAL_TO_UNICODE);
+        return new self($this->value & ~self::NONTRANSITIONAL_TO_UNICODE);
     }
 }

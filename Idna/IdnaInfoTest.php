@@ -24,8 +24,9 @@ final class IdnaInfoTest extends TestCase
 
         self::assertSame('', $result->result());
         self::assertFalse($result->isTransitionalDifferent());
-        self::assertCount(0, $result->errorList());
+        self::assertCount(0, $result->errors());
         self::assertFalse($result->hasErrors());
+        self::assertSame(IdnaError::NONE->value, $result->errorsAsBytes());
     }
 
     public function testInvalidSyntaxAfterIDNConversion(): void
@@ -33,7 +34,8 @@ final class IdnaInfoTest extends TestCase
         $result = Idna::toAscii('％００.com', IdnaOption::forIDNA2008Ascii());
 
         self::assertTrue($result->hasErrors());
-        self::assertCount(1, $result->errorList());
-        self::assertSame(IdnaError::DISALLOWED, $result->errorList()[0]);
+        self::assertCount(1, $result->errors());
+        self::assertSame(IdnaError::DISALLOWED, $result->errors()[0]);
+        self::assertSame(IdnaError::DISALLOWED->value, $result->errorsAsBytes());
     }
 }

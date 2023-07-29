@@ -18,12 +18,19 @@ namespace League\Uri\Idna;
  */
 final class IdnaInfo
 {
+    private readonly int $errorByte;
+
     private function __construct(
         private readonly string $result,
         private readonly bool $isTransitionalDifferent,
         /** @var array<IdnaError> */
         private readonly array $errors
     ) {
+        $this->errorByte = array_reduce(
+            $this->errors,
+            fn (int $curry, IdnaError $error): int => $curry | $error->value,
+            IdnaError::NONE->value
+        );
     }
 
     /**
@@ -47,7 +54,7 @@ final class IdnaInfo
     /**
      * @return array<IdnaError>
      */
-    public function errorList(): array
+    public function errors(): array
     {
         return $this->errors;
     }
@@ -57,8 +64,8 @@ final class IdnaInfo
         return [] !== $this->errors;
     }
 
-    public function errors(): int
+    public function errorsAsBytes(): int
     {
-        return array_reduce($this->errors, fn (int $curry, IdnaError $error): int => $curry | $error->value, IdnaError::NONE->value);
+        return $this->errorByte;
     }
 }

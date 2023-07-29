@@ -25,7 +25,7 @@ final class IdnaConversionFailed extends SyntaxError
 
     public static function dueToIDNAError(string $domain, IdnaInfo $idnaInfo): self
     {
-        $info = array_map(fn (IdnaError $error) => $error->message(), $idnaInfo->errorList());
+        $info = array_map(fn (IdnaError $error): string => $error->description(), $idnaInfo->errors());
 
         return new self(
             'The host `'.$domain.'` is invalid : '.implode(', ', $info).' .',

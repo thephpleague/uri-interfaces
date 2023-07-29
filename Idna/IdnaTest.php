@@ -25,7 +25,7 @@ final class IdnaTest extends TestCase
      */
     public function testToAsciiThrowsException(string $domain): void
     {
-        self::assertNotEmpty(Idna::toAscii($domain, IdnaOption::forIDNA2008Ascii())->errorList());
+        self::assertNotEmpty(Idna::toAscii($domain, IdnaOption::forIDNA2008Ascii())->errors());
     }
 
     /**
@@ -44,7 +44,7 @@ final class IdnaTest extends TestCase
 
     public function testToUnicodeThrowsException(): void
     {
-        self::assertNotEmpty(Idna::toUnicode('xn--a-ecp.ru', IdnaOption::forIDNA2008Unicode())->errorList());
+        self::assertNotEmpty(Idna::toUnicode('xn--a-ecp.ru', IdnaOption::forIDNA2008Unicode())->errors());
     }
 
     /**
@@ -123,11 +123,11 @@ final class IdnaTest extends TestCase
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainIsTooLong(): void
     {
-        self::assertNotEmpty(Idna::toAscii(str_repeat('A', 255), IdnaOption::forIDNA2008Ascii())->errorList());
+        self::assertNotEmpty(Idna::toAscii(str_repeat('A', 255), IdnaOption::forIDNA2008Ascii())->errors());
     }
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainLabelIsTooLong(): void
     {
-        self::assertNotEmpty(Idna::toAscii('aa'.str_repeat('A', 64), IdnaOption::forIDNA2008Ascii())->errorList());
+        self::assertNotEmpty(Idna::toAscii('aa'.str_repeat('A', 64), IdnaOption::forIDNA2008Ascii())->errors());
     }
 }

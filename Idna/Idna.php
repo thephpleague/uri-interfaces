@@ -76,11 +76,11 @@ final class Idna
 
         if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
             self::supportsIdna();
-            if ($options instanceof IdnaOption) {
-                $options = $options->toBytes();
+            if (!$options instanceof IdnaOption) {
+                $options = IdnaOption::fromBytes($options);
             }
 
-            idn_to_ascii($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
+            idn_to_ascii($domain, $options->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
             if ([] === $idnaInfo) {
                 return IdnaInfo::fromIntl([
                     'result' => strtolower($domain),
@@ -122,11 +122,11 @@ final class Idna
 
         self::supportsIdna();
 
-        if ($options instanceof IdnaOption) {
-            $options = $options->toBytes();
+        if (!$options instanceof IdnaOption) {
+            $options = IdnaOption::fromBytes($options);
         }
 
-        idn_to_utf8($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
+        idn_to_utf8($domain, $options->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
         if ([] === $idnaInfo) {
             throw IdnaConversionFailed::dueToInvalidHost($domain);
         }
