@@ -13,19 +13,22 @@ declare(strict_types=1);
 
 namespace League\Uri\Exceptions;
 
+use League\Uri\Idna\IdnaError;
 use League\Uri\Idna\IdnaInfo;
 
 final class IdnaConversionFailed extends SyntaxError
 {
-    private function __construct(string $message, private ?IdnaInfo $idnaInfo = null)
+    private function __construct(string $message, private readonly ?IdnaInfo $idnaInfo = null)
     {
         parent::__construct($message);
     }
 
     public static function dueToIDNAError(string $domain, IdnaInfo $idnaInfo): self
     {
+        $info = array_map(fn (IdnaError $error) => $error->message(), $idnaInfo->errorList());
+
         return new self(
-            'The host `'.$domain.'` is invalid : '.implode(', ', $idnaInfo->errorList()).' .',
+            'The host `'.$domain.'` is invalid : '.implode(', ', $info).' .',
             $idnaInfo
         );
     }

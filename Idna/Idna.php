@@ -49,50 +49,6 @@ final class Idna
         /ix';
 
     /**
-     * IDNA options.
-     */
-    public const IDNA_DEFAULT                    = 0;
-    public const IDNA_ALLOW_UNASSIGNED           = 1;
-    public const IDNA_USE_STD3_RULES             = 2;
-    public const IDNA_CHECK_BIDI                 = 4;
-    public const IDNA_CHECK_CONTEXTJ             = 8;
-    public const IDNA_NONTRANSITIONAL_TO_ASCII   = 0x10;
-    public const IDNA_NONTRANSITIONAL_TO_UNICODE = 0x20;
-    public const IDNA_CHECK_CONTEXTO             = 0x40;
-
-    /**
-     * IDNA errors.
-     */
-    public const ERROR_NONE                   = 0;
-    public const ERROR_EMPTY_LABEL            = 1;
-    public const ERROR_LABEL_TOO_LONG         = 2;
-    public const ERROR_DOMAIN_NAME_TOO_LONG   = 4;
-    public const ERROR_LEADING_HYPHEN         = 8;
-    public const ERROR_TRAILING_HYPHEN        = 0x10;
-    public const ERROR_HYPHEN_3_4             = 0x20;
-    public const ERROR_LEADING_COMBINING_MARK = 0x40;
-    public const ERROR_DISALLOWED             = 0x80;
-    public const ERROR_PUNYCODE               = 0x100;
-    public const ERROR_LABEL_HAS_DOT          = 0x200;
-    public const ERROR_INVALID_ACE_LABEL      = 0x400;
-    public const ERROR_BIDI                   = 0x800;
-    public const ERROR_CONTEXTJ               = 0x1000;
-    public const ERROR_CONTEXTO_PUNCTUATION   = 0x2000;
-    public const ERROR_CONTEXTO_DIGITS        = 0x4000;
-
-    /**
-     * IDNA default options.
-     */
-    public const IDNA2008_ASCII = self::IDNA_NONTRANSITIONAL_TO_ASCII
-        | self::IDNA_CHECK_BIDI
-        | self::IDNA_USE_STD3_RULES
-        | self::IDNA_CHECK_CONTEXTJ;
-    public const IDNA2008_UNICODE = self::IDNA_NONTRANSITIONAL_TO_UNICODE
-        | self::IDNA_CHECK_BIDI
-        | self::IDNA_USE_STD3_RULES
-        | self::IDNA_CHECK_CONTEXTJ;
-
-    /**
      * @codeCoverageIgnore
      */
     private static function supportsIdna(): void
@@ -114,12 +70,15 @@ final class Idna
      *
      * @throws SyntaxError if the string can not be converted to ASCII using IDN UTS46 algorithm
      */
-    public static function toAscii(string $domain, int $options): IdnaInfo
+    public static function toAscii(string $domain, int|IdnaOption $options): IdnaInfo
     {
         $domain = rawurldecode($domain);
 
         if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
             self::supportsIdna();
+            if ($options instanceof IdnaOption) {
+                $options = $options->toBytes();
+            }
 
             idn_to_ascii($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
             if ([] === $idnaInfo) {
@@ -134,9 +93,9 @@ final class Idna
             return IdnaInfo::fromIntl($idnaInfo);
         }
 
-        $error = self::ERROR_NONE;
+        $error = IdnaError::NONE->value;
         if (1 !== preg_match(self::REGEXP_REGISTERED_NAME, $domain)) {
-            $error |= self::ERROR_DISALLOWED;
+            $error |= IdnaError::DISALLOWED->value;
         }
 
         return IdnaInfo::fromIntl([
@@ -153,15 +112,19 @@ final class Idna
      *
      * @throws SyntaxError if the string can not be converted to UNICODE using IDN UTS46 algorithm
      */
-    public static function toUnicode(string $domain, int $options): IdnaInfo
+    public static function toUnicode(string $domain, int|IdnaOption $options): IdnaInfo
     {
         $domain = rawurldecode($domain);
 
         if (false === stripos($domain, 'xn--')) {
-            return IdnaInfo::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => self::ERROR_NONE]);
+            return IdnaInfo::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => IdnaError::NONE->value]);
         }
 
         self::supportsIdna();
+
+        if ($options instanceof IdnaOption) {
+            $options = $options->toBytes();
+        }
 
         idn_to_utf8($domain, $options, INTL_IDNA_VARIANT_UTS46, $idnaInfo);
         if ([] === $idnaInfo) {
@@ -178,7 +141,7 @@ final class Idna
      */
     private static function validateDomainAndLabelLength(string $domain): int
     {
-        $error = self::ERROR_NONE;
+        $error = IdnaError::NONE->value;
         $labels = explode('.', $domain);
         $maxDomainSize = self::MAX_DOMAIN_LENGTH;
         $length = count($labels);
@@ -193,12 +156,12 @@ final class Idna
         }
 
         if (strlen($domain) > $maxDomainSize) {
-            $error |= self::ERROR_DOMAIN_NAME_TOO_LONG;
+            $error |= IdnaError::DOMAIN_NAME_TOO_LONG->value;
         }
 
         foreach ($labels as $label) {
             if (strlen($label) > self::MAX_LABEL_LENGTH) {
-                $error |= self::ERROR_LABEL_TOO_LONG;
+                $error |= IdnaError::LABEL_TOO_LONG->value;
 
                 break;
             }
