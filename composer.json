@@ -27,7 +27,11 @@
         }
     },
     "suggest": {
-        "ext-intl": "to use the IDNA feature",
+        "ext-intl": "to handle IDN host",
+        "ext-gmp": "to improve handle IPV4 parsing",
+        "ext-bcmath": "to improve handle IPV4 parsing",
+        "ext-fileinfo": "to create Data URI from a filepath",
+        "php-64bit": "to improve handle IPV4 parsing",
         "symfony/polyfill-intl-idn": "to use the IDNA feature via Symfony Polyfill"
     },
     "extra": {
