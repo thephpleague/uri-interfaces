@@ -96,12 +96,12 @@ final class IPv4Converter
     }
 
     /**
-     * Converts a IPv4 hexadecimal or a IPv4 octal notation into a IPv4 dot-decimal notation if possible
+     * Tries to convert a IPv4 hexadecimal or a IPv4 octal notation into a IPv4 dot-decimal notation if possible
      * otherwise returns null.
      *
      * @see https://url.spec.whatwg.org/#concept-ipv4-parser
      */
-    public function normalize(Stringable|string|null $host): ?string
+    public function __invoke(Stringable|string|null $host): ?string
     {
         $hostString = (string) $host;
         if (1 !== preg_match(self::REGEXP_IPV4_HOST, $hostString)) {
