@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-use League\Uri\Contracts\UriInterface;
 use League\Uri\Exceptions\IdnaConversionFailed;
 use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
@@ -40,7 +39,7 @@ use const FILTER_VALIDATE_IP;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   6.0.0
  *
- * @phpstan-import-type ComponentMap from UriInterface
+ * @phpstan-type ComponentMap array{scheme:?string, user:?string, pass:?string, host:?string, port:?int, path:string, query:?string, fragment:?string}
  * @phpstan-type InputComponentMap array{scheme? : ?string, user? : ?string, pass? : ?string, host? : ?string, port? : ?int, path? : ?string, query? : ?string, fragment? : ?string}
  * @phpstan-type AuthorityMap array{user:?string, pass:?string, host:?string, port:?int}
  */

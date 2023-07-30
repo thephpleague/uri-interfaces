@@ -16,10 +16,11 @@ namespace League\Uri\Contracts;
 use JsonSerializable;
 use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
+use League\Uri\UriString;
 use Stringable;
 
 /**
- * @phpstan-type ComponentMap array{scheme:?string, user:?string, pass:?string, host:?string, port:?int, path:string, query:?string, fragment:?string}
+ * @phpstan-import-type ComponentMap from UriString
  */
 interface UriInterface extends JsonSerializable, Stringable
 {
@@ -193,7 +194,7 @@ interface UriInterface extends JsonSerializable, Stringable
      *
      * @return ComponentMap
      */
-    public function components(): array;
+    public function getComponents(): array;
 
     /**
      * Return an instance with the specified scheme.
