@@ -98,9 +98,9 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * @see http://php.net/parse_str
      * @see https://wiki.php.net/rfc/on_demand_name_mangling
      *
-     * @return iterable the collection of stored PHP variables or the empty array if no input is given,
+     * @return array the collection of stored PHP variables or the empty array if no input is given,
      */
-    public function parameters(): iterable;
+    public function parameters(): array;
 
     /**
      * Returns the value attached to the specific key.
