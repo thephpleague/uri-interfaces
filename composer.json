@@ -37,7 +37,10 @@
         }
     ],
     "require": {
-        "php" : "^8.1"
+        "php" : "^8.1",
+        "ext-filter": "*",
+        "psr/http-message": "^1.1.0 || ^2.0",
+        "psr/http-factory": "^1"
     },
     "autoload": {
         "psr-4": {
@@ -45,12 +48,12 @@
         }
     },
     "suggest": {
-        "ext-intl": "to handle IDN host",
+        "ext-intl": "to handle IDN host with the best performance",
         "ext-gmp": "to improve handle IPV4 parsing",
         "ext-bcmath": "to improve handle IPV4 parsing",
         "ext-fileinfo": "to create Data URI from a filepath",
         "php-64bit": "to improve handle IPV4 parsing",
-        "symfony/polyfill-intl-idn": "to use the IDNA feature via Symfony Polyfill"
+        "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is missing"
     },
     "extra": {
         "branch-alias": {
