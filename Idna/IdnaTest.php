@@ -52,7 +52,7 @@ final class IdnaTest extends TestCase
      */
     public function testToIDN(string $domain, string $expectedDomain): void
     {
-        self::assertSame($expectedDomain, Idna::toUnicode($domain, IdnaOption::forIDNA2008Unicode())->result());
+        self::assertSame($expectedDomain, Idna::toUnicode($domain, IdnaOption::forIDNA2008Unicode())->domain());
     }
 
     /**
@@ -93,7 +93,7 @@ final class IdnaTest extends TestCase
      */
     public function testToAscii(string $domain, string $expectedDomain): void
     {
-        self::assertSame($expectedDomain, Idna::toAscii($domain, IdnaOption::forIDNA2008Ascii())->result());
+        self::assertSame($expectedDomain, Idna::toAscii($domain, IdnaOption::forIDNA2008Ascii())->domain());
     }
 
     /**

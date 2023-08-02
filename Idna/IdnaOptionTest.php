@@ -14,30 +14,55 @@ declare(strict_types=1);
 namespace League\Uri\Idna;
 
 use PHPUnit\Framework\TestCase;
+use const IDNA_CHECK_BIDI;
+use const IDNA_NONTRANSITIONAL_TO_ASCII;
+use const IDNA_USE_STD3_RULES;
 
 final class IdnaOptionTest extends TestCase
 {
     public function testItCanBeInstantiatedFromBytes(): void
     {
-        $options = IdnaOption::fromBytes(22);
+        $options = IdnaOption::new(22);
+        $altOptions = $options
+            ->ignoreBidi()
+            ->disallowUnassigned()
+            ->ignoreContextO()
+            ->nonTransitionalToAscii();
+
         self::assertSame([
             'USE_STD3_RULES',
             'CHECK_BIDI',
             'NONTRANSITIONAL_TO_ASCII',
         ], $options->list());
 
-        self::assertSame(
-            [
+        self::assertSame([
             'USE_STD3_RULES',
             'NONTRANSITIONAL_TO_ASCII',
-        ],
-            $options
-            ->ignoreBidi()
-            ->disallowUnassigned()
-            ->ignoreContextO()
-            ->nonTransitionalToAscii()
-            ->list()
-        );
+        ], $altOptions->list());
+    }
+
+    public function testItCanAddOrRemoveOption(): void
+    {
+        $options = IdnaOption::new()
+            ->add(IDNA_USE_STD3_RULES)
+            ->add(IdnaOption::new()->checkBidi())
+            ->add()
+            ->add(IDNA_NONTRANSITIONAL_TO_ASCII);
+        $altOptions = $options
+            ->remove(IDNA_CHECK_BIDI)
+            ->remove(IdnaOption::new()->disallowUnassigned())
+            ->remove();
+
+        self::assertSame([
+            'USE_STD3_RULES',
+            'CHECK_BIDI',
+            'NONTRANSITIONAL_TO_ASCII',
+        ], $options->list());
+
+        self::assertSame([
+            'USE_STD3_RULES',
+            'NONTRANSITIONAL_TO_ASCII',
+        ], $altOptions->list());
     }
 
     public function testItCanBeConvertedToBytes(): void

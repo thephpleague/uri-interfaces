@@ -30,7 +30,6 @@ final class IdnaOption
     private const NONTRANSITIONAL_TO_UNICODE = 0x20;
     private const CHECK_CONTEXTO             = 0x40;
 
-
     private function __construct(private readonly int $value)
     {
     }
@@ -49,18 +48,16 @@ final class IdnaOption
         return $assoc;
     }
 
-    public static function new(): self
+    public static function new(int|self $bytes = self::DEFAULT): self
     {
-        return new self(self::DEFAULT);
-    }
-
-    public static function fromBytes(int $bytes): self
-    {
-        return new self(array_reduce(
-            self::cases(),
-            fn (int $value, int $option) => 0 !== ($option & $bytes) ? ($value | $option) : $value,
-            self::DEFAULT
-        ));
+        return match (true) {
+            $bytes instanceof self => new self($bytes->value),
+            default => new self(array_reduce(
+                self::cases(),
+                fn (int $value, int $option) => 0 !== ($option & $bytes) ? ($value | $option) : $value,
+                self::DEFAULT
+            )),
+        };
     }
 
     public static function forIDNA2008Ascii(): self
@@ -163,5 +160,23 @@ final class IdnaOption
     public function transitionalToUnicode(): self
     {
         return new self($this->value & ~self::NONTRANSITIONAL_TO_UNICODE);
+    }
+
+    public function add(IdnaOption|int|null $option = null): self
+    {
+        return match (true) {
+            $option instanceof self => self::new($this->value | $option->value),
+            is_int($option) => self::new($this->value | $option),
+            default => $this,
+        };
+    }
+
+    public function remove(IdnaOption|int|null $option = null): self
+    {
+        return match (true) {
+            $option instanceof self => self::new($this->value & ~$option->value),
+            is_int($option) => self::new($this->value & ~$option),
+            default => $this,
+        };
     }
 }

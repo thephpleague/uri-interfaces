@@ -22,10 +22,12 @@ final class IdnaInfoTest extends TestCase
         $infos = ['result' => '', 'isTransitionalDifferent' => false, 'errors' => 0];
         $result = IdnaInfo::fromIntl($infos);
 
-        self::assertSame('', $result->result());
+        self::assertSame('', $result->domain());
         self::assertFalse($result->isTransitionalDifferent());
         self::assertCount(0, $result->errors());
         self::assertFalse($result->hasErrors());
+        self::assertFalse($result->hasError(IdnaError::DISALLOWED));
+        self::assertFalse($result->hasError(IdnaError::BIDI));
         self::assertSame(IdnaError::NONE->value, $result->errorsAsBytes());
     }
 
@@ -36,6 +38,8 @@ final class IdnaInfoTest extends TestCase
         self::assertTrue($result->hasErrors());
         self::assertCount(1, $result->errors());
         self::assertSame(IdnaError::DISALLOWED, $result->errors()[0]);
+        self::assertTrue($result->hasError(IdnaError::DISALLOWED));
+        self::assertFalse($result->hasError(IdnaError::BIDI));
         self::assertSame(IdnaError::DISALLOWED->value, $result->errorsAsBytes());
     }
 }

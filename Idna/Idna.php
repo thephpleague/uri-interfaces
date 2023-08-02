@@ -70,17 +70,19 @@ final class Idna
      *
      * @throws SyntaxError if the string can not be converted to ASCII using IDN UTS46 algorithm
      */
-    public static function toAscii(string $domain, int|IdnaOption $options): IdnaInfo
+    public static function toAscii(string $domain, IdnaOption|int $options = null): IdnaInfo
     {
         $domain = rawurldecode($domain);
 
         if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
             self::supportsIdna();
-            if (!$options instanceof IdnaOption) {
-                $options = IdnaOption::fromBytes($options);
-            }
+            idn_to_ascii(
+                $domain,
+                IdnaOption::new($options ?? IdnaOption::forIDNA2008Ascii())->toBytes(),
+                INTL_IDNA_VARIANT_UTS46,
+                $idnaInfo
+            );
 
-            idn_to_ascii($domain, $options->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
             if ([] === $idnaInfo) {
                 return IdnaInfo::fromIntl([
                     'result' => strtolower($domain),
@@ -112,7 +114,7 @@ final class Idna
      *
      * @throws SyntaxError if the string can not be converted to UNICODE using IDN UTS46 algorithm
      */
-    public static function toUnicode(string $domain, int|IdnaOption $options): IdnaInfo
+    public static function toUnicode(string $domain, IdnaOption|int $options = null): IdnaInfo
     {
         $domain = rawurldecode($domain);
 
@@ -121,12 +123,13 @@ final class Idna
         }
 
         self::supportsIdna();
+        idn_to_utf8(
+            $domain,
+            IdnaOption::new($options ?? IdnaOption::forIDNA2008Unicode())->toBytes(),
+            INTL_IDNA_VARIANT_UTS46,
+            $idnaInfo
+        );
 
-        if (!$options instanceof IdnaOption) {
-            $options = IdnaOption::fromBytes($options);
-        }
-
-        idn_to_utf8($domain, $options->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
         if ([] === $idnaInfo) {
             throw IdnaConversionFailed::dueToInvalidHost($domain);
         }

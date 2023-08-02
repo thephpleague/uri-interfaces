@@ -21,7 +21,7 @@ final class IdnaInfo
     private readonly int $errorByte;
 
     private function __construct(
-        private readonly string $result,
+        private readonly string $domain,
         private readonly bool $isTransitionalDifferent,
         /** @var array<IdnaError> */
         private readonly array $errors
@@ -41,9 +41,9 @@ final class IdnaInfo
         return new self($infos['result'], $infos['isTransitionalDifferent'], IdnaError::filterByErrorBytes($infos['errors']));
     }
 
-    public function result(): string
+    public function domain(): string
     {
-        return $this->result;
+        return $this->domain;
     }
 
     public function isTransitionalDifferent(): bool
@@ -62,6 +62,11 @@ final class IdnaInfo
     public function hasErrors(): bool
     {
         return [] !== $this->errors;
+    }
+
+    public function hasError(IdnaError $error): bool
+    {
+        return in_array($error, $this->errors, true);
     }
 
     public function errorsAsBytes(): int
