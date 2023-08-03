@@ -1,6 +1,10 @@
 Uri Interfaces
 =======
 
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Latest Version](https://img.shields.io/github/release/thephpleague/uri-interfaces.svg?style=flat-square)](https://github.com/thephpleague/uri-interfaces/releases)
+[![Total Downloads](https://img.shields.io/packagist/dt/league/uri-interfaces.svg?style=flat-square)](https://packagist.org/packages/league/uri-interfaces)
+
 This package contains an interface to represents URI objects according to [RFC 3986](http://tools.ietf.org/html/rfc3986).
 
 > ⚠️ this is a sub-split, for development, pull requests and issues, visit: https://github.com/thephpleague/uri-src
