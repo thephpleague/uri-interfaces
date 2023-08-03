@@ -129,7 +129,7 @@ final class Converter
         );
 
         if ([] === $idnaInfo) {
-            throw ConversionFailed::dueToInvalidHost($domain);
+            return Result::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
         }
 
         return Result::fromIntl($idnaInfo);
