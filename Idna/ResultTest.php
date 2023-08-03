@@ -33,7 +33,7 @@ final class ResultTest extends TestCase
 
     public function testInvalidSyntaxAfterIDNConversion(): void
     {
-        $result = Idna::toAscii('％００.com', Option::forIDNA2008Ascii());
+        $result = Converter::toAscii('％００.com', Option::forIDNA2008Ascii());
 
         self::assertTrue($result->hasErrors());
         self::assertCount(1, $result->errors());

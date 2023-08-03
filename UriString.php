@@ -15,7 +15,7 @@ namespace League\Uri;
 
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\ConversionFailed;
-use League\Uri\Idna\Idna;
+use League\Uri\Idna\Converter;
 use League\Uri\Idna\MissingSupport;
 use Stringable;
 use function array_merge;
@@ -405,7 +405,7 @@ final class UriString
             throw new SyntaxError(sprintf('Host `%s` is invalid : the host is not a valid registered name', $host));
         }
 
-        $result = Idna::toAscii($host);
+        $result = Converter::toAscii($host);
         if ($result->hasErrors()) {
             throw ConversionFailed::dueToError($host, $result);
         }

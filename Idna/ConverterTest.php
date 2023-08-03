@@ -16,16 +16,16 @@ namespace League\Uri\Idna;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \League\Uri\Idna\Idna
+ * @coversDefaultClass \League\Uri\Idna\Converter
  */
-final class IdnaTest extends TestCase
+final class ConverterTest extends TestCase
 {
     /**
      * @dataProvider invalidDomainProvider
      */
     public function testToAsciiThrowsException(string $domain): void
     {
-        self::assertNotEmpty(Idna::toAscii($domain, Option::forIDNA2008Ascii())->errors());
+        self::assertNotEmpty(Converter::toAscii($domain, Option::forIDNA2008Ascii())->errors());
     }
 
     /**
@@ -44,7 +44,7 @@ final class IdnaTest extends TestCase
 
     public function testToUnicodeThrowsException(): void
     {
-        self::assertNotEmpty(Idna::toUnicode('xn--a-ecp.ru', Option::forIDNA2008Unicode())->errors());
+        self::assertNotEmpty(Converter::toUnicode('xn--a-ecp.ru', Option::forIDNA2008Unicode())->errors());
     }
 
     /**
@@ -52,7 +52,7 @@ final class IdnaTest extends TestCase
      */
     public function testToIDN(string $domain, string $expectedDomain): void
     {
-        self::assertSame($expectedDomain, Idna::toUnicode($domain, Option::forIDNA2008Unicode())->domain());
+        self::assertSame($expectedDomain, Converter::toUnicode($domain, Option::forIDNA2008Unicode())->domain());
     }
 
     /**
@@ -93,7 +93,7 @@ final class IdnaTest extends TestCase
      */
     public function testToAscii(string $domain, string $expectedDomain): void
     {
-        self::assertSame($expectedDomain, Idna::toAscii($domain, Option::forIDNA2008Ascii())->domain());
+        self::assertSame($expectedDomain, Converter::toAscii($domain, Option::forIDNA2008Ascii())->domain());
     }
 
     /**
@@ -123,11 +123,11 @@ final class IdnaTest extends TestCase
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainIsTooLong(): void
     {
-        self::assertNotEmpty(Idna::toAscii(str_repeat('A', 255), Option::forIDNA2008Ascii())->errors());
+        self::assertNotEmpty(Converter::toAscii(str_repeat('A', 255), Option::forIDNA2008Ascii())->errors());
     }
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainLabelIsTooLong(): void
     {
-        self::assertNotEmpty(Idna::toAscii('aa'.str_repeat('A', 64), Option::forIDNA2008Ascii())->errors());
+        self::assertNotEmpty(Converter::toAscii('aa'.str_repeat('A', 64), Option::forIDNA2008Ascii())->errors());
     }
 }

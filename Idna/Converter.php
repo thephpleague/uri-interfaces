@@ -24,7 +24,7 @@ use const INTL_IDNA_VARIANT_UTS46;
 /**
  * @see https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/uidna_8h.html
  */
-final class Idna
+final class Converter
 {
     private const REGEXP_IDNA_PATTERN = '/[^\x20-\x7f]/';
     private const MAX_DOMAIN_LENGTH = 253;

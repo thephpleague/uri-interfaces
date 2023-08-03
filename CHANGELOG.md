@@ -13,6 +13,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - New method to `UriInterface::toString`
 - New method to `UriInterface::toComponents`
 - `League\Uri\IPv4\Converter` class
+- `League\Uri\Idna\Converter` class
 - `League\Uri\Idna\Error` class
 - `League\Uri\Idna\Option` class
 - `League\Uri\UriString` class
