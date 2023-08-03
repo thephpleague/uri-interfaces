@@ -18,9 +18,9 @@ use function extension_loaded;
 use const PHP_INT_SIZE;
 
 /**
- * @coversDefaultClass \League\Uri\IPv4\IPv4Converter
+ * @coversDefaultClass \League\Uri\IPv4\Converter
  */
-final class IPv4ConverterTest extends TestCase
+final class ConverterTest extends TestCase
 {
     /**
      * @dataProvider providerHost
@@ -33,7 +33,7 @@ final class IPv4ConverterTest extends TestCase
             self::markTestSkipped('The PHP must be compile for a x64 OS or loads the GMP or the BCmath extension.');
         }
 
-        self::assertEquals($expected, IPv4Converter::fromEnvironment()($input) ?? $input);
+        self::assertEquals($expected, Converter::fromEnvironment()($input) ?? $input);
     }
 
     /**
@@ -47,7 +47,7 @@ final class IPv4ConverterTest extends TestCase
             self::markTestSkipped('The GMP extension is needed to execute this test.');
         }
 
-        self::assertEquals($expected, IPv4Converter::fromGMP()($input) ?? $input);
+        self::assertEquals($expected, Converter::fromGMP()($input) ?? $input);
     }
 
     /**
@@ -61,7 +61,7 @@ final class IPv4ConverterTest extends TestCase
             self::markTestSkipped('The PHP must be compile for a x64 OS.');
         }
 
-        self::assertEquals($expected, IPv4Converter::fromNative()($input) ?? $input);
+        self::assertEquals($expected, Converter::fromNative()($input) ?? $input);
     }
 
     /**
@@ -75,7 +75,7 @@ final class IPv4ConverterTest extends TestCase
             self::markTestSkipped('The PHP must be compile with Bcmath extension enabled.');
         }
 
-        self::assertEquals($expected, IPv4Converter::fromBCMath()($input) ?? $input);
+        self::assertEquals($expected, Converter::fromBCMath()($input) ?? $input);
     }
 
     public static function providerHost(): array

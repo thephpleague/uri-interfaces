@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\IPv4;
 
-interface IPv4Calculator
+interface Calculator
 {
     /**
      * Add numbers.
@@ -28,8 +28,8 @@ interface IPv4Calculator
     /**
      * Subtract one number from another.
      *
-     * @param mixed $value1 a number that will be substracted of $value2
-     * @param mixed $value2 a number that will be substracted to $value1
+     * @param mixed $value1 a number that will be subtracted of $value2
+     * @param mixed $value2 a number that will be subtracted to $value1
      *
      * @return mixed the subtraction result
      */
@@ -38,8 +38,8 @@ interface IPv4Calculator
     /**
      * Multiply numbers.
      *
-     * @param mixed $value1 a number that will be multiply by $value2
-     * @param mixed $value2 a number that will be multiply by $value1
+     * @param mixed $value1 a number that will be multiplied by $value2
+     * @param mixed $value2 a number that will be multiplied by $value1
      *
      * @return mixed the multiplication result
      */

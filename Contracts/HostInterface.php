@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
-use League\Uri\IPv4\IPv4Calculator;
-
 interface HostInterface extends UriComponentInterface
 {
     /**
@@ -33,7 +31,7 @@ interface HostInterface extends UriComponentInterface
      *
      * @see https://url.spec.whatwg.org/#concept-ipv4-parser
      */
-    public function toIPv4(?IPv4Calculator $calculator = null): ?string;
+    public function toIPv4(): ?string;
 
     /**
      * Returns the IP version.

@@ -13,11 +13,10 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-use League\Uri\Exceptions\IdnaConversionFailed;
-use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
+use League\Uri\Idna\ConversionFailed;
 use League\Uri\Idna\Idna;
-use League\Uri\Idna\IdnaOption;
+use League\Uri\Idna\MissingSupport;
 use Stringable;
 use function array_merge;
 use function explode;
@@ -391,8 +390,8 @@ final class UriString
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      *
-     * @throws SyntaxError       if the registered name is invalid
-     * @throws IdnSupportMissing if IDN support or ICU requirement are not available or met.
+     * @throws SyntaxError    if the registered name is invalid
+     * @throws MissingSupport if IDN support or ICU requirement are not available or met.
      */
     private static function filterRegisteredName(string $host): string
     {
@@ -406,9 +405,9 @@ final class UriString
             throw new SyntaxError(sprintf('Host `%s` is invalid : the host is not a valid registered name', $host));
         }
 
-        $info = Idna::toAscii($host, IdnaOption::forIDNA2008Ascii());
-        if ($info->hasErrors()) {
-            throw IdnaConversionFailed::dueToIDNAError($host, $info);
+        $result = Idna::toAscii($host);
+        if ($result->hasErrors()) {
+            throw ConversionFailed::dueToError($host, $result);
         }
 
         return $host;

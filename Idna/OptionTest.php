@@ -18,11 +18,11 @@ use const IDNA_CHECK_BIDI;
 use const IDNA_NONTRANSITIONAL_TO_ASCII;
 use const IDNA_USE_STD3_RULES;
 
-final class IdnaOptionTest extends TestCase
+final class OptionTest extends TestCase
 {
     public function testItCanBeInstantiatedFromBytes(): void
     {
-        $options = IdnaOption::new(22);
+        $options = Option::new(22);
         $altOptions = $options
             ->ignoreBidi()
             ->disallowUnassigned()
@@ -43,14 +43,14 @@ final class IdnaOptionTest extends TestCase
 
     public function testItCanAddOrRemoveOption(): void
     {
-        $options = IdnaOption::new()
+        $options = Option::new()
             ->add(IDNA_USE_STD3_RULES)
-            ->add(IdnaOption::new()->checkBidi())
+            ->add(Option::new()->checkBidi())
             ->add()
             ->add(IDNA_NONTRANSITIONAL_TO_ASCII);
         $altOptions = $options
             ->remove(IDNA_CHECK_BIDI)
-            ->remove(IdnaOption::new()->disallowUnassigned())
+            ->remove(Option::new()->disallowUnassigned())
             ->remove();
 
         self::assertSame([
@@ -67,7 +67,7 @@ final class IdnaOptionTest extends TestCase
 
     public function testItCanBeConvertedToBytes(): void
     {
-        $option = IdnaOption::new()
+        $option = Option::new()
             ->allowUnassigned()
             ->checkContextO()
             ->transitionalToUnicode()

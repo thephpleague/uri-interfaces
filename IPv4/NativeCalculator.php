@@ -16,7 +16,7 @@ namespace League\Uri\IPv4;
 use function floor;
 use function intval;
 
-final class NativeCalculator implements IPv4Calculator
+final class NativeCalculator implements Calculator
 {
     public function baseConvert(mixed $value, int $base): int
     {

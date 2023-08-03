@@ -12,9 +12,9 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - New method to `UserInfoInterface::withPass`
 - New method to `UriInterface::toString`
 - New method to `UriInterface::toComponents`
-- `League\Uri\IPv4Converter` class
-- `League\Uri\Idna\IdnaError` class
-- `League\Uri\Idna\IdnaOption` class
+- `League\Uri\IPv4\Converter` class
+- `League\Uri\Idna\Error` class
+- `League\Uri\Idna\Option` class
 - `League\Uri\UriString` class
 - `League\Uri\QueryString` class
 

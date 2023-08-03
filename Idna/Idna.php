@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace League\Uri\Idna;
 
-use League\Uri\Exceptions\IdnaConversionFailed;
-use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
 use function defined;
 use function function_exists;
@@ -59,7 +57,7 @@ final class Idna
         }
 
         if (!$idnSupport) {
-            throw new IdnSupportMissing('IDN host can not be processed. Verify that ext/intl is installed for IDN support and that ICU is at least version 4.6.');
+            throw new MissingSupport('Support for IDN host requires the `intl` extension for best performance or run "composer require symfony/polyfill-intl-idn".');
         }
     }
 
@@ -70,7 +68,7 @@ final class Idna
      *
      * @throws SyntaxError if the string can not be converted to ASCII using IDN UTS46 algorithm
      */
-    public static function toAscii(string $domain, IdnaOption|int $options = null): IdnaInfo
+    public static function toAscii(string $domain, Option|int $options = null): Result
     {
         $domain = rawurldecode($domain);
 
@@ -78,13 +76,13 @@ final class Idna
             self::supportsIdna();
             idn_to_ascii(
                 $domain,
-                IdnaOption::new($options ?? IdnaOption::forIDNA2008Ascii())->toBytes(),
+                Option::new($options ?? Option::forIDNA2008Ascii())->toBytes(),
                 INTL_IDNA_VARIANT_UTS46,
                 $idnaInfo
             );
 
             if ([] === $idnaInfo) {
-                return IdnaInfo::fromIntl([
+                return Result::fromIntl([
                     'result' => strtolower($domain),
                     'isTransitionalDifferent' => false,
                     'errors' => self::validateDomainAndLabelLength($domain),
@@ -92,15 +90,15 @@ final class Idna
             }
 
             /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
-            return IdnaInfo::fromIntl($idnaInfo);
+            return Result::fromIntl($idnaInfo);
         }
 
-        $error = IdnaError::NONE->value;
+        $error = Error::NONE->value;
         if (1 !== preg_match(self::REGEXP_REGISTERED_NAME, $domain)) {
-            $error |= IdnaError::DISALLOWED->value;
+            $error |= Error::DISALLOWED->value;
         }
 
-        return IdnaInfo::fromIntl([
+        return Result::fromIntl([
             'result' => strtolower($domain),
             'isTransitionalDifferent' => false,
             'errors' => self::validateDomainAndLabelLength($domain) | $error,
@@ -114,27 +112,27 @@ final class Idna
      *
      * @throws SyntaxError if the string can not be converted to UNICODE using IDN UTS46 algorithm
      */
-    public static function toUnicode(string $domain, IdnaOption|int $options = null): IdnaInfo
+    public static function toUnicode(string $domain, Option|int $options = null): Result
     {
         $domain = rawurldecode($domain);
 
         if (false === stripos($domain, 'xn--')) {
-            return IdnaInfo::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => IdnaError::NONE->value]);
+            return Result::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
         }
 
         self::supportsIdna();
         idn_to_utf8(
             $domain,
-            IdnaOption::new($options ?? IdnaOption::forIDNA2008Unicode())->toBytes(),
+            Option::new($options ?? Option::forIDNA2008Unicode())->toBytes(),
             INTL_IDNA_VARIANT_UTS46,
             $idnaInfo
         );
 
         if ([] === $idnaInfo) {
-            throw IdnaConversionFailed::dueToInvalidHost($domain);
+            throw ConversionFailed::dueToInvalidHost($domain);
         }
 
-        return IdnaInfo::fromIntl($idnaInfo);
+        return Result::fromIntl($idnaInfo);
     }
 
     /**
@@ -144,7 +142,7 @@ final class Idna
      */
     private static function validateDomainAndLabelLength(string $domain): int
     {
-        $error = IdnaError::NONE->value;
+        $error = Error::NONE->value;
         $labels = explode('.', $domain);
         $maxDomainSize = self::MAX_DOMAIN_LENGTH;
         $length = count($labels);
@@ -159,12 +157,12 @@ final class Idna
         }
 
         if (strlen($domain) > $maxDomainSize) {
-            $error |= IdnaError::DOMAIN_NAME_TOO_LONG->value;
+            $error |= Error::DOMAIN_NAME_TOO_LONG->value;
         }
 
         foreach ($labels as $label) {
             if (strlen($label) > self::MAX_LABEL_LENGTH) {
-                $error |= IdnaError::LABEL_TOO_LONG->value;
+                $error |= Error::LABEL_TOO_LONG->value;
 
                 break;
             }

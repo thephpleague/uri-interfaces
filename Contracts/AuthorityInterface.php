@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
-use League\Uri\Exceptions\IdnSupportMissing;
 use League\Uri\Exceptions\SyntaxError;
+use League\Uri\Idna\MissingSupport;
 use Stringable;
 
 interface AuthorityInterface extends UriComponentInterface
@@ -54,11 +54,11 @@ interface AuthorityInterface extends UriComponentInterface
      * A null value provided for the host is equivalent to removing the host
      * information.
      *
-     * @throws SyntaxError       for invalid component or transformations
-     *                           that would result in an object in invalid state.
-     * @throws IdnSupportMissing for component or transformations
-     *                           requiring IDN support when IDN support is not present
-     *                           or misconfigured.
+     * @throws SyntaxError    for invalid component or transformations
+     *                        that would result in an object in invalid state.
+     * @throws MissingSupport for component or transformations
+     *                        requiring IDN support when IDN support is not present
+     *                        or misconfigured.
      */
     public function withHost(Stringable|string|null $host): self;
 

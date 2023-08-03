@@ -16,20 +16,20 @@ namespace League\Uri\Idna;
 /**
  * @see https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/uidna_8h.html
  */
-final class IdnaInfo
+final class Result
 {
     private readonly int $errorByte;
 
     private function __construct(
         private readonly string $domain,
         private readonly bool $isTransitionalDifferent,
-        /** @var array<IdnaError> */
+        /** @var array<Error> */
         private readonly array $errors
     ) {
         $this->errorByte = array_reduce(
             $this->errors,
-            fn (int $curry, IdnaError $error): int => $curry | $error->value,
-            IdnaError::NONE->value
+            fn (int $curry, Error $error): int => $curry | $error->value,
+            Error::NONE->value
         );
     }
 
@@ -38,7 +38,7 @@ final class IdnaInfo
      */
     public static function fromIntl(array $infos): self
     {
-        return new self($infos['result'], $infos['isTransitionalDifferent'], IdnaError::filterByErrorBytes($infos['errors']));
+        return new self($infos['result'], $infos['isTransitionalDifferent'], Error::filterByErrorBytes($infos['errors']));
     }
 
     public function domain(): string
@@ -52,7 +52,7 @@ final class IdnaInfo
     }
 
     /**
-     * @return array<IdnaError>
+     * @return array<Error>
      */
     public function errors(): array
     {
@@ -64,7 +64,7 @@ final class IdnaInfo
         return [] !== $this->errors;
     }
 
-    public function hasError(IdnaError $error): bool
+    public function hasError(Error $error): bool
     {
         return in_array($error, $this->errors, true);
     }

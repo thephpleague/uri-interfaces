@@ -11,7 +11,7 @@
 
 namespace League\Uri\Idna;
 
-enum IdnaError: int
+enum Error: int
 {
     case NONE                   = 0;
     case EMPTY_LABEL            = 1;

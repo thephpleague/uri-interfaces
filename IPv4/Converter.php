@@ -25,7 +25,7 @@ use function str_ends_with;
 use function substr;
 use const PHP_INT_SIZE;
 
-final class IPv4Converter
+final class Converter
 {
     private const REGEXP_IPV4_HOST = '/
         (?(DEFINE) # . is missing as it is used to separate labels
@@ -45,7 +45,7 @@ final class IPv4Converter
     private readonly mixed $maxIpv4Number;
 
     public function __construct(
-        private readonly IPv4Calculator $calculator
+        private readonly Calculator $calculator
     ) {
         $this->maxIpv4Number = $calculator->sub($calculator->pow(2, 32), 1);
     }
@@ -77,8 +77,7 @@ final class IPv4Converter
     /**
      * Returns an instance using a detected calculator depending on the PHP environment.
      *
-     * @throws MissingIPv4Calculator If no IPv4Calculator implementing object can be used
-     *                               on the platform
+     * @throws MissingCalculator If no Calculator implementing object can be used on the platform
      *
      * @codeCoverageIgnore
      */
@@ -88,9 +87,9 @@ final class IPv4Converter
             extension_loaded('gmp') => self::fromGMP(),
             extension_loaded('bcmath') => self::fromBCMath(),
             4 < PHP_INT_SIZE => self::fromNative(),
-            default => throw new MissingIPv4Calculator(sprintf(
+            default => throw new MissingCalculator(sprintf(
                 'No %s found. Use a x.64 PHP build or install the GMP or the BCMath extension.',
-                IPv4Calculator::class
+                Calculator::class
             ))
         };
     }

@@ -24,7 +24,7 @@ use function gmp_pow;
 use function gmp_sub;
 use const GMP_ROUND_MINUSINF;
 
-final class GMPCalculator implements IPv4Calculator
+final class GMPCalculator implements Calculator
 {
     public function baseConvert(mixed $value, int $base): GMP
     {

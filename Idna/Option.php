@@ -19,7 +19,7 @@ use ReflectionClassConstant;
 /**
  * @see https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/uidna_8h.html
  */
-final class IdnaOption
+final class Option
 {
     private const DEFAULT                    = 0;
     private const ALLOW_UNASSIGNED           = 1;
@@ -162,7 +162,7 @@ final class IdnaOption
         return new self($this->value & ~self::NONTRANSITIONAL_TO_UNICODE);
     }
 
-    public function add(IdnaOption|int|null $option = null): self
+    public function add(Option|int|null $option = null): self
     {
         return match (true) {
             $option instanceof self => self::new($this->value | $option->value),
@@ -171,7 +171,7 @@ final class IdnaOption
         };
     }
 
-    public function remove(IdnaOption|int|null $option = null): self
+    public function remove(Option|int|null $option = null): self
     {
         return match (true) {
             $option instanceof self => self::new($this->value & ~$option->value),

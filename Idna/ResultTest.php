@@ -15,31 +15,31 @@ namespace League\Uri\Idna;
 
 use PHPUnit\Framework\TestCase;
 
-final class IdnaInfoTest extends TestCase
+final class ResultTest extends TestCase
 {
     public function testItCanBeInstantiatedFromArray(): void
     {
         $infos = ['result' => '', 'isTransitionalDifferent' => false, 'errors' => 0];
-        $result = IdnaInfo::fromIntl($infos);
+        $result = Result::fromIntl($infos);
 
         self::assertSame('', $result->domain());
         self::assertFalse($result->isTransitionalDifferent());
         self::assertCount(0, $result->errors());
         self::assertFalse($result->hasErrors());
-        self::assertFalse($result->hasError(IdnaError::DISALLOWED));
-        self::assertFalse($result->hasError(IdnaError::BIDI));
-        self::assertSame(IdnaError::NONE->value, $result->errorsAsBytes());
+        self::assertFalse($result->hasError(Error::DISALLOWED));
+        self::assertFalse($result->hasError(Error::BIDI));
+        self::assertSame(Error::NONE->value, $result->errorsAsBytes());
     }
 
     public function testInvalidSyntaxAfterIDNConversion(): void
     {
-        $result = Idna::toAscii('％００.com', IdnaOption::forIDNA2008Ascii());
+        $result = Idna::toAscii('％００.com', Option::forIDNA2008Ascii());
 
         self::assertTrue($result->hasErrors());
         self::assertCount(1, $result->errors());
-        self::assertSame(IdnaError::DISALLOWED, $result->errors()[0]);
-        self::assertTrue($result->hasError(IdnaError::DISALLOWED));
-        self::assertFalse($result->hasError(IdnaError::BIDI));
-        self::assertSame(IdnaError::DISALLOWED->value, $result->errorsAsBytes());
+        self::assertSame(Error::DISALLOWED, $result->errors()[0]);
+        self::assertTrue($result->hasError(Error::DISALLOWED));
+        self::assertFalse($result->hasError(Error::BIDI));
+        self::assertSame(Error::DISALLOWED->value, $result->errorsAsBytes());
     }
 }

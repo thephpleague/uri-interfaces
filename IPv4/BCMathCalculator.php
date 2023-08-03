@@ -22,7 +22,7 @@ use function bcpow;
 use function bcsub;
 use function str_split;
 
-final class BCMathCalculator implements IPv4Calculator
+final class BCMathCalculator implements Calculator
 {
     private const SCALE = 0;
     private const CONVERSION_TABLE = [

@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\IPv4;
+namespace League\Uri\Idna;
 
-use InvalidArgumentException;
 use League\Uri\Contracts\UriException;
+use RuntimeException;
 
-class MissingIPv4Calculator extends InvalidArgumentException implements UriException
+class MissingSupport extends RuntimeException implements UriException
 {
 }

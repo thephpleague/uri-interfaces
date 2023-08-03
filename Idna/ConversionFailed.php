@@ -11,25 +11,24 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Exceptions;
+namespace League\Uri\Idna;
 
-use League\Uri\Idna\IdnaError;
-use League\Uri\Idna\IdnaInfo;
+use League\Uri\Exceptions\SyntaxError;
 
-final class IdnaConversionFailed extends SyntaxError
+final class ConversionFailed extends SyntaxError
 {
-    private function __construct(string $message, private readonly ?IdnaInfo $idnaInfo = null)
+    private function __construct(string $message, private readonly ?Result $result = null)
     {
         parent::__construct($message);
     }
 
-    public static function dueToIDNAError(string $domain, IdnaInfo $idnaInfo): self
+    public static function dueToError(string $domain, Result $result): self
     {
-        $info = array_map(fn (IdnaError $error): string => $error->description(), $idnaInfo->errors());
+        $info = array_map(fn (Error $error): string => $error->description(), $result->errors());
 
         return new self(
             'The host `'.$domain.'` is invalid : '.implode(', ', $info).' .',
-            $idnaInfo
+            $result
         );
     }
 
@@ -38,8 +37,8 @@ final class IdnaConversionFailed extends SyntaxError
         return new self('The host `'.$domain.'` is not a valid IDN host');
     }
 
-    public function idnaInfo(): ?IdnaInfo
+    public function result(): ?Result
     {
-        return $this->idnaInfo;
+        return $this->result;
     }
 }
