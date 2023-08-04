@@ -17,27 +17,19 @@ use League\Uri\Exceptions\SyntaxError;
 
 final class ConversionFailed extends SyntaxError
 {
-    private function __construct(string $message, private readonly ?Result $result = null)
+    private function __construct(string $message, private readonly Result $result)
     {
         parent::__construct($message);
     }
 
-    public static function dueToError(string $domain, Result $result): self
+    public static function dueToError(string $host, Result $result): self
     {
-        $info = array_map(fn (Error $error): string => $error->description(), $result->errors());
+        $reasons = array_map(fn (Error $error): string => $error->description(), $result->errors());
 
-        return new self(
-            'The host `'.$domain.'` is invalid : '.implode(', ', $info).' .',
-            $result
-        );
+        return new self('The host `'.$host.'` could not be converted: '.implode('; ', $reasons).' .', $result);
     }
 
-    public static function dueToInvalidHost(string $domain): self
-    {
-        return new self('The host `'.$domain.'` is not a valid IDN host');
-    }
-
-    public function result(): ?Result
+    public function result(): Result
     {
         return $this->result;
     }
