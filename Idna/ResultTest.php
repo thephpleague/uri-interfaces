@@ -28,7 +28,6 @@ final class ResultTest extends TestCase
         self::assertFalse($result->hasErrors());
         self::assertFalse($result->hasError(Error::DISALLOWED));
         self::assertFalse($result->hasError(Error::BIDI));
-        self::assertSame(Error::NONE->value, $result->errorsAsBytes());
     }
 
     public function testInvalidSyntaxAfterIDNConversion(): void
@@ -40,6 +39,5 @@ final class ResultTest extends TestCase
         self::assertSame(Error::DISALLOWED, $result->errors()[0]);
         self::assertTrue($result->hasError(Error::DISALLOWED));
         self::assertFalse($result->hasError(Error::BIDI));
-        self::assertSame(Error::DISALLOWED->value, $result->errorsAsBytes());
     }
 }

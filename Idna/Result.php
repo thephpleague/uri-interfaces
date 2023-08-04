@@ -18,19 +18,12 @@ namespace League\Uri\Idna;
  */
 final class Result
 {
-    private readonly int $errorByte;
-
     private function __construct(
         private readonly string $domain,
         private readonly bool $isTransitionalDifferent,
         /** @var array<Error> */
         private readonly array $errors
     ) {
-        $this->errorByte = array_reduce(
-            $this->errors,
-            fn (int $curry, Error $error): int => $curry | $error->value,
-            Error::NONE->value
-        );
     }
 
     /**
@@ -67,10 +60,5 @@ final class Result
     public function hasError(Error $error): bool
     {
         return in_array($error, $this->errors, true);
-    }
-
-    public function errorsAsBytes(): int
-    {
-        return $this->errorByte;
     }
 }
