@@ -25,7 +25,7 @@ final class ConverterTest extends TestCase
      */
     public function testToAsciiThrowsException(string $domain): void
     {
-        self::assertNotEmpty(Converter::toAscii($domain, Option::forIDNA2008Ascii())->errors());
+        self::assertNotEmpty(Converter::toAscii($domain)->errors());
     }
 
     /**
@@ -44,7 +44,7 @@ final class ConverterTest extends TestCase
 
     public function testToUnicodeThrowsException(): void
     {
-        self::assertNotEmpty(Converter::toUnicode('xn--a-ecp.ru', Option::forIDNA2008Unicode())->errors());
+        self::assertNotEmpty(Converter::toUnicode('xn--a-ecp.ru')->errors());
     }
 
     /**
@@ -52,7 +52,7 @@ final class ConverterTest extends TestCase
      */
     public function testToIDN(string $domain, string $expectedDomain): void
     {
-        self::assertSame($expectedDomain, Converter::toUnicode($domain, Option::forIDNA2008Unicode())->domain());
+        self::assertSame($expectedDomain, Converter::toUnicode($domain)->domain());
     }
 
     /**
@@ -93,7 +93,7 @@ final class ConverterTest extends TestCase
      */
     public function testToAscii(string $domain, string $expectedDomain): void
     {
-        self::assertSame($expectedDomain, Converter::toAscii($domain, Option::forIDNA2008Ascii())->domain());
+        self::assertSame($expectedDomain, Converter::toAscii($domain)->domain());
     }
 
     /**
@@ -123,11 +123,11 @@ final class ConverterTest extends TestCase
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainIsTooLong(): void
     {
-        self::assertNotEmpty(Converter::toAscii(str_repeat('A', 255), Option::forIDNA2008Ascii())->errors());
+        self::assertNotEmpty(Converter::toAscii(str_repeat('A', 255))->errors());
     }
 
     public function testExceptionThrownOnConversionToAsciiIfTheDomainLabelIsTooLong(): void
     {
-        self::assertNotEmpty(Converter::toAscii('aa'.str_repeat('A', 64), Option::forIDNA2008Ascii())->errors());
+        self::assertNotEmpty(Converter::toAscii('aa'.str_repeat('A', 64))->errors());
     }
 }
