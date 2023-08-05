@@ -66,6 +66,16 @@ interface DomainHostInterface extends Countable, HostInterface, IteratorAggregat
     public function append(Stringable|string $label): self;
 
     /**
+     * Extracts a slice of $length elements starting at position $offset from the host.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the selected slice.
+     *
+     * If $length is null it returns all elements from $offset to the end of the Domain.
+     */
+    public function slice(int $offset, int $lenght = null): self;
+
+    /**
      * Returns an instance with its Root label.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2.2
