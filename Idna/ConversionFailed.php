@@ -26,7 +26,7 @@ final class ConversionFailed extends SyntaxError
     {
         $reasons = array_map(fn (Error $error): string => $error->description(), $result->errors());
 
-        return new self('The host `'.$host.'` could not be converted: '.implode('; ', $reasons).' .', $result);
+        return new self('The host `'.$host.'` could not be converted: '.implode('; ', $reasons).'.', $result);
     }
 
     public function result(): Result
