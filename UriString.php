@@ -16,7 +16,6 @@ namespace League\Uri;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\ConversionFailed;
 use League\Uri\Idna\Converter;
-use League\Uri\Idna\MissingSupport;
 use Stringable;
 use function array_merge;
 use function explode;
@@ -390,8 +389,8 @@ final class UriString
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      *
-     * @throws SyntaxError    if the registered name is invalid
-     * @throws MissingSupport if IDN support or ICU requirement are not available or met.
+     * @throws SyntaxError                           if the registered name is invalid
+     * @throws \League\Uri\Exceptions\MissingSupport if IDN support or ICU requirement are not available or met.
      */
     private static function filterRegisteredName(string $host): string
     {

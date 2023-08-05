@@ -36,7 +36,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UserInfoInterface::withUserInfo` is removed in favor of `UserInfoInterface::withUser` and `UserInfoInterface::withPass`.
 - `HostInfoInterface::labels` is removed with no replacement use the `IteratorAggregate::getIterator` method instead.
 - `SegmentedPathInterface::segments` is removed with no replacement use the `IteratorAggregate::getIterator` method instead.
-- `League\Uri\Idna\Idna` constants
+- `League\Uri\Idna\Idna` use `League\Uri\Idna\Converter` instead
+- `League\Uri\Idna\IdnaInfo` use `League\Uri\Idna\Result` instead
 
 ## 2.3.0 - 2021-06-28
 

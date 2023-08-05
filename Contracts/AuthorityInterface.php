@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use League\Uri\Exceptions\MissingSupport;
 use League\Uri\Exceptions\SyntaxError;
-use League\Uri\Idna\MissingSupport;
 use Stringable;
 
 interface AuthorityInterface extends UriComponentInterface

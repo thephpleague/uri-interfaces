@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\IPv4;
 
+use League\Uri\Exceptions\MissingSupport;
 use Stringable;
 use function array_pop;
 use function count;
@@ -20,7 +21,6 @@ use function explode;
 use function extension_loaded;
 use function ltrim;
 use function preg_match;
-use function sprintf;
 use function str_ends_with;
 use function substr;
 use const PHP_INT_SIZE;
@@ -77,7 +77,7 @@ final class Converter
     /**
      * Returns an instance using a detected calculator depending on the PHP environment.
      *
-     * @throws MissingCalculator If no Calculator implementing object can be used on the platform
+     * @throws MissingSupport If no Calculator implementing object can be used on the platform
      *
      * @codeCoverageIgnore
      */
@@ -87,10 +87,7 @@ final class Converter
             extension_loaded('gmp') => self::fromGMP(),
             extension_loaded('bcmath') => self::fromBCMath(),
             4 < PHP_INT_SIZE => self::fromNative(),
-            default => throw new MissingCalculator(sprintf(
-                'No %s found. Use a x.64 PHP build or install the GMP or the BCMath extension.',
-                Calculator::class
-            ))
+            default => throw MissingSupport::forMathCalculator(),
         };
     }
 

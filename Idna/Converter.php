@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\Idna;
 
+use League\Uri\Exceptions\MissingSupport;
 use League\Uri\Exceptions\SyntaxError;
 use function defined;
 use function function_exists;
@@ -57,7 +58,7 @@ final class Converter
         }
 
         if (!$idnSupport) {
-            throw new MissingSupport('Support for IDN host requires the `intl` extension for best performance or run "composer require symfony/polyfill-intl-idn".');
+            throw MissingSupport::forIDN();
         }
     }
 

@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace League\Uri\Contracts;
 
 use JsonSerializable;
+use League\Uri\Exceptions\MissingSupport;
 use League\Uri\Exceptions\SyntaxError;
-use League\Uri\Idna\MissingSupport;
 use League\Uri\UriString;
 use Stringable;
 
