@@ -19,7 +19,7 @@ use League\Uri\IPv4\Calculator;
 use const PHP_INT_SIZE;
 
 /**
- * Allow detecting features needed to make the packages work
+ * Allow detecting features needed to make the packages work.
  */
 final class FeatureDetection
 {
