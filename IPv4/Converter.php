@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\IPv4;
 
-use League\Uri\Exceptions\MissingSupport;
+use League\Uri\Exceptions\MissingFeature;
+use League\Uri\FeatureDetection;
 use Stringable;
 use function array_pop;
 use function count;
@@ -23,7 +24,6 @@ use function ltrim;
 use function preg_match;
 use function str_ends_with;
 use function substr;
-use const PHP_INT_SIZE;
 
 final class Converter
 {
@@ -77,17 +77,18 @@ final class Converter
     /**
      * Returns an instance using a detected calculator depending on the PHP environment.
      *
-     * @throws MissingSupport If no Calculator implementing object can be used on the platform
+     * @throws MissingFeature If no Calculator implementing object can be used on the platform
      *
      * @codeCoverageIgnore
      */
     public static function fromEnvironment(): self
     {
+        FeatureDetection::supportsIPv4Conversion();
+
         return match (true) {
             extension_loaded('gmp') => self::fromGMP(),
             extension_loaded('bcmath') => self::fromBCMath(),
-            4 < PHP_INT_SIZE => self::fromNative(),
-            default => throw MissingSupport::forMathCalculator(),
+            default => self::fromNative(),
         };
     }
 

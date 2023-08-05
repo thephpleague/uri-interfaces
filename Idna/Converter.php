@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Idna;
 
-use League\Uri\Exceptions\MissingSupport;
 use League\Uri\Exceptions\SyntaxError;
-use function defined;
-use function function_exists;
+use League\Uri\FeatureDetection;
 use function idn_to_ascii;
 use function idn_to_utf8;
 use function rawurldecode;
@@ -48,21 +46,6 @@ final class Converter
         /ix';
 
     /**
-     * @codeCoverageIgnore
-     */
-    private static function supportsIdna(): void
-    {
-        static $idnSupport;
-        if (null === $idnSupport) {
-            $idnSupport = function_exists('\idn_to_ascii') && defined('\INTL_IDNA_VARIANT_UTS46');
-        }
-
-        if (!$idnSupport) {
-            throw MissingSupport::forIDN();
-        }
-    }
-
-    /**
      * Converts the input to its IDNA ASCII form.
      *
      * This method returns the string converted to IDN ASCII form
@@ -74,7 +57,8 @@ final class Converter
         $domain = rawurldecode($domain);
 
         if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
-            self::supportsIdna();
+            FeatureDetection::supportsIdn();
+
             idn_to_ascii(
                 $domain,
                 Option::new($options ?? Option::forIDNA2008Ascii())->toBytes(),
@@ -121,7 +105,8 @@ final class Converter
             return Result::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
         }
 
-        self::supportsIdna();
+        FeatureDetection::supportsIdn();
+
         idn_to_utf8(
             $domain,
             Option::new($options ?? Option::forIDNA2008Unicode())->toBytes(),

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
-use League\Uri\Exceptions\MissingSupport;
+use League\Uri\Exceptions\MissingFeature;
 use League\Uri\Exceptions\SyntaxError;
 use Stringable;
 
@@ -56,7 +56,7 @@ interface AuthorityInterface extends UriComponentInterface
      *
      * @throws SyntaxError    for invalid component or transformations
      *                        that would result in an object in invalid state.
-     * @throws MissingSupport for component or transformations
+     * @throws MissingFeature for component or transformations
      *                        requiring IDN support when IDN support is not present
      *                        or misconfigured.
      */

@@ -390,7 +390,7 @@ final class UriString
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      *
      * @throws SyntaxError                           if the registered name is invalid
-     * @throws \League\Uri\Exceptions\MissingSupport if IDN support or ICU requirement are not available or met.
+     * @throws \League\Uri\Exceptions\MissingFeature if IDN support or ICU requirement are not available or met.
      */
     private static function filterRegisteredName(string $host): string
     {
