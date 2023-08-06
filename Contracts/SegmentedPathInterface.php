@@ -74,6 +74,16 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
     public function append(Stringable|string $segment): self;
 
     /**
+     * Extracts a slice of $length elements starting at position $offset from the host.
+     *
+     * This method MUST retain the state of the current instance, and return
+     * an instance that contains the selected slice.
+     *
+     * If $length is null it returns all elements from $offset to the end of the Path.
+     */
+    public function slice(int $offset, int $length = null): self;
+
+    /**
      * Prepends a segment to the path.
      */
     public function prepend(Stringable|string $segment): self;
