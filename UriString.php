@@ -390,25 +390,23 @@ final class UriString
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      *
-     * @throws SyntaxError    if the registered name is invalid
-     * @throws MissingFeature if IDN support or ICU requirement are not available or met.
+     * @throws SyntaxError      if the registered name is invalid
+     * @throws MissingFeature   if IDN support or ICU requirement are not available or met.
+     * @throws ConversionFailed if the submitted IDN host can not be converted to a valid ascii form
      */
     private static function filterRegisteredName(string $host): string
     {
-        $formatted_host = rawurldecode($host);
-        if (1 === preg_match(self::REGEXP_REGISTERED_NAME, $formatted_host)) {
+        $formattedHost = rawurldecode($host);
+        if (1 === preg_match(self::REGEXP_REGISTERED_NAME, $formattedHost)) {
             return $host;
         }
 
         //to test IDN host non-ascii characters must be present in the host
-        if (1 !== preg_match(self::REGEXP_IDN_PATTERN, $formatted_host)) {
-            throw new SyntaxError(sprintf('Host `%s` is invalid : the host is not a valid registered name', $host));
+        if (1 !== preg_match(self::REGEXP_IDN_PATTERN, $formattedHost)) {
+            throw new SyntaxError(sprintf('Host `%s` is invalid: the host is not a valid registered name', $host));
         }
 
-        $result = Converter::toAscii($host);
-        if ($result->hasErrors()) {
-            throw ConversionFailed::dueToError($host, $result);
-        }
+        Converter::toAsciiOrFail($host);
 
         return $host;
     }

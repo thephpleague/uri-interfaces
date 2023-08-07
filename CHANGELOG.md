@@ -38,6 +38,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `SegmentedPathInterface::segments` is removed with no replacement use the `IteratorAggregate::getIterator` method instead.
 - `League\Uri\Idna\Idna` use `League\Uri\Idna\Converter` instead
 - `League\Uri\Idna\IdnaInfo` use `League\Uri\Idna\Result` instead
+- `League\Uri\Exception\IdnSupportMissing` use `League\Uri\Exception\MissingFeature` instead
 
 ## 2.3.0 - 2021-06-28
 

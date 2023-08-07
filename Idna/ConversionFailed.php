@@ -17,16 +17,24 @@ use League\Uri\Exceptions\SyntaxError;
 
 final class ConversionFailed extends SyntaxError
 {
-    private function __construct(string $message, private readonly Result $result)
-    {
+    private function __construct(
+        string $message,
+        private readonly string $host,
+        private readonly Result $result
+    ) {
         parent::__construct($message);
     }
 
-    public static function dueToError(string $host, Result $result): self
+    public static function dueToInvalidHost(string $host, Result $result): self
     {
         $reasons = array_map(fn (Error $error): string => $error->description(), $result->errors());
 
-        return new self('The host `'.$host.'` could not be converted: '.implode('; ', $reasons).'.', $result);
+        return new self('Host `'.$host.'` is invalid: '.implode('; ', $reasons).'.', $host, $result);
+    }
+
+    public function getHost(): string
+    {
+        return $this->host;
     }
 
     public function getResult(): Result

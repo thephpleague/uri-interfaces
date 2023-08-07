@@ -54,13 +54,13 @@ final class Converter
      * @throws SyntaxError      if the string can not be converted to UNICODE using IDN UTS46 algorithm
      * @throws ConversionFailed if the conversion returns error
      */
-    public static function toAsciiOrFail(string $domain, Option|int $options = null): Result
+    public static function toAsciiOrFail(string $domain, Option|int|null $options = null): string
     {
         $result = self::toAscii($domain, $options);
 
         return match (true) {
-            $result->hasErrors() => throw ConversionFailed::dueToError($domain, $result),
-            default => $result,
+            $result->hasErrors() => throw ConversionFailed::dueToInvalidHost($domain, $result),
+            default => $result->domain(),
         };
     }
 
@@ -71,7 +71,7 @@ final class Converter
      *
      * @throws SyntaxError if the string can not be converted to ASCII using IDN UTS46 algorithm
      */
-    public static function toAscii(string $domain, Option|int $options = null): Result
+    public static function toAscii(string $domain, Option|int|null $options = null): Result
     {
         $domain = rawurldecode($domain);
 
@@ -93,7 +93,6 @@ final class Converter
                 ]);
             }
 
-            /* @var array{errors: int, isTransitionalDifferent: bool, result: string} $idnaInfo */
             return Result::fromIntl($idnaInfo);
         }
 
@@ -116,13 +115,13 @@ final class Converter
      *
      * @throws ConversionFailed if the conversion returns error
      */
-    public static function toUnicodeOrFail(string $domain, Option|int $options = null): Result
+    public static function toUnicodeOrFail(string $domain, Option|int|null $options = null): string
     {
         $result = self::toUnicode($domain, $options);
 
         return match (true) {
-            $result->hasErrors() => throw ConversionFailed::dueToError($domain, $result),
-            default => $result,
+            $result->hasErrors() => throw ConversionFailed::dueToInvalidHost($domain, $result),
+            default => $result->domain(),
         };
     }
 
@@ -133,7 +132,7 @@ final class Converter
      *
      * @throws SyntaxError if the string can not be converted to UNICODE using IDN UTS46 algorithm
      */
-    public static function toUnicode(string $domain, Option|int $options = null): Result
+    public static function toUnicode(string $domain, Option|int|null $options = null): Result
     {
         $domain = rawurldecode($domain);
 
