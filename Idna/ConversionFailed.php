@@ -29,7 +29,7 @@ final class ConversionFailed extends SyntaxError
         return new self('The host `'.$host.'` could not be converted: '.implode('; ', $reasons).'.', $result);
     }
 
-    public function result(): Result
+    public function getResult(): Result
     {
         return $this->result;
     }
