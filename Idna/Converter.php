@@ -45,6 +45,25 @@ final class Converter
             ^(?:(?&reg_name)\.)*(?&reg_name)\.?$
         /ix';
 
+
+    /**
+     * Converts the input to its IDNA ASCII form or throw on failure.
+     *
+     * @see Converter::toAscii()
+     *
+     * @throws SyntaxError      if the string can not be converted to UNICODE using IDN UTS46 algorithm
+     * @throws ConversionFailed if the conversion returns error
+     */
+    public static function toAsciiOrFail(string $domain, Option|int $options = null): Result
+    {
+        $result = self::toAscii($domain, $options);
+
+        return match (true) {
+            $result->hasErrors() => throw ConversionFailed::dueToError($domain, $result),
+            default => $result,
+        };
+    }
+
     /**
      * Converts the input to its IDNA ASCII form.
      *
@@ -88,6 +107,23 @@ final class Converter
             'isTransitionalDifferent' => false,
             'errors' => self::validateDomainAndLabelLength($domain) | $error,
         ]);
+    }
+
+    /**
+     * Converts the input to its IDNA UNICODE form or throw on failure.
+     *
+     * @see Converter::toUnicode()
+     *
+     * @throws ConversionFailed if the conversion returns error
+     */
+    public static function toUnicodeOrFail(string $domain, Option|int $options = null): Result
+    {
+        $result = self::toUnicode($domain, $options);
+
+        return match (true) {
+            $result->hasErrors() => throw ConversionFailed::dueToError($domain, $result),
+            default => $result,
+        };
     }
 
     /**
