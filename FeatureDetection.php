@@ -49,7 +49,7 @@ final class FeatureDetection
         $isSupported = $isSupported ?? (extension_loaded('gmp') || extension_loaded('bcmath') || (4 < PHP_INT_SIZE));
 
         if (!$isSupported) {
-            throw new MissingFeature('A '.Calculator::class.' implementation could not be automatically loaded. To perform IPv4 conversion use a x.64 PHP build or install one of the following extension GMP or BCMath or ship your own implmentation.');
+            throw new MissingFeature('A '.Calculator::class.' implementation could not be automatically loaded. To perform IPv4 conversion use a x.64 PHP build or install one of the following extension GMP or BCMath. You can also ship your own implmentation.');
         }
     }
 }

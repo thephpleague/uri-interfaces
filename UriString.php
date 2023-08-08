@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\Exceptions\SyntaxError;
-use League\Uri\Idna\ConversionFailed;
 use League\Uri\Idna\Converter;
 use Stringable;
 use function array_merge;

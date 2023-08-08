@@ -11,9 +11,10 @@
 
 declare(strict_types=1);
 
-namespace League\Uri\Idna;
+namespace League\Uri\Exceptions;
 
-use League\Uri\Exceptions\SyntaxError;
+use League\Uri\Idna\Error;
+use League\Uri\Idna\Result;
 
 final class ConversionFailed extends SyntaxError
 {
@@ -25,7 +26,7 @@ final class ConversionFailed extends SyntaxError
         parent::__construct($message);
     }
 
-    public static function dueToInvalidHost(string $host, Result $result): self
+    public static function dueToIdnError(string $host, Result $result): self
     {
         $reasons = array_map(fn (Error $error): string => $error->description(), $result->errors());
 

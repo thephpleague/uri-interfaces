@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\Idna;
 
+use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\FeatureDetection;
 use function idn_to_ascii;
@@ -59,7 +60,7 @@ final class Converter
         $result = self::toAscii($domain, $options);
 
         return match (true) {
-            $result->hasErrors() => throw ConversionFailed::dueToInvalidHost($domain, $result),
+            $result->hasErrors() => throw ConversionFailed::dueToIdnError($domain, $result),
             default => $result->domain(),
         };
     }
@@ -78,12 +79,13 @@ final class Converter
         if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
             FeatureDetection::supportsIdn();
 
-            idn_to_ascii(
-                $domain,
-                Option::new($options ?? Option::forIDNA2008Ascii())->toBytes(),
-                INTL_IDNA_VARIANT_UTS46,
-                $idnaInfo
-            );
+            $options = match (true) {
+                null === $options => Option::forIDNA2008Ascii(),
+                $options instanceof Option => $options,
+                default => Option::new($options),
+            };
+
+            idn_to_ascii($domain, $options->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
 
             if ([] === $idnaInfo) {
                 return Result::fromIntl([
@@ -120,7 +122,7 @@ final class Converter
         $result = self::toUnicode($domain, $options);
 
         return match (true) {
-            $result->hasErrors() => throw ConversionFailed::dueToInvalidHost($domain, $result),
+            $result->hasErrors() => throw ConversionFailed::dueToIdnError($domain, $result),
             default => $result->domain(),
         };
     }
@@ -142,12 +144,13 @@ final class Converter
 
         FeatureDetection::supportsIdn();
 
-        idn_to_utf8(
-            $domain,
-            Option::new($options ?? Option::forIDNA2008Unicode())->toBytes(),
-            INTL_IDNA_VARIANT_UTS46,
-            $idnaInfo
-        );
+        $options = match (true) {
+            null === $options => Option::forIDNA2008Unicode(),
+            $options instanceof Option => $options,
+            default => Option::new($options),
+        };
+
+        idn_to_utf8($domain, $options->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
 
         if ([] === $idnaInfo) {
             return Result::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
@@ -168,7 +171,7 @@ final class Converter
         $maxDomainSize = self::MAX_DOMAIN_LENGTH;
         $length = count($labels);
 
-        // If the last label is empty and it is not the first label, then it is the root label.
+        // If the last label is empty, and it is not the first label, then it is the root label.
         // Increase the max size by 1, making it 254, to account for the root label's "."
         // delimiter. This also means we don't need to check the last label's length for being too
         // long.

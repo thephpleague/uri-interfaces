@@ -26,14 +26,6 @@ interface HostInterface extends UriComponentInterface
     public function toUnicode(): ?string;
 
     /**
-     * Normalizes the host content to a IPv4 dot-decimal notation if possible
-     * otherwise returns null.
-     *
-     * @see https://url.spec.whatwg.org/#concept-ipv4-parser
-     */
-    public function toIPv4(): ?string;
-
-    /**
      * Returns the IP version.
      *
      * If the host is a not an IP this method will return null

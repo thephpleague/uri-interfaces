@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace League\Uri\IPv4;
 
 use PHPUnit\Framework\TestCase;
-use function extension_loaded;
-use const PHP_INT_SIZE;
 
 /**
  * @coversDefaultClass \League\Uri\IPv4\Converter
@@ -24,91 +22,77 @@ final class ConverterTest extends TestCase
 {
     /**
      * @dataProvider providerHost
-     * @param ?string $input
-     * @param ?string $expected
      */
     public function testParseWithAutoDetectCalculator(?string $input, ?string $expected): void
     {
-        if (!extension_loaded('gmp') && !extension_loaded('bcmath') && 4 >= PHP_INT_SIZE) {
-            self::markTestSkipped('The PHP must be compile for a x64 OS or loads the GMP or the BCmath extension.');
-        }
-
-        self::assertEquals($expected, Converter::fromEnvironment()($input) ?? $input);
+        self::assertEquals($expected, Converter::fromEnvironment()->toDecimal($input) ?? $input);
     }
 
     /**
      * @dataProvider providerHost
-     * @param ?string $input
-     * @param ?string $expected
      */
-    public function testParseWithGMPCalculator(?string $input, ?string $expected): void
+    public function testConvertToDecimal(string $input, string $decimal, string $octal, string $hexadecimal): void
     {
-        if (!extension_loaded('gmp')) {
-            self::markTestSkipped('The GMP extension is needed to execute this test.');
-        }
+        self::assertSame($octal, Converter::fromGMP()->toOctal($input));
+        self::assertSame($octal, Converter::fromNative()->toOctal($input));
+        self::assertSame($octal, Converter::fromBCMath()->toOctal($input));
 
-        self::assertEquals($expected, Converter::fromGMP()($input) ?? $input);
-    }
+        self::assertSame($decimal, Converter::fromGMP()->toDecimal($input));
+        self::assertSame($decimal, Converter::fromNative()->toDecimal($input));
+        self::assertSame($decimal, Converter::fromBCMath()->toDecimal($input));
 
-    /**
-     * @dataProvider providerHost
-     * @param ?string $input
-     * @param ?string $expected
-     */
-    public function testParseWithNativeCalculator(?string $input, ?string $expected): void
-    {
-        if (4 > PHP_INT_SIZE) {  /* @phpstan-ignore-line */
-            self::markTestSkipped('The PHP must be compile for a x64 OS.');
-        }
-
-        self::assertEquals($expected, Converter::fromNative()($input) ?? $input);
-    }
-
-    /**
-     * @dataProvider providerHost
-     * @param ?string $input
-     * @param ?string $expected
-     */
-    public function testParseWithBCMathCalculator(?string $input, ?string $expected): void
-    {
-        if (!extension_loaded('bcmath')) {
-            self::markTestSkipped('The PHP must be compile with Bcmath extension enabled.');
-        }
-
-        self::assertEquals($expected, Converter::fromBCMath()($input) ?? $input);
+        self::assertSame($hexadecimal, Converter::fromGMP()->toHexadecimal($input));
+        self::assertSame($hexadecimal, Converter::fromNative()->toHexadecimal($input));
+        self::assertSame($hexadecimal, Converter::fromBCMath()->toHexadecimal($input));
     }
 
     public static function providerHost(): array
     {
         return [
-            'null host' => [null, null],
-            'non ip host' => ['ulb.ac.be', 'ulb.ac.be'],
-            'empty host' => ['', ''],
-            '0 host' => ['0', '0.0.0.0'],
-            'normal IP' => ['192.168.0.1', '192.168.0.1'],
-            'normal IP ending with a dot' => ['192.168.0.1.', '192.168.0.1'],
-            'octal (1)' => ['030052000001', '192.168.0.1'],
-            'octal (2)' => ['0300.0250.0000.0001', '192.168.0.1'],
-            'hexadecimal (1)' => ['0x', '0.0.0.0'],
-            'hexadecimal (2)' => ['0xffffffff', '255.255.255.255'],
-            'decimal (1)' => ['3232235521', '192.168.0.1'],
-            'decimal (2)' => ['999999999', '59.154.201.255'],
-            'decimal (3)' => ['256', '0.0.1.0'],
-            'decimal (4)' => ['192.168.257', '192.168.1.1'],
-            'invalid host (0)' => ['256.256.256.256.256', '256.256.256.256.256'],
-            'invalid host (1)' => ['256.256.256.256', '256.256.256.256'],
-            'invalid host (3)' => ['256.256.256', '256.256.256'],
-            'invalid host (4)' => ['999999999.com', '999999999.com'],
-            'invalid host (5)' => ['10000000000', '10000000000'],
-            'invalid host (6)' => ['192.168.257.com', '192.168.257.com'],
-            'invalid host (7)' => ['192..257', '192..257'],
-            'invalid host (8)' => ['0foobar', '0foobar'],
-            'invalid host (9)' => ['0xfoobar', '0xfoobar'],
-            'invalid host (10)' => ['0xffffffff1', '0xffffffff1'],
-            'invalid host (11)' => ['0300.5200.0000.0001', '0300.5200.0000.0001'],
-            'invalid host (12)' => ['255.255.256.255', '255.255.256.255'],
-            'invalid host (13)' => ['0ffaed', '0ffaed'],
-            'invalid host (14)' => ['192.168.1.0x3000000', '192.168.1.0x3000000'],
+            '0 host' => ['0', '0.0.0.0', '0000.0000.0000.0000', '0x0000'],
+            'normal IP' => ['192.168.0.1', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
+            'normal IP ending with a dot' => ['192.168.0.1.', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
+            'octal (1)' => ['030052000001', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
+            'octal (2)' => ['0300.0250.0000.0001', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
+            'hexadecimal (1)' => ['0x', '0.0.0.0', '0000.0000.0000.0000', '0x0000'],
+            'hexadecimal (2)' => ['0xffffffff', '255.255.255.255', '0377.0377.0377.0377', '0xffffffff'],
+            'decimal (1)' => ['3232235521', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
+            'decimal (2)' => ['999999999', '59.154.201.255', '0073.0232.0311.0377', '0x3b9ac9ff'],
+            'decimal (3)' => ['256', '0.0.1.0', '0000.0000.0001.0000', '0x0010'],
+            'decimal (4)' => ['192.168.257', '192.168.1.1', '0300.0250.0001.0001', '0xc0a811'],
+        ];
+    }
+
+    /**
+     * @dataProvider providerInvalidHost
+     */
+    public function testParseWithInvalidHost(?string $input): void
+    {
+        self::assertNull(Converter::fromBCMath()->toHexadecimal($input));
+        self::assertNull(Converter::fromNative()->toOctal($input));
+        self::assertNull(Converter::fromGMP()->toDecimal($input));
+    }
+
+    public static function providerInvalidHost(): array
+    {
+        return [
+            'null host' => [null],
+            'empty host' => [''],
+            'non ip host' => ['ulb.ac.be'],
+            'invalid host (0)' => ['256.256.256.256.256'],
+            'invalid host (1)' => ['256.256.256.256'],
+            'invalid host (3)' => ['256.256.256'],
+            'invalid host (4)' => ['999999999.com'],
+            'invalid host (5)' => ['10000000000'],
+            'invalid host (6)' => ['192.168.257.com'],
+            'invalid host (7)' => ['192..257'],
+            'invalid host (8)' => ['0foobar'],
+            'invalid host (9)' => ['0xfoobar'],
+            'invalid host (10)' => ['0xffffffff1'],
+            'invalid host (11)' => ['0300.5200.0000.0001'],
+            'invalid host (12)' => ['255.255.256.255'],
+            'invalid host (13)' => ['0ffaed'],
+            'invalid host (14)' => ['192.168.1.0x3000000'],
         ];
     }
 }

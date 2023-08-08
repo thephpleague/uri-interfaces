@@ -48,16 +48,13 @@ final class Option
         return $assoc;
     }
 
-    public static function new(int|self $bytes = self::DEFAULT): self
+    public static function new(int $bytes = self::DEFAULT): self
     {
-        return match (true) {
-            $bytes instanceof self => new self($bytes->value),
-            default => new self(array_reduce(
-                self::cases(),
-                fn (int $value, int $option) => 0 !== ($option & $bytes) ? ($value | $option) : $value,
-                self::DEFAULT
-            )),
-        };
+        return new self(array_reduce(
+            self::cases(),
+            fn (int $value, int $option) => 0 !== ($option & $bytes) ? ($value | $option) : $value,
+            self::DEFAULT
+        ));
     }
 
     public static function forIDNA2008Ascii(): self
@@ -94,89 +91,89 @@ final class Option
 
     public function allowUnassigned(): self
     {
-        return new self($this->value | self::ALLOW_UNASSIGNED);
+        return $this->add(self::ALLOW_UNASSIGNED);
     }
 
     public function disallowUnassigned(): self
     {
-        return new self($this->value & ~self::ALLOW_UNASSIGNED);
+        return $this->remove(self::ALLOW_UNASSIGNED);
     }
 
     public function useSTD3Rules(): self
     {
-        return new self($this->value | self::USE_STD3_RULES);
+        return $this->add(self::USE_STD3_RULES);
     }
 
     public function prohibitSTD3Rules(): self
     {
-        return new self($this->value & ~self::USE_STD3_RULES);
+        return $this->remove(self::USE_STD3_RULES);
     }
 
     public function checkBidi(): self
     {
-        return new self($this->value | self::CHECK_BIDI);
+        return $this->add(self::CHECK_BIDI);
     }
 
     public function ignoreBidi(): self
     {
-        return new self($this->value & ~self::CHECK_BIDI);
+        return $this->remove(self::CHECK_BIDI);
     }
 
     public function checkContextJ(): self
     {
-        return new self($this->value | self::CHECK_CONTEXTJ);
+        return $this->add(self::CHECK_CONTEXTJ);
     }
 
     public function ignoreContextJ(): self
     {
-        return new self($this->value & ~self::CHECK_CONTEXTJ);
+        return $this->remove(self::CHECK_CONTEXTJ);
     }
 
     public function checkContextO(): self
     {
-        return new self($this->value | self::CHECK_CONTEXTO);
+        return $this->add(self::CHECK_CONTEXTO);
     }
 
     public function ignoreContextO(): self
     {
-        return new self($this->value & ~self::CHECK_CONTEXTO);
+        return $this->remove(self::CHECK_CONTEXTO);
     }
 
     public function nonTransitionalToAscii(): self
     {
-        return new self($this->value | self::NONTRANSITIONAL_TO_ASCII);
+        return $this->add(self::NONTRANSITIONAL_TO_ASCII);
     }
 
     public function transitionalToAscii(): self
     {
-        return new self($this->value & ~self::NONTRANSITIONAL_TO_ASCII);
+        return $this->remove(self::NONTRANSITIONAL_TO_ASCII);
     }
 
     public function nonTransitionalToUnicode(): self
     {
-        return new self($this->value | self::NONTRANSITIONAL_TO_UNICODE);
+        return $this->add(self::NONTRANSITIONAL_TO_UNICODE);
     }
 
     public function transitionalToUnicode(): self
     {
-        return new self($this->value & ~self::NONTRANSITIONAL_TO_UNICODE);
+        return $this->remove(self::NONTRANSITIONAL_TO_UNICODE);
     }
 
     public function add(Option|int|null $option = null): self
     {
         return match (true) {
+            null === $option => $this,
             $option instanceof self => self::new($this->value | $option->value),
-            is_int($option) => self::new($this->value | $option),
-            default => $this,
+            default => self::new($this->value | $option),
         };
     }
 
     public function remove(Option|int|null $option = null): self
     {
         return match (true) {
+            null === $option => $this,
             $option instanceof self => self::new($this->value & ~$option->value),
-            is_int($option) => self::new($this->value & ~$option),
-            default => $this,
+            default => self::new($this->value & ~$option),
         };
     }
 }

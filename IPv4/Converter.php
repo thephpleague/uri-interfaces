@@ -92,25 +92,51 @@ final class Converter
         };
     }
 
+    public function toOctal(Stringable|string|null $ipHost): ?string
+    {
+        $host = $this->toDecimal($ipHost);
+
+        return match (true) {
+            null === $host => null,
+            default => implode('.', array_map(
+                fn ($value) => str_pad(decoct((int) $value), 4, '0', STR_PAD_LEFT),
+                explode('.', $host)
+            )),
+        };
+    }
+
+    public function toHexadecimal(Stringable|string|null $ipHost): ?string
+    {
+        $host = $this->toDecimal($ipHost);
+
+        return match (true) {
+            null === $host => null,
+            default => '0x'.implode('', array_map(
+                fn ($value) => dechex((int) $value),
+                explode('.', $host)
+            )),
+        };
+    }
+
     /**
      * Tries to convert a IPv4 hexadecimal or a IPv4 octal notation into a IPv4 dot-decimal notation if possible
      * otherwise returns null.
      *
      * @see https://url.spec.whatwg.org/#concept-ipv4-parser
      */
-    public function __invoke(Stringable|string|null $host): ?string
+    public function toDecimal(Stringable|string|null $ipHost): ?string
     {
-        $hostString = (string) $host;
-        if (1 !== preg_match(self::REGEXP_IPV4_HOST, $hostString)) {
+        $ipHost = (string) $ipHost;
+        if (1 !== preg_match(self::REGEXP_IPV4_HOST, $ipHost)) {
             return null;
         }
 
-        if (str_ends_with($hostString, '.')) {
-            $hostString = substr($hostString, 0, -1);
+        if (str_ends_with($ipHost, '.')) {
+            $ipHost = substr($ipHost, 0, -1);
         }
 
         $numbers = [];
-        foreach (explode('.', $hostString) as $label) {
+        foreach (explode('.', $ipHost) as $label) {
             $number = $this->labelToNumber($label);
             if (null === $number) {
                 return null;
