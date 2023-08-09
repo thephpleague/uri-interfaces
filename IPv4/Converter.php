@@ -92,9 +92,9 @@ final class Converter
         };
     }
 
-    public function toOctal(Stringable|string|null $ipHost): ?string
+    public function toOctal(Stringable|string|null $host): ?string
     {
-        $host = $this->toDecimal($ipHost);
+        $host = $this->toDecimal($host);
 
         return match (true) {
             null === $host => null,
@@ -105,9 +105,9 @@ final class Converter
         };
     }
 
-    public function toHexadecimal(Stringable|string|null $ipHost): ?string
+    public function toHexadecimal(Stringable|string|null $host): ?string
     {
-        $host = $this->toDecimal($ipHost);
+        $host = $this->toDecimal($host);
 
         return match (true) {
             null === $host => null,
@@ -124,19 +124,19 @@ final class Converter
      *
      * @see https://url.spec.whatwg.org/#concept-ipv4-parser
      */
-    public function toDecimal(Stringable|string|null $ipHost): ?string
+    public function toDecimal(Stringable|string|null $host): ?string
     {
-        $ipHost = (string) $ipHost;
-        if (1 !== preg_match(self::REGEXP_IPV4_HOST, $ipHost)) {
+        $host = (string) $host;
+        if (1 !== preg_match(self::REGEXP_IPV4_HOST, $host)) {
             return null;
         }
 
-        if (str_ends_with($ipHost, '.')) {
-            $ipHost = substr($ipHost, 0, -1);
+        if (str_ends_with($host, '.')) {
+            $host = substr($host, 0, -1);
         }
 
         $numbers = [];
-        foreach (explode('.', $ipHost) as $label) {
+        foreach (explode('.', $host) as $label) {
             $number = $this->labelToNumber($label);
             if (null === $number) {
                 return null;
