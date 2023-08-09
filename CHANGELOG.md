@@ -2,7 +2,7 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## Next - TBD
+## 7.0.0 - 2023-08-10
 
 ### Added
 
@@ -12,12 +12,10 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - New method to `UserInfoInterface::withPass`
 - New method to `UriInterface::toString`
 - New method to `UriInterface::toComponents`
-- `League\Uri\IPv4\Converter` class
-- `League\Uri\Idna\Converter` class
-- `League\Uri\Idna\Error` class
-- `League\Uri\Idna\Option` class
-- `League\Uri\UriString` class
-- `League\Uri\QueryString` class
+- `League\Uri\IPv4` tools
+- `League\Uri\Idna` tools
+- `League\Uri\UriString` parser
+- `League\Uri\QueryString` parser
 
 ### Fixed
 
