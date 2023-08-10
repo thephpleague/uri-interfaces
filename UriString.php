@@ -38,9 +38,9 @@ use const FILTER_VALIDATE_IP;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   6.0.0
  *
+ * @phpstan-type AuthorityMap array{user:?string, pass:?string, host:?string, port:?int}
  * @phpstan-type ComponentMap array{scheme:?string, user:?string, pass:?string, host:?string, port:?int, path:string, query:?string, fragment:?string}
  * @phpstan-type InputComponentMap array{scheme? : ?string, user? : ?string, pass? : ?string, host? : ?string, port? : ?int, path? : ?string, query? : ?string, fragment? : ?string}
- * @phpstan-type AuthorityMap array{user:?string, pass:?string, host:?string, port:?int}
  */
 final class UriString
 {

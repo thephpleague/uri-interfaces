@@ -42,12 +42,12 @@ final class Converter
         '/^(?<number>\d+)$/' => 10,
     ];
 
-    private readonly mixed $maxIpv4Number;
+    private readonly mixed $maxIPv4Number;
 
     public function __construct(
         private readonly Calculator $calculator
     ) {
-        $this->maxIpv4Number = $calculator->sub($calculator->pow(2, 32), 1);
+        $this->maxIPv4Number = $calculator->sub($calculator->pow(2, 32), 1);
     }
 
     /**
@@ -170,7 +170,7 @@ final class Converter
      *
      * @see https://url.spec.whatwg.org/#ipv4-number-parser
      *
-     * @return mixed Returns null if it can not correctly convert the label
+     * @return mixed returns null if it can not correctly convert the label
      */
     private function labelToNumber(string $label): mixed
     {
@@ -185,7 +185,7 @@ final class Converter
             }
 
             $number = $this->calculator->baseConvert($number, $base);
-            if (0 <= $this->calculator->compare($number, 0) && 0 >= $this->calculator->compare($number, $this->maxIpv4Number)) {
+            if (0 <= $this->calculator->compare($number, 0) && 0 >= $this->calculator->compare($number, $this->maxIPv4Number)) {
                 return $number;
             }
         }
