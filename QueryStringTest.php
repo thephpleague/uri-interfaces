@@ -382,9 +382,9 @@ final class QueryStringTest extends TestCase
                 'expected_rfc3986' => '0=0',
             ],
             'rcf1738' => [
-                'pairs' => [['toto', 'foo+bar']],
-                'expected_rfc1738' => 'toto=foo%2Bbar',
-                'expected_rfc3986' => 'toto=foo+bar',
+                'pairs' => [['toto', 'foo+bar toto']],
+                'expected_rfc1738' => 'toto=foo%2Bbar+toto',
+                'expected_rfc3986' => 'toto=foo%2Bbar%20toto',
             ],
             'utf-8 characters' => [
                 'pairs' => [["\v\xED", "\v\xED"]],

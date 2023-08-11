@@ -51,8 +51,8 @@ final class QueryString
             'suffixValue' => '*&',
         ],
         PHP_QUERY_RFC3986 => [
-            'suffixKey' => "!$'()*+,;:@?/%",
-            'suffixValue' => "!$'()*+,;=:@?/&%",
+            'suffixKey' => "!$'()*,;:@?/%",
+            'suffixValue' => "!$'()*,;=:@?/&%",
         ],
     ];
     private const DECODE_PAIR_VALUE = 1;
@@ -176,24 +176,6 @@ final class QueryString
         };
     }
 
-    private static function formatStringValue(string $value, int|string|float|null $name): string
-    {
-        return match (true) {
-            1 === preg_match('/[\x00-\x1f\x7f]/', $value) => $name.'='.rawurlencode($value),
-            1 !== preg_match(self::$regexpValue, $value) => $name.'='.$value,
-            default => $name.'='.preg_replace_callback(self::$regexpValue, self::encodeMatches(...), $value),
-        };
-    }
-
-    private static function formatStringName(string $name): string
-    {
-        return match (true) {
-            1 === preg_match('/[\x00-\x1f\x7f]/', $name) => rawurlencode($name),
-            1 === preg_match(self::$regexpKey, $name) => (string) preg_replace_callback(self::$regexpKey, self::encodeMatches(...), $name),
-            default => $name,
-        };
-    }
-
     /**
      * Decodes a match string.
      */
@@ -241,16 +223,11 @@ final class QueryString
             $res[] = self::buildPair($pair);
         }
 
-        if ([] === $res) {
-            return null;
-        }
-
-        $query = implode($separator, $res);
-        if (PHP_QUERY_RFC1738 === $encType) {
-            return str_replace(['+', '%20'], ['%2B', '+'], $query);
-        }
-
-        return $query;
+        return match (true) {
+            [] === $res => null,
+            PHP_QUERY_RFC1738 === $encType => str_replace('%20', '+', implode($separator, $res)),
+            default => implode($separator, $res),
+        };
     }
 
     /**
@@ -265,35 +242,31 @@ final class QueryString
         }
 
         [$name, $value] = $pair;
-        if (!is_scalar($name)) {
-            throw new SyntaxError(sprintf('A pair key must be a scalar value `%s` given.', gettype($name)));
-        }
 
-        if (is_bool($name)) {
-            $name = (int) $name;
-        }
+        $encodeMatches = static fn (array $matches): string => match (true) {
+            1 === preg_match(self::REGEXP_UNRESERVED_CHAR, rawurldecode($matches[0])) => rawurlencode($matches[0]),
+            default => $matches[0],
+        };
 
-        if (is_string($name)) {
-            $name = self::formatStringName($name);
-        }
+        $formatter = static fn (string $value, string $regexp): string => match (true) {
+            1 === preg_match('/[\x00-\x1f\x7f]/', $value) => rawurlencode($value),
+            1 === preg_match($regexp, $value) => (string) preg_replace_callback($regexp, $encodeMatches(...), $value),
+            default => $value,
+        };
+
+        $name = match (true) {
+            !is_scalar($name) => throw new SyntaxError(sprintf('A pair key must be a scalar value `%s` given.', gettype($name))),
+            is_bool($name) => (int) $name,
+            is_string($name) => $formatter($name, self::$regexpKey),
+            default => $name,
+        };
 
         return match (true) {
-            is_string($value) => self::formatStringValue($value, $name),
+            is_string($value) => $name.'='.$formatter($value, self::$regexpValue),
             is_numeric($value) => $name.'='.$value,
             is_bool($value) => $name.'='.(int) $value,
             null === $value => (string) $name,
             default => throw new SyntaxError(sprintf('A pair value must be a scalar value or the null value, `%s` given.', gettype($value))),
-        };
-    }
-
-    /**
-     * Encodes matched sequences.
-     */
-    private static function encodeMatches(array $matches): string
-    {
-        return match (true) {
-            1 === preg_match(self::REGEXP_UNRESERVED_CHAR, rawurldecode($matches[0])) => rawurlencode($matches[0]),
-            default => $matches[0],
         };
     }
 
