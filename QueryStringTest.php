@@ -37,7 +37,7 @@ final class QueryStringTest extends TestCase
     public function testSyntaxErrorThrowsExceptionWithQueryParserAndAnEmptySeparator(): void
     {
         $this->expectException(SyntaxError::class);
-        QueryString::parse('foo=bar', ''); /* @phpstan-ignore-line */
+        QueryString::parse('foo=bar', '');
     }
 
     public function testEncodingThrowsExceptionWithQueryBuilder(): void
