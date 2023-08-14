@@ -443,4 +443,42 @@ final class QueryStringTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @dataProvider queryProvider
+     */
+    public function testStringRepresentationComponent(string|array $input, string|null $expected): void
+    {
+        $query = is_array($input) ? QueryString::build($input) : QueryString::build(QueryString::parse($input));
+
+        self::assertSame($expected, $query);
+    }
+
+    public static function queryProvider(): array
+    {
+        $unreserved = 'a-zA-Z0-9.-_~!$&\'()*,;=:@';
+
+        return [
+            'bug fix issue 84' => ['fào=?%25bar&q=v%61lue', 'f%C3%A0o=?%25bar&q=value'],
+            'string' => ['kingkong=toto', 'kingkong=toto'],
+            'query object' => ['kingkong=toto', 'kingkong=toto'],
+            'empty string' => ['', ''],
+            'empty array' => [[], null],
+            'non empty array' => [[['', null]], ''],
+            'contains a reserved word #' => ['foo%23bar', 'foo%23bar'],
+            'contains a delimiter ?' => ['?foo%23bar', '?foo%23bar'],
+            'key-only' => ['k^ey', 'k%5Eey'],
+            'key-value' => ['k^ey=valu`', 'k%5Eey=valu%60'],
+            'array-key-only' => ['key[]', 'key%5B%5D'],
+            'array-key-value' => ['key[]=valu`', 'key%5B%5D=valu%60'],
+            'complex' => ['k^ey&key[]=valu`&f<>=`bar', 'k%5Eey&key%5B%5D=valu%60&f%3C%3E=%60bar'],
+            'Percent encode spaces' => ['q=va lue', 'q=va%20lue'],
+            'Percent encode multibyte' => ['€', '%E2%82%AC'],
+            "Don't encode something that's already encoded" => ['q=va%20lue', 'q=va%20lue'],
+            'Percent encode invalid percent encodings' => ['q=va%2-lue', 'q=va%2-lue'],
+            "Don't encode path segments" => ['q=va/lue', 'q=va/lue'],
+            "Don't encode unreserved chars or sub-delimiters" => [$unreserved, $unreserved],
+            'Encoded unreserved chars are not decoded' => ['q=v%61lue', 'q=value'],
+        ];
+    }
 }
