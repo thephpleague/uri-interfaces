@@ -37,7 +37,7 @@ final class QueryStringTest extends TestCase
     public function testSyntaxErrorThrowsExceptionWithQueryParserAndAnEmptySeparator(): void
     {
         $this->expectException(SyntaxError::class);
-        QueryString::parse('foo=bar', '');
+        QueryString::parse('foo=bar', ''); /* @phpstan-ignore-line */
     }
 
     public function testEncodingThrowsExceptionWithQueryBuilder(): void
@@ -296,8 +296,6 @@ final class QueryStringTest extends TestCase
 
     /**
      * @dataProvider buildProvider
-     * @param ?string $expected_rfc1738
-     * @param ?string $expected_rfc3986
      */
     public function testBuild(
         iterable $pairs,
@@ -343,8 +341,8 @@ final class QueryStringTest extends TestCase
             ],
             'php array (3)' => [
                 'pairs' => [['module', 'home'], ['action', 'v%61lue']],
-                'expected_rfc1738' => 'module=home&action=v%61lue',
-                'expected_rfc3986' => 'module=home&action=v%61lue',
+                'expected_rfc1738' => 'module=home&action=v%2561lue',
+                'expected_rfc3986' => 'module=home&action=v%2561lue',
             ],
             'preserve dot' => [
                 'pairs' => [['a.b', '3']],
@@ -359,7 +357,7 @@ final class QueryStringTest extends TestCase
             'no value stripping' => [
                 'pairs' => [['a', 'b=']],
                 'expected_rfc1738' => 'a=b%3D',
-                'expected_rfc3986' => 'a=b=',
+                'expected_rfc3986' => 'a=b%3D',
             ],
             'key only' => [
                 'pairs' => [['a', null]],
@@ -394,7 +392,7 @@ final class QueryStringTest extends TestCase
             'uri in value' => [
                 'pairs' => [['url', 'https://uri.thephpleague.com/components/2.0/?module=home#what-you-will-be-able-to-do with space']],
                 'expected_rfc1738' => 'url=https%3A%2F%2Furi.thephpleague.com%2Fcomponents%2F2.0%2F%3Fmodule%3Dhome%23what-you-will-be-able-to-do+with+space',
-                'expected_rfc3986' => 'url=https://uri.thephpleague.com/components/2.0/?module=home%23what-you-will-be-able-to-do%20with%20space',
+                'expected_rfc3986' => 'url=https%3A%2F%2Furi.thephpleague.com%2Fcomponents%2F2.0%2F%3Fmodule%3Dhome%23what-you-will-be-able-to-do%20with%20space',
             ],
         ];
     }
@@ -405,7 +403,7 @@ final class QueryStringTest extends TestCase
     public function testBuildQueryThrowsException(iterable $pairs, string $separator, int $enc_type): void
     {
         $this->expectException(SyntaxError::class);
-        QueryString::build($pairs, $separator, $enc_type);
+        QueryString::build($pairs, $separator, $enc_type); /* @phpstan-ignore-line */
     }
 
     public static function failedBuilderProvider(): array
@@ -459,14 +457,14 @@ final class QueryStringTest extends TestCase
         $unreserved = 'a-zA-Z0-9.-_~!$&\'()*,;=:@';
 
         return [
-            'bug fix issue 84' => ['fào=?%25bar&q=v%61lue', 'f%C3%A0o=?%25bar&q=value'],
+            'bug fix issue 84' => ['fào=?%25bar&q=v%61lue', 'f%C3%A0o=%3F%25bar&q=value'],
             'string' => ['kingkong=toto', 'kingkong=toto'],
             'query object' => ['kingkong=toto', 'kingkong=toto'],
             'empty string' => ['', ''],
             'empty array' => [[], null],
             'non empty array' => [[['', null]], ''],
             'contains a reserved word #' => ['foo%23bar', 'foo%23bar'],
-            'contains a delimiter ?' => ['?foo%23bar', '?foo%23bar'],
+            'contains a delimiter ?' => ['?foo%23bar', '%3Ffoo%23bar'],
             'key-only' => ['k^ey', 'k%5Eey'],
             'key-value' => ['k^ey=valu`', 'k%5Eey=valu%60'],
             'array-key-only' => ['key[]', 'key%5B%5D'],
@@ -475,9 +473,9 @@ final class QueryStringTest extends TestCase
             'Percent encode spaces' => ['q=va lue', 'q=va%20lue'],
             'Percent encode multibyte' => ['€', '%E2%82%AC'],
             "Don't encode something that's already encoded" => ['q=va%20lue', 'q=va%20lue'],
-            'Percent encode invalid percent encodings' => ['q=va%2-lue', 'q=va%2-lue'],
-            "Don't encode path segments" => ['q=va/lue', 'q=va/lue'],
-            "Don't encode unreserved chars or sub-delimiters" => [$unreserved, $unreserved],
+            'Percent encode invalid percent encodings' => ['q=va%2-lue', 'q=va%252-lue'],
+            "Don't encode path segments" => ['q=va/lue', 'q=va%2Flue'],
+            "Don't encode unreserved chars or sub-delimiters" => [$unreserved, 'a-zA-Z0-9.-_~%21%24&%27%28%29%2A%2C%3B=%3A%40'],
             'Encoded unreserved chars are not decoded' => ['q=v%61lue', 'q=value'],
         ];
     }

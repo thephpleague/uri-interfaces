@@ -2,6 +2,25 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## Next - TBD
+
+### Added
+
+- `League\Uri\Encoder` to normalize encoding URI and URI components.
+- `League\Uri\KeyValuePair\Converter` to parse and build key/value pair string.
+
+### Fixed
+
+- Rewrite `QueryString` classes and fix query encoding for basic RFC3986.
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## 7.0.0 - 2023-08-10
 
 ### Added
