@@ -18,6 +18,7 @@ use League\Uri\Exceptions\SyntaxError;
 use Stringable;
 use function explode;
 use function implode;
+use function is_string;
 use function preg_match;
 use function str_replace;
 use const PHP_QUERY_RFC1738;
@@ -29,12 +30,12 @@ final class Converter
 
     /**
      * @param non-empty-string $separator
-     * @param array<string>    $toRFC3986Encoding
-     * @param array<string>    $toEncoding
+     * @param array<string>    $fromRfc3986 contains all the RFC3986 encoded characters to be converted
+     * @param array<string>    $toEncoding  contains all the expected encoded characters
      */
     private function __construct(
         private readonly string $separator,
-        private readonly array $toRFC3986Encoding = [],
+        private readonly array $fromRfc3986 = [],
         private readonly array $toEncoding = [],
     ) {
     }
@@ -61,8 +62,7 @@ final class Converter
     public static function fromRFC1738(string $separator = '&'): self
     {
         return self::new($separator)
-            ->withRfc3986Output('%20')
-            ->withEncodingOutput('+');
+            ->withEncodingMap(['%20' => '+']);
     }
 
     public static function fromEncodingType(int $encType): self
@@ -79,13 +79,25 @@ final class Converter
      */
     public function toPairs(Stringable|string|bool|null $value): array
     {
-        $filteredValue = $this->filterValue($value);
+        $value = match (true) {
+            $value instanceof UriComponentInterface => $value->value(),
+            $value instanceof Stringable => (string) $value,
+            default => $value,
+        };
+
+        $value = match (true) {
+            null === $value => null,
+            false === $value => '0',
+            true === $value => '1',
+            1 === preg_match(self::REGEXP_INVALID_CHARS, $value) => throw new SyntaxError('Invalid query string: `'.$value.'`.'),
+            default => str_replace($this->toEncoding, $this->fromRfc3986, $value),
+        };
 
         return array_map(
             fn (string $pair): array => explode('=', $pair, 2) + [1 => null],
             match (true) {
-                null === $filteredValue => [],
-                default => explode($this->separator, $filteredValue),
+                null === $value => [],
+                default => explode($this->separator, $value),
             }
         );
     }
@@ -106,7 +118,7 @@ final class Converter
 
         return match (true) {
             [] === $filteredPairs => null,
-            default => str_replace($this->toRFC3986Encoding, $this->toEncoding, implode($this->separator, $filteredPairs)),
+            default => str_replace($this->fromRfc3986, $this->toEncoding, implode($this->separator, $filteredPairs)),
         };
     }
 
@@ -118,40 +130,33 @@ final class Converter
         return match (true) {
             '' === $separator => throw new SyntaxError('The separator character can not be the empty string.'), /* @phpstan-ignore-line */
             $separator === $this->separator => $this,
-            default => new self($separator, $this->toRFC3986Encoding, $this->toEncoding),
+            default => new self($separator, $this->fromRfc3986, $this->toEncoding),
         };
     }
 
-    public function withRfc3986Output(string ...$encoding): self
+    /**
+     * Sets the conversion map.
+     *
+     * Each key from the iterable structure represents the RFC3986 encoded characters as string,
+     * while eache value represents the expected output encoded characters
+     */
+    public function withEncodingMap(iterable $encodingMap): self
     {
-        return match (true) {
-            $encoding === $this->toRFC3986Encoding => $this,
-            default => new self($this->separator, $encoding, $this->toEncoding),
-        };
-    }
-
-    public function withEncodingOutput(string ...$encoding): self
-    {
-        return match (true) {
-            $encoding === $this->toEncoding => $this,
-            default => new self($this->separator, $this->toRFC3986Encoding, $encoding),
-        };
-    }
-
-    private function filterValue(Stringable|string|bool|null $query): ?string
-    {
-        $query = match (true) {
-            $query instanceof UriComponentInterface => $query->value(),
-            $query instanceof Stringable => (string) $query,
-            default => $query,
-        };
+        $fromRfc3986 = [];
+        $toEncoding = [];
+        foreach ($encodingMap as $from => $to) {
+            [$fromRfc3986[], $toEncoding[]] = match (true) {
+                !is_string($from) => throw new SyntaxError('The encoding output must be a string; `'.gettype($from).'` given.'),
+                $to instanceof Stringable,
+                is_string($to) => [$from, (string) $to],
+                default => throw new SyntaxError('The encoding output must be a string; `'.gettype($to).'` given.'),
+            };
+        }
 
         return match (true) {
-            null === $query => null,
-            false === $query => '0',
-            true === $query => '1',
-            1 === preg_match(self::REGEXP_INVALID_CHARS, $query) => throw new SyntaxError('Invalid query string: `'.$query.'`.'),
-            default => str_replace($this->toEncoding, $this->toRFC3986Encoding, $query),
+            $fromRfc3986 !== $this->fromRfc3986,
+            $toEncoding !== $this->toEncoding => new self($this->separator, $fromRfc3986, $toEncoding),
+            default => $this,
         };
     }
 }
