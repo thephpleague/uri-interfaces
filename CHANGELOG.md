@@ -2,7 +2,7 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## Next - TBD
+## 7.1.0 - 2023-08-21
 
 ### Added
 
@@ -11,7 +11,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Fixed
 
-- Rewrite `QueryString` classes and fix query encoding for basic RFC3986.
+- Rewrite `QueryString` classes and fix query encoding for basic RFC3986. [#109](https://github.com/thephpleague/uri-src/issues/109)
 
 ### Deprecated
 
