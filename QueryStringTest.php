@@ -25,25 +25,29 @@ final class QueryStringTest extends TestCase
     public function testEncodingThrowsExceptionWithQueryParser(): void
     {
         $this->expectException(SyntaxError::class);
-        QueryString::parse('foo=bar', '&', 42);
+
+        QueryString::parse('foo=bar', '&', 42); /* @phpstan-ignore-line */
     }
 
     public function testSyntaxErrorThrowsExceptionWithQueryParser(): void
     {
         $this->expectException(SyntaxError::class);
+
         QueryString::parse("foo=bar\0");
     }
 
     public function testSyntaxErrorThrowsExceptionWithQueryParserAndAnEmptySeparator(): void
     {
         $this->expectException(SyntaxError::class);
+
         QueryString::parse('foo=bar', ''); /* @phpstan-ignore-line */
     }
 
     public function testEncodingThrowsExceptionWithQueryBuilder(): void
     {
         $this->expectException(SyntaxError::class);
-        QueryString::build([['foo', 'bar']], '&', 42);
+
+        QueryString::build([['foo', 'bar']], '&', 42); /* @phpstan-ignore-line */
     }
 
     public function testBuildThrowsExceptionWithQueryBuilder(): void
@@ -144,7 +148,8 @@ final class QueryStringTest extends TestCase
     /**
      * @dataProvider parserProvider
      *
-     * @param non-empty-string $separator
+     * @param non-empty-string                    $separator
+     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encoding
      */
     public function testParse(Stringable|string|null|bool $query, string $separator, array $expected, int $encoding): void
     {

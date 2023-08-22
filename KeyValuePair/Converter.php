@@ -65,6 +65,9 @@ final class Converter
             ->withEncodingMap(['%20' => '+']);
     }
 
+    /**
+     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
+     */
     public static function fromEncodingType(int $encType): self
     {
         return match (true) {
@@ -128,7 +131,7 @@ final class Converter
     public function withSeparator(string $separator): self
     {
         return match (true) {
-            '' === $separator => throw new SyntaxError('The separator character can not be the empty string.'), /* @phpstan-ignore-line */
+            '' === $separator => throw new SyntaxError('The separator character can not be the empty string.'),
             $separator === $this->separator => $this,
             default => new self($separator, $this->fromRfc3986, $this->toEncoding),
         };
@@ -138,7 +141,7 @@ final class Converter
      * Sets the conversion map.
      *
      * Each key from the iterable structure represents the RFC3986 encoded characters as string,
-     * while eache value represents the expected output encoded characters
+     * while each value represents the expected output encoded characters
      */
     public function withEncodingMap(iterable $encodingMap): self
     {

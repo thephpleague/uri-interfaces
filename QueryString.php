@@ -48,7 +48,8 @@ final class QueryString
      * @see https://datatracker.ietf.org/doc/html/rfc3986#section-2.2
      *
      * @param iterable<array{0:string, 1:string|float|int|bool|null}> $pairs
-     * @param non-empty-string                                        $separator
+     * @param non-empty-string $separator
+     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
      *
      * @throws SyntaxError If the encoding type is invalid
      * @throws SyntaxError If a pair is invalid
@@ -81,7 +82,7 @@ final class QueryString
     {
         $keyValuePairs = [];
         foreach ($pairs as $pair) {
-            if ([0, 1] !== array_keys($pair)) { /* @phpstan-ignore-line */
+            if ([0, 1] !== array_keys($pair)) {
                 throw new SyntaxError('A pair must be a sequential array starting at `0` and containing two elements.');
             }
 
@@ -102,6 +103,7 @@ final class QueryString
      * @see https://wiki.php.net/rfc/on_demand_name_mangling
      *
      * @param non-empty-string $separator
+     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
      *
      * @throws SyntaxError
      */
@@ -134,6 +136,7 @@ final class QueryString
      * Parses a query string into a collection of key/value pairs.
      *
      * @param non-empty-string $separator
+     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
      *
      * @throws SyntaxError
      *
@@ -169,8 +172,8 @@ final class QueryString
         $decodePair = static function (array $pair, int $pairValueState): array {
             [$key, $value] = $pair;
 
-            return match (true) {
-                self::PAIR_VALUE_PRESERVED === $pairValueState => [(string) Encoder::decodeAll($key), $value],
+            return match ($pairValueState) {
+                self::PAIR_VALUE_PRESERVED => [(string) Encoder::decodeAll($key), $value],
                 default => [(string) Encoder::decodeAll($key), Encoder::decodeAll($value)],
             };
         };
@@ -217,9 +220,9 @@ final class QueryString
      * @see https://github.com/php/php-src/blob/master/ext/standard/tests/strings/parse_str_basic3.phpt
      * @see https://github.com/php/php-src/blob/master/ext/standard/tests/strings/parse_str_basic4.phpt
      *
-     * @param array        $data  the submitted array
-     * @param array|string $name  the pair key
-     * @param string       $value the pair value
+     * @param array $data the submitted array
+     * @param array|string $name the pair key
+     * @param string $value the pair value
      */
     private static function extractPhpVariable(array $data, array|string $name, string $value = ''): array
     {
