@@ -134,7 +134,7 @@ final class ConverterTest extends TestCase
     /**
      * @dataProvider provideIDNUri
      */
-    public function testHostIsIDN(Result|string|null $host, bool $expected): void
+    public function testHostIsIDN(string|null $host, bool $expected): void
     {
         self::assertSame($expected, Converter::isIdn($host));
     }
@@ -167,13 +167,18 @@ final class ConverterTest extends TestCase
         ];
 
         yield 'idn host with a valid conversion result' => [
-            'host' => Converter::toAscii('www.bébé.be'),
+            'host' => Converter::toAsciiOrFail('www.bébé.be'),
             'expected' => true,
         ];
 
         yield 'idn host with an invalid conversion result' => [
-            'host' => Converter::toAscii('www.％００.com'),
+            'host' => 'www.％００.com',
             'expected' => false,
+        ];
+
+        yield 'idn host with URL encoded characters' => [
+            'host' => 'b%C3%A9b%C3%A9.be',
+            'expected' => true,
         ];
     }
 }

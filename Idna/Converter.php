@@ -164,30 +164,17 @@ final class Converter
      *
      * Returns false if the host is invalid or if its conversion yield the same result
      */
-    public static function isIdn(Result|Stringable|string|null $domain): bool
+    public static function isIdn(Stringable|string|null $domain): bool
     {
-        if ($domain instanceof Result) {
-            if ($domain->hasErrors()) {
-                return false;
-            }
-
-            $domain = $domain->domain();
-        }
-
-        $filteredDomain = strtolower(rawurldecode((string) $domain));
-        if ('' === $filteredDomain) {
-            return false;
-        }
-
-        if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $filteredDomain)) {
-            return !self::toAscii($filteredDomain)->hasErrors();
-        }
-
-        $result = self::toUnicode($filteredDomain);
+        $domain = strtolower(rawurldecode((string) $domain));
+        $result = match (true) {
+            1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain) => self::toAscii($domain),
+            default => self::toUnicode($domain),
+        };
 
         return match (true) {
             $result->hasErrors() => false,
-            default => $result->domain() !== $filteredDomain,
+            default => $result->domain() !== $domain,
         };
     }
 
