@@ -16,6 +16,7 @@ namespace League\Uri\Idna;
 use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\FeatureDetection;
+use Stringable;
 use function idn_to_ascii;
 use function idn_to_utf8;
 use function rawurldecode;
@@ -45,7 +46,6 @@ final class Converter
         )
             ^(?:(?&reg_name)\.)*(?&reg_name)\.?$
         /ix';
-
 
     /**
      * Converts the input to its IDNA ASCII form or throw on failure.
@@ -157,6 +157,38 @@ final class Converter
         }
 
         return Result::fromIntl($idnaInfo);
+    }
+
+    /**
+     * Tells whether the submitted host is a valid IDN regardless of its format.
+     *
+     * Returns false if the host is invalid or if its conversion yield the same result
+     */
+    public static function isIdn(Result|Stringable|string|null $domain): bool
+    {
+        if ($domain instanceof Result) {
+            if ($domain->hasErrors()) {
+                return false;
+            }
+
+            $domain = $domain->domain();
+        }
+
+        $filteredDomain = strtolower(rawurldecode((string) $domain));
+        if ('' === $filteredDomain) {
+            return false;
+        }
+
+        if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $filteredDomain)) {
+            return !self::toAscii($filteredDomain)->hasErrors();
+        }
+
+        $result = self::toUnicode($filteredDomain);
+
+        return match (true) {
+            $result->hasErrors() => false,
+            default => $result->domain() !== $filteredDomain,
+        };
     }
 
     /**

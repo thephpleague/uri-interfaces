@@ -130,4 +130,50 @@ final class ConverterTest extends TestCase
     {
         self::assertNotEmpty(Converter::toAscii('aa'.str_repeat('A', 64))->errors());
     }
+
+    /**
+     * @dataProvider provideIDNUri
+     */
+    public function testHostIsIDN(Result|string|null $host, bool $expected): void
+    {
+        self::assertSame($expected, Converter::isIdn($host));
+    }
+
+    public static function provideIDNUri(): iterable
+    {
+        yield 'ascii host' => [
+            'host' => 'www.example.com',
+            'expected' => false,
+        ];
+
+        yield 'ascii host with invalid converted i18n' => [
+            'host' => 'www.xn--ample.com',
+            'expected' => false,
+        ];
+
+        yield 'idn host' => [
+            'host' => 'www.bébé.be',
+            'expected' => true,
+        ];
+
+        yield 'empty host' => [
+            'host' => '',
+            'expected' => false,
+        ];
+
+        yield 'null host' => [
+            'host' => null,
+            'expected' => false,
+        ];
+
+        yield 'idn host with a valid conversion result' => [
+            'host' => Converter::toAscii('www.bébé.be'),
+            'expected' => true,
+        ];
+
+        yield 'idn host with an invalid conversion result' => [
+            'host' => Converter::toAscii('www.％００.com'),
+            'expected' => false,
+        ];
+    }
 }

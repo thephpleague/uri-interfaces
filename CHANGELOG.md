@@ -2,7 +2,25 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## 7.1.0 - 2023-08-21
+## [7.2.0](https://github.com/thephpleague/uri/compare/7.1.0...master) - TBD
+
+### Added
+
+- `League\Uri\Idna\Converter::isIdn`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
+## [7.1.0](https://github.com/thephpleague/uri/compare/7.0.0...7.1.0) - 2023-08-21
 
 ### Added
 
@@ -21,7 +39,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 - None
 
-## 7.0.0 - 2023-08-10
+## [7.0.0](https://github.com/thephpleague/uri/compare/2.3.0...7.0.0)  - 2023-08-10
 
 ### Added
 
