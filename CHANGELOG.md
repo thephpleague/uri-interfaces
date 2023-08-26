@@ -7,6 +7,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Added
 
 - `League\Uri\Idna\Converter::isIdn`
+- `League\Uri\Ipv4\Converter::isIpv4`
 
 ### Fixed
 

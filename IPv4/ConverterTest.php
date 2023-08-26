@@ -44,6 +44,7 @@ final class ConverterTest extends TestCase
         self::assertSame($hexadecimal, Converter::fromGMP()->toHexadecimal($input));
         self::assertSame($hexadecimal, Converter::fromNative()->toHexadecimal($input));
         self::assertSame($hexadecimal, Converter::fromBCMath()->toHexadecimal($input));
+        self::assertTrue(Converter::fromEnvironment()->isIpv4($input));
     }
 
     public static function providerHost(): array
@@ -71,6 +72,7 @@ final class ConverterTest extends TestCase
         self::assertNull(Converter::fromBCMath()->toHexadecimal($input));
         self::assertNull(Converter::fromNative()->toOctal($input));
         self::assertNull(Converter::fromGMP()->toDecimal($input));
+        self::assertFalse(Converter::fromEnvironment()->isIpv4($input));
     }
 
     public static function providerInvalidHost(): array

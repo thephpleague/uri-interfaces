@@ -92,6 +92,11 @@ final class Converter
         };
     }
 
+    public function isIpv4(Stringable|string|null $host): bool
+    {
+        return null !== $this->toDecimal($host);
+    }
+
     public function toOctal(Stringable|string|null $host): ?string
     {
         $host = $this->toDecimal($host);
