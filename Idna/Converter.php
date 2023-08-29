@@ -79,13 +79,13 @@ final class Converter
         if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
             FeatureDetection::supportsIdn();
 
-            $options = match (true) {
+            $flags = match (true) {
                 null === $options => Option::forIDNA2008Ascii(),
                 $options instanceof Option => $options,
                 default => Option::new($options),
             };
 
-            idn_to_ascii($domain, $options->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
+            idn_to_ascii($domain, $flags->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
 
             if ([] === $idnaInfo) {
                 return Result::fromIntl([
@@ -144,13 +144,13 @@ final class Converter
 
         FeatureDetection::supportsIdn();
 
-        $options = match (true) {
+        $flags = match (true) {
             null === $options => Option::forIDNA2008Unicode(),
             $options instanceof Option => $options,
             default => Option::new($options),
         };
 
-        idn_to_utf8($domain, $options->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
+        idn_to_utf8($domain, $flags->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
 
         if ([] === $idnaInfo) {
             return Result::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
