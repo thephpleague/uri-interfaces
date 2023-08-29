@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Uri\Idna;
 
 use PHPUnit\Framework\TestCase;
+use Stringable;
 
 /**
  * @coversDefaultClass \League\Uri\Idna\Converter
@@ -50,13 +51,13 @@ final class ConverterTest extends TestCase
     /**
      * @dataProvider toUnicodeProvider
      */
-    public function testToIDN(string $domain, string $expectedDomain): void
+    public function testToIDN(Stringable|string $domain, string $expectedDomain): void
     {
         self::assertSame($expectedDomain, Converter::toUnicode($domain)->domain());
     }
 
     /**
-     * @return iterable<string,array{domain:string, expectedDomain:string}>
+     * @return iterable<string,array{domain:Stringable|string, expectedDomain:string}>
      */
     public static function toUnicodeProvider(): iterable
     {
@@ -70,7 +71,12 @@ final class ConverterTest extends TestCase
                 'expectedDomain' => 'www.食狮.公司.cn',
             ],
             'IDN to IDN domain' => [
-                'domain' => 'www.食狮.公司.cn',
+                'domain' => new class() implements Stringable {
+                    public function __toString(): string
+                    {
+                        return 'www.食狮.公司.cn';
+                    }
+                },
                 'expectedDomain' => 'www.食狮.公司.cn',
             ],
             'empty string domain and null suffix' => [
@@ -91,13 +97,13 @@ final class ConverterTest extends TestCase
     /**
      * @dataProvider toAsciiProvider
      */
-    public function testToAscii(string $domain, string $expectedDomain): void
+    public function testToAscii(Stringable|string $domain, string $expectedDomain): void
     {
         self::assertSame($expectedDomain, Converter::toAscii($domain)->domain());
     }
 
     /**
-     * @return iterable<string,array{domain:string, expectedDomain:string}>
+     * @return iterable<string,array{domain:Stringable|string, expectedDomain:string}>
      */
     public static function toAsciiProvider(): iterable
     {
@@ -111,7 +117,12 @@ final class ConverterTest extends TestCase
                 'expectedDomain' => 'www.ulb.ac.be.',
             ],
             'ASCII to ASCII domain' => [
-                'domain' => 'www.xn--85x722f.xn--55qx5d.cn',
+                'domain' => new class() implements Stringable {
+                    public function __toString(): string
+                    {
+                        return 'www.xn--85x722f.xn--55qx5d.cn';
+                    }
+                },
                 'expectedDomain' => 'www.xn--85x722f.xn--55qx5d.cn',
             ],
             'ASCII to IDN domain' => [
@@ -134,7 +145,7 @@ final class ConverterTest extends TestCase
     /**
      * @dataProvider provideIDNUri
      */
-    public function testHostIsIDN(string|null $host, bool $expected): void
+    public function testHostIsIDN(Stringable|string|null $host, bool $expected): void
     {
         self::assertSame($expected, Converter::isIdn($host));
     }
@@ -142,7 +153,12 @@ final class ConverterTest extends TestCase
     public static function provideIDNUri(): iterable
     {
         yield 'ascii host' => [
-            'host' => 'www.example.com',
+            'host' => new class() implements Stringable {
+                public function __toString(): string
+                {
+                    return 'www.example.com';
+                }
+            },
             'expected' => false,
         ];
 

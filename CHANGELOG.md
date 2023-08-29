@@ -11,7 +11,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Fixed
 
-- None
+- Add support for `Stringable` host object in `League\Uri\Idna\Converter` feature.
+- Add support for `Stringable` host object in `League\Uri\Exceptions\ConversionFailed` feature.
 
 ### Deprecated
 

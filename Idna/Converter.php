@@ -55,7 +55,7 @@ final class Converter
      * @throws SyntaxError      if the string can not be converted to UNICODE using IDN UTS46 algorithm
      * @throws ConversionFailed if the conversion returns error
      */
-    public static function toAsciiOrFail(string $domain, Option|int|null $options = null): string
+    public static function toAsciiOrFail(Stringable|string $domain, Option|int|null $options = null): string
     {
         $result = self::toAscii($domain, $options);
 
@@ -72,9 +72,9 @@ final class Converter
      *
      * @throws SyntaxError if the string can not be converted to ASCII using IDN UTS46 algorithm
      */
-    public static function toAscii(string $domain, Option|int|null $options = null): Result
+    public static function toAscii(Stringable|string $domain, Option|int|null $options = null): Result
     {
-        $domain = rawurldecode($domain);
+        $domain = rawurldecode((string) $domain);
 
         if (1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain)) {
             FeatureDetection::supportsIdn();
@@ -117,7 +117,7 @@ final class Converter
      *
      * @throws ConversionFailed if the conversion returns error
      */
-    public static function toUnicodeOrFail(string $domain, Option|int|null $options = null): string
+    public static function toUnicodeOrFail(Stringable|string $domain, Option|int|null $options = null): string
     {
         $result = self::toUnicode($domain, $options);
 
@@ -134,9 +134,9 @@ final class Converter
      *
      * @throws SyntaxError if the string can not be converted to UNICODE using IDN UTS46 algorithm
      */
-    public static function toUnicode(string $domain, Option|int|null $options = null): Result
+    public static function toUnicode(Stringable|string $domain, Option|int|null $options = null): Result
     {
-        $domain = rawurldecode($domain);
+        $domain = rawurldecode((string) $domain);
 
         if (false === stripos($domain, 'xn--')) {
             return Result::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
