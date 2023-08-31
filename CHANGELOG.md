@@ -2,6 +2,26 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## [Next](https://github.com/thephpleague/uri-interfaces/compare/7.2.0...master) - TBD
+
+### Added
+
+- `League\Uri\Contracts\QueryInterface::withoutPairByKey`
+- `League\Uri\Contracts\QueryInterface::withoutPairByValue`
+- `League\Uri\Contracts\QueryInterface::withoutPairByKeyValue`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- `Contracts\QueryInterface\QueryInterface::withoutPair` use `Contracts\QueryInterface\QueryInterface::withoutPairByKey` instead.
+
+### Removed
+
+- None
+
 ## [7.2.0](https://github.com/thephpleague/uri/compare/7.1.0...7.2.0) - 2023-08-30
 
 ### Added

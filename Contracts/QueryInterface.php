@@ -20,6 +20,10 @@ use Stringable;
 
 /**
  * @extends IteratorAggregate<array{0:string, 1:string|null}>
+ *
+ * @method self withoutPairByKey(string ...$keys) Returns an instance without pairs with the specified keys.
+ * @method self withoutPairByValue(Stringable|string|int|bool|null ...$values) Returns an instance without pairs with the specified values.
+ * @method self withoutPairByKeyValue(string $key, Stringable|string|int|bool|null $value) Returns an instance without pairs with the specified key/value pair.
  */
 interface QueryInterface extends Countable, IteratorAggregate, UriComponentInterface
 {
@@ -51,7 +55,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     /**
      * Returns an iterator allowing to go through all key/value pairs contained in this object.
      *
-     * The return type is as a Iterator where its offset is the pair key and its value the pair value.
+     * The return type is as an Iterator where its offset is the pair key and its value the pair value.
      *
      * The key of each pair is a string
      * The value of each pair is a scalar or the null value
@@ -203,7 +207,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * an instance that contains the query component normalized so that numeric indexes
      * are removed from the pair key value.
      *
-     * ie.: toto[3]=bar[3]&foo=bar becomes toto[]=bar[3]&foo=bar
+     * i.e.: toto[3]=bar[3]&foo=bar becomes toto[]=bar[3]&foo=bar
      */
     public function withoutNumericIndices(): self;
 
@@ -220,11 +224,16 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
     public function withPair(string $key, Stringable|string|int|null $value): self;
 
     /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated Since version 7.2.0
+     * @codeCoverageIgnore
+     * @see Modifier::removeQueryPairsByKey()
+     *
      * Returns an instance without the specified keys.
      *
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified component
-     *
      */
     public function withoutPair(string ...$keys): self;
 
@@ -234,7 +243,6 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      * This method MUST retain the state of the current instance, and return
      * an instance that contains the modified component without PHP's value.
      * PHP's mangled is not taken into account.
-     *
      */
     public function withoutParameters(string ...$names): self;
 }
