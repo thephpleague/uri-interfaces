@@ -82,7 +82,7 @@ final class QueryString
     {
         $keyValuePairs = [];
         foreach ($pairs as $pair) {
-            if ([0, 1] !== array_keys($pair)) {
+            if (!is_array($pair) || [0, 1] !== array_keys($pair)) {
                 throw new SyntaxError('A pair must be a sequential array starting at `0` and containing two elements.');
             }
 
