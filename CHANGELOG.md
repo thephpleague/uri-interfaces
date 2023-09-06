@@ -9,11 +9,15 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `League\Uri\Contracts\QueryInterface::withoutPairByKey`
 - `League\Uri\Contracts\QueryInterface::withoutPairByValue`
 - `League\Uri\Contracts\QueryInterface::withoutPairByKeyValue`
+- `League\Uri\Contracts\QueryInterface::toFormData`
+- `League\Uri\Contracts\QueryInterface::withoutPairByKeyValue`
 - `League\Uri\KeyValuePair\Converter::fromFormData`
+- `League\Uri\KeyValuePair\Converter::separator` method
+- `League\Uri\KeyValuePair\Converter::encondingMap` method
 
 ### Fixed
 
-- None
+- `League\Uri\KeyValuePair\Converter` fix encoding when the value is a float or the boolean `false`
 
 ### Deprecated
 
