@@ -9,6 +9,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `League\Uri\Contracts\QueryInterface::withoutPairByKey`
 - `League\Uri\Contracts\QueryInterface::withoutPairByValue`
 - `League\Uri\Contracts\QueryInterface::withoutPairByKeyValue`
+- `League\Uri\KeyValuePair\Converter::fromFormData`
 
 ### Fixed
 

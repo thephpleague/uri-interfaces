@@ -66,6 +66,17 @@ final class Converter
     }
 
     /**
+     * @param non-empty-string $separator
+     *
+     * @see https://url.spec.whatwg.org/#application/x-www-form-urlencoded
+     */
+    public static function fromFormData(string $separator = '&'): self
+    {
+        return self::new($separator)
+            ->withEncodingMap(['%20' => '+', '%2A' => '*']);
+    }
+
+    /**
      * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
      */
     public static function fromEncodingType(int $encType): self
