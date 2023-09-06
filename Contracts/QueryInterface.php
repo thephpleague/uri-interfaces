@@ -25,6 +25,8 @@ use Stringable;
  * @method self withoutPairByValue(Stringable|string|int|bool|null ...$values) Returns an instance without pairs with the specified values.
  * @method self withoutPairByKeyValue(string $key, Stringable|string|int|bool|null $value) Returns an instance without pairs with the specified key/value pair
  * @method bool hasPair(string $key, ?string $value) Tells whether the pair exists in the query.
+ * @method ?string toFormData() Returns the string representation using the applicat/www-form-urlencoded rules
+ * @method ?string toRFC3986() Returns the string representation using RFC3986 rules
  */
 interface QueryInterface extends Countable, IteratorAggregate, UriComponentInterface
 {
@@ -222,7 +224,7 @@ interface QueryInterface extends Countable, IteratorAggregate, UriComponentInter
      *
      * @see https://url.spec.whatwg.org/#dom-urlsearchparams-set
      */
-    public function withPair(string $key, Stringable|string|int|null $value): self;
+    public function withPair(string $key, Stringable|string|int|float|bool|null $value): self;
 
     /**
      * DEPRECATION WARNING! This method will be removed in the next major point release.
