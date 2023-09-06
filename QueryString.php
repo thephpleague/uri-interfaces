@@ -49,7 +49,6 @@ final class QueryString
      *
      * @param iterable<array{0:string, 1:string|float|int|bool|null}> $pairs
      * @param non-empty-string $separator
-     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
      *
      * @throws SyntaxError If the encoding type is invalid
      * @throws SyntaxError If a pair is invalid
@@ -103,7 +102,6 @@ final class QueryString
      * @see https://wiki.php.net/rfc/on_demand_name_mangling
      *
      * @param non-empty-string $separator
-     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
      *
      * @throws SyntaxError
      */
@@ -136,7 +134,6 @@ final class QueryString
      * Parses a query string into a collection of key/value pairs.
      *
      * @param non-empty-string $separator
-     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
      *
      * @throws SyntaxError
      *

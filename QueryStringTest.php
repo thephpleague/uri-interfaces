@@ -26,7 +26,7 @@ final class QueryStringTest extends TestCase
     {
         $this->expectException(SyntaxError::class);
 
-        QueryString::parse('foo=bar', '&', 42); /* @phpstan-ignore-line */
+        QueryString::parse('foo=bar', '&', 42);
     }
 
     public function testSyntaxErrorThrowsExceptionWithQueryParser(): void
@@ -47,7 +47,7 @@ final class QueryStringTest extends TestCase
     {
         $this->expectException(SyntaxError::class);
 
-        QueryString::build([['foo', 'bar']], '&', 42); /* @phpstan-ignore-line */
+        QueryString::build([['foo', 'bar']], '&', 42);
     }
 
     public function testBuildThrowsExceptionWithQueryBuilder(): void
@@ -148,8 +148,7 @@ final class QueryStringTest extends TestCase
     /**
      * @dataProvider parserProvider
      *
-     * @param non-empty-string                    $separator
-     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encoding
+     * @param non-empty-string $separator
      */
     public function testParse(Stringable|string|null|bool $query, string $separator, array $expected, int $encoding): void
     {

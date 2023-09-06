@@ -89,9 +89,6 @@ final class Converter
             ->withEncodingMap(['%20' => '+', '%2A' => '*']);
     }
 
-    /**
-     * @param PHP_QUERY_RFC3986|PHP_QUERY_RFC1738 $encType
-     */
     public static function fromEncodingType(int $encType): self
     {
         return match ($encType) {
