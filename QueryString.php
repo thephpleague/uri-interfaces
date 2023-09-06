@@ -86,8 +86,8 @@ final class QueryString
                 throw new SyntaxError('A pair must be a sequential array starting at `0` and containing two elements.');
             }
 
-            $keyValuePairs[] = [(string) Encoder::encodeQueryKeyValue($pair[0]), match(true) {
-                null === $pair[1] => null,
+            $keyValuePairs[] = [(string) Encoder::encodeQueryKeyValue($pair[0]), match(null) {
+                $pair[1] => null,
                 default => Encoder::encodeQueryKeyValue($pair[1]),
             }];
         }

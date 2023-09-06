@@ -101,8 +101,8 @@ final class Converter
     {
         $host = $this->toDecimal($host);
 
-        return match (true) {
-            null === $host => null,
+        return match (null) {
+            $host => null,
             default => implode('.', array_map(
                 fn ($value) => str_pad(decoct((int) $value), 4, '0', STR_PAD_LEFT),
                 explode('.', $host)
@@ -114,8 +114,8 @@ final class Converter
     {
         $host = $this->toDecimal($host);
 
-        return match (true) {
-            null === $host => null,
+        return match (null) {
+            $host => null,
             default => '0x'.implode('', array_map(
                 fn ($value) => dechex((int) $value),
                 explode('.', $host)

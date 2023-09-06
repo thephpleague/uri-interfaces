@@ -167,8 +167,8 @@ final class Converter
     public static function isIdn(Stringable|string|null $domain): bool
     {
         $domain = strtolower(rawurldecode((string) $domain));
-        $result = match (true) {
-            1 === preg_match(self::REGEXP_IDNA_PATTERN, $domain) => self::toAscii($domain),
+        $result = match (1) {
+            preg_match(self::REGEXP_IDNA_PATTERN, $domain) => self::toAscii($domain),
             default => self::toUnicode($domain),
         };
 
