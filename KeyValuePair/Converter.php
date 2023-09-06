@@ -16,28 +16,41 @@ namespace League\Uri\KeyValuePair;
 use League\Uri\Contracts\UriComponentInterface;
 use League\Uri\Exceptions\SyntaxError;
 use Stringable;
+
+use function array_combine;
 use function explode;
 use function implode;
+use function is_float;
+use function is_int;
 use function is_string;
+use function json_encode;
 use function preg_match;
 use function str_replace;
+
+use const JSON_PRESERVE_ZERO_FRACTION;
 use const PHP_QUERY_RFC1738;
 use const PHP_QUERY_RFC3986;
 
 final class Converter
 {
     private const REGEXP_INVALID_CHARS = '/[\x00-\x1f\x7f]/';
+    /** @var non-empty-string */
+    private readonly string $separator;
 
     /**
-     * @param non-empty-string $separator
-     * @param array<string>    $fromRfc3986 contains all the RFC3986 encoded characters to be converted
-     * @param array<string>    $toEncoding  contains all the expected encoded characters
+     * @param array<string> $fromRfc3986 contains all the RFC3986 encoded characters to be converted
+     * @param array<string> $toEncoding  contains all the expected encoded characters
      */
     private function __construct(
-        private readonly string $separator,
+        string $separator,
         private readonly array $fromRfc3986 = [],
         private readonly array $toEncoding = [],
     ) {
+        if ('' === $separator) {
+            throw new SyntaxError('The separator character must be a non empty string.');
+        }
+
+        $this->separator = $separator;
     }
 
     /**
@@ -81,43 +94,71 @@ final class Converter
      */
     public static function fromEncodingType(int $encType): self
     {
-        return match (true) {
-            PHP_QUERY_RFC3986 === $encType => self::fromRFC3986(),
-            PHP_QUERY_RFC1738 === $encType => self::fromRFC1738(),
+        return match ($encType) {
+            PHP_QUERY_RFC3986 => self::fromRFC3986(),
+            PHP_QUERY_RFC1738 => self::fromRFC1738(),
             default => throw new SyntaxError('Unknown or Unsupported encoding.'),
         };
     }
 
     /**
+     * @return non-empty-string
+     */
+    public function separator(): string
+    {
+        return $this->separator;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function encodingMap(): array
+    {
+        return array_combine($this->fromRfc3986, $this->toEncoding);
+    }
+
+    /**
      * @return array<non-empty-list<string|null>>
      */
-    public function toPairs(Stringable|string|bool|null $value): array
+    public function toPairs(Stringable|string|int|float|bool|null $value): array
     {
         $value = match (true) {
             $value instanceof UriComponentInterface => $value->value(),
-            $value instanceof Stringable => (string) $value,
+            $value instanceof Stringable, is_int($value) => (string) $value,
+            false === $value => '0',
+            true === $value => '1',
+            is_float($value) => (string) json_encode($value, JSON_PRESERVE_ZERO_FRACTION),
             default => $value,
         };
 
-        $value = match (true) {
-            null === $value => null,
-            false === $value => '0',
-            true === $value => '1',
-            1 === preg_match(self::REGEXP_INVALID_CHARS, $value) => throw new SyntaxError('Invalid query string: `'.$value.'`.'),
+        if (null === $value) {
+            return [];
+        }
+
+        $value = match (1) {
+            preg_match(self::REGEXP_INVALID_CHARS, $value) => throw new SyntaxError('Invalid query string: `'.$value.'`.'),
             default => str_replace($this->toEncoding, $this->fromRfc3986, $value),
         };
 
         return array_map(
             fn (string $pair): array => explode('=', $pair, 2) + [1 => null],
-            match (true) {
-                null === $value => [],
-                default => explode($this->separator, $value),
-            }
+            explode($this->separator, $value)
         );
     }
 
+    private static function vString(Stringable|string|bool|int|float|null $value): ?string
+    {
+        return match (true) {
+            $value => '1',
+            false === $value => '0',
+            null === $value => null,
+            is_float($value) => (string) json_encode($value, JSON_PRESERVE_ZERO_FRACTION),
+            default => (string) $value,
+        };
+    }
+
     /**
-     * @param iterable<array{0:string|null, 1:string|null}> $pairs
+     * @param iterable<array{0:string|null, 1:Stringable|string|bool|int|float|null}> $pairs
      */
     public function toValue(iterable $pairs): ?string
     {
@@ -125,13 +166,13 @@ final class Converter
         foreach ($pairs as $pair) {
             $filteredPairs[] = match (true) {
                 !is_string($pair[0]) => throw new SyntaxError('the pair key MUST be a string;, `'.gettype($pair[0]).'` given.'),
-                null === $pair[1] => $pair[0],
-                default => $pair[0].'='.$pair[1],
+                null === $pair[1] => self::vString($pair[0]),
+                default => self::vString($pair[0]).'='.self::vString($pair[1]),
             };
         }
 
-        return match (true) {
-            [] === $filteredPairs => null,
+        return match ([]) {
+            $filteredPairs => null,
             default => str_replace($this->fromRfc3986, $this->toEncoding, implode($this->separator, $filteredPairs)),
         };
     }
@@ -141,9 +182,8 @@ final class Converter
      */
     public function withSeparator(string $separator): self
     {
-        return match (true) {
-            '' === $separator => throw new SyntaxError('The separator character can not be the empty string.'),
-            $separator === $this->separator => $this,
+        return match ($this->separator) {
+            $separator => $this,
             default => new self($separator, $this->fromRfc3986, $this->toEncoding),
         };
     }
