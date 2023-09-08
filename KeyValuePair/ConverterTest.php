@@ -105,7 +105,7 @@ final class ConverterTest extends TestCase
         self::assertSame([], $converter->toPairs(null));
         self::assertSame([['', null]], $converter->toPairs(''));
         self::assertSame([['42', null]], $converter->toPairs(42));
-        self::assertSame([['42.0', null]], $converter->toPairs(42.000));
+        self::assertSame([['42', null]], $converter->toPairs(42.000));
         self::assertSame([['0', null]], $converter->toPairs(false));
         self::assertSame([['1', null]], $converter->toPairs(true));
         self::assertSame([['string', null]], $converter->toPairs('string'));

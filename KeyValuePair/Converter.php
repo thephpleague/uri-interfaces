@@ -124,7 +124,6 @@ final class Converter
             $value instanceof Stringable, is_int($value) => (string) $value,
             false === $value => '0',
             true === $value => '1',
-            is_float($value) => (string) json_encode($value, JSON_PRESERVE_ZERO_FRACTION),
             default => $value,
         };
 
@@ -133,8 +132,8 @@ final class Converter
         }
 
         $value = match (1) {
-            preg_match(self::REGEXP_INVALID_CHARS, $value) => throw new SyntaxError('Invalid query string: `'.$value.'`.'),
-            default => str_replace($this->toEncoding, $this->fromRfc3986, $value),
+            preg_match(self::REGEXP_INVALID_CHARS, (string) $value) => throw new SyntaxError('Invalid query string: `'.$value.'`.'),
+            default => str_replace($this->toEncoding, $this->fromRfc3986, (string) $value),
         };
 
         return array_map(
