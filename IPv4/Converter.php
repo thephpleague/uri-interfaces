@@ -175,7 +175,7 @@ final class Converter
      *
      * @see https://url.spec.whatwg.org/#ipv4-number-parser
      *
-     * @return mixed returns null if it can not correctly convert the label
+     * @return mixed returns null if it cannot correctly convert the label
      */
     private function labelToNumber(string $label): mixed
     {

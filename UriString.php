@@ -392,7 +392,7 @@ final class UriString
      *
      * @throws SyntaxError      if the registered name is invalid
      * @throws MissingFeature   if IDN support or ICU requirement are not available or met.
-     * @throws ConversionFailed if the submitted IDN host can not be converted to a valid ascii form
+     * @throws ConversionFailed if the submitted IDN host cannot be converted to a valid ascii form
      */
     private static function filterRegisteredName(string $host): string
     {

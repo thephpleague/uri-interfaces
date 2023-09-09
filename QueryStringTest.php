@@ -413,7 +413,7 @@ final class QueryStringTest extends TestCase
     public static function failedBuilderProvider(): array
     {
         return [
-            'The collection can not contain empty pair' => [
+            'The collection cannot contain empty pair' => [
                 [[]],
                 '&',
                 PHP_QUERY_RFC1738,
@@ -438,7 +438,7 @@ final class QueryStringTest extends TestCase
                 '&',
                 PHP_QUERY_RFC1738,
             ],
-            'the separator can not be the empty string' => [
+            'the separator cannot be the empty string' => [
                 [['foo', 'bar']],
                 '',
                 PHP_QUERY_RFC3986,

@@ -51,7 +51,7 @@ interface DataPathInterface extends PathInterface
      * Retrieves the data string.
      *
      * Retrieves the data part of the path. If no data part is provided return
-     * a empty string
+     * an empty string
      */
     public function getData(): string;
 

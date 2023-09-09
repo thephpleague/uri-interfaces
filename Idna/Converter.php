@@ -52,7 +52,7 @@ final class Converter
      *
      * @see Converter::toAscii()
      *
-     * @throws SyntaxError      if the string can not be converted to UNICODE using IDN UTS46 algorithm
+     * @throws SyntaxError      if the string cannot be converted to UNICODE using IDN UTS46 algorithm
      * @throws ConversionFailed if the conversion returns error
      */
     public static function toAsciiOrFail(Stringable|string $domain, Option|int|null $options = null): string
@@ -70,7 +70,7 @@ final class Converter
      *
      * This method returns the string converted to IDN ASCII form
      *
-     * @throws SyntaxError if the string can not be converted to ASCII using IDN UTS46 algorithm
+     * @throws SyntaxError if the string cannot be converted to ASCII using IDN UTS46 algorithm
      */
     public static function toAscii(Stringable|string $domain, Option|int|null $options = null): Result
     {
@@ -132,7 +132,7 @@ final class Converter
      *
      * This method returns the string converted to IDN UNICODE form
      *
-     * @throws SyntaxError if the string can not be converted to UNICODE using IDN UTS46 algorithm
+     * @throws SyntaxError if the string cannot be converted to UNICODE using IDN UTS46 algorithm
      */
     public static function toUnicode(Stringable|string $domain, Option|int|null $options = null): Result
     {
