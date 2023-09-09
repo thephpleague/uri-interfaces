@@ -2,7 +2,7 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## [Next](https://github.com/thephpleague/uri-interfaces/compare/7.2.0...master) - TBD
+## [Next](https://github.com/thephpleague/uri-interfaces/compare/7.2.0...7.3.0) - 2023-09-09
 
 ### Added
 
