@@ -17,9 +17,11 @@ use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\FeatureDetection;
 use Stringable;
+
 use function idn_to_ascii;
 use function idn_to_utf8;
 use function rawurldecode;
+
 use const INTL_IDNA_VARIANT_UTS46;
 
 /**
@@ -52,7 +54,7 @@ final class Converter
      *
      * @see Converter::toAscii()
      *
-     * @throws SyntaxError      if the string cannot be converted to UNICODE using IDN UTS46 algorithm
+     * @throws SyntaxError if the string cannot be converted to UNICODE using IDN UTS46 algorithm
      * @throws ConversionFailed if the conversion returns error
      */
     public static function toAsciiOrFail(Stringable|string $domain, Option|int|null $options = null): string

@@ -16,7 +16,9 @@ use League\Uri\Components\Fragment;
 use League\Uri\Exceptions\SyntaxError;
 use PHPUnit\Framework\TestCase;
 use Stringable;
+
 use function date_create;
+
 use const PHP_QUERY_RFC1738;
 use const PHP_QUERY_RFC3986;
 
@@ -165,7 +167,7 @@ final class QueryStringTest extends TestCase
                 PHP_QUERY_RFC3986,
             ],
             'stringable object' => [
-                new class() {
+                new class () {
                     public function __toString(): string
                     {
                         return 'a=1&a=2';

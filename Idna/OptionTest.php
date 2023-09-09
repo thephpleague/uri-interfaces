@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Uri\Idna;
 
 use PHPUnit\Framework\TestCase;
+
 use const IDNA_CHECK_BIDI;
 use const IDNA_NONTRANSITIONAL_TO_ASCII;
 use const IDNA_USE_STD3_RULES;

@@ -16,12 +16,14 @@ namespace League\Uri;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\KeyValuePair\Converter;
 use Stringable;
+
 use function array_key_exists;
 use function array_keys;
 use function is_array;
 use function rawurldecode;
 use function strpos;
 use function substr;
+
 use const PHP_QUERY_RFC3986;
 
 /**

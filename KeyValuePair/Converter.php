@@ -39,7 +39,7 @@ final class Converter
 
     /**
      * @param array<string> $fromRfc3986 contains all the RFC3986 encoded characters to be converted
-     * @param array<string> $toEncoding  contains all the expected encoded characters
+     * @param array<string> $toEncoding contains all the expected encoded characters
      */
     private function __construct(
         string $separator,

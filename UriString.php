@@ -18,6 +18,7 @@ use League\Uri\Exceptions\MissingFeature;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Converter;
 use Stringable;
+
 use function array_merge;
 use function explode;
 use function filter_var;
@@ -27,6 +28,7 @@ use function rawurldecode;
 use function sprintf;
 use function strpos;
 use function substr;
+
 use const FILTER_FLAG_IPV6;
 use const FILTER_VALIDATE_IP;
 
@@ -390,8 +392,8 @@ final class UriString
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      *
-     * @throws SyntaxError      if the registered name is invalid
-     * @throws MissingFeature   if IDN support or ICU requirement are not available or met.
+     * @throws SyntaxError if the registered name is invalid
+     * @throws MissingFeature if IDN support or ICU requirement are not available or met.
      * @throws ConversionFailed if the submitted IDN host cannot be converted to a valid ascii form
      */
     private static function filterRegisteredName(string $host): string

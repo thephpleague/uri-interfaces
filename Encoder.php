@@ -17,6 +17,7 @@ use Closure;
 use League\Uri\Contracts\UriComponentInterface;
 use League\Uri\Exceptions\SyntaxError;
 use Stringable;
+
 use function preg_match;
 use function preg_replace_callback;
 use function rawurldecode;

@@ -16,6 +16,7 @@ namespace League\Uri\IPv4;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\FeatureDetection;
 use Stringable;
+
 use function array_pop;
 use function count;
 use function explode;

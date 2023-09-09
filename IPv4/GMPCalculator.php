@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace League\Uri\IPv4;
 
 use GMP;
+
 use function gmp_add;
 use function gmp_cmp;
 use function gmp_div_q;
@@ -22,6 +23,7 @@ use function gmp_mod;
 use function gmp_mul;
 use function gmp_pow;
 use function gmp_sub;
+
 use const GMP_ROUND_MINUSINF;
 
 final class GMPCalculator implements Calculator

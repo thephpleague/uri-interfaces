@@ -49,7 +49,7 @@ interface Calculator
      * Divide numbers.
      *
      * @param mixed $value The number being divided.
-     * @param mixed $base  The number that $value is being divided by.
+     * @param mixed $base The number that $value is being divided by.
      *
      * @return mixed the result of the division
      */
@@ -68,7 +68,7 @@ interface Calculator
      * Returns the int point remainder (modulo) of the division of the arguments.
      *
      * @param mixed $value The dividend
-     * @param mixed $base  The divisor
+     * @param mixed $base The divisor
      *
      * @return mixed the remainder
      */

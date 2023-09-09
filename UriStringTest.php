@@ -14,6 +14,7 @@ namespace League\Uri;
 use League\Uri\Exceptions\SyntaxError;
 use PHPUnit\Framework\TestCase;
 use Stringable;
+
 use function rawurlencode;
 
 final class UriStringTest extends TestCase
@@ -693,7 +694,7 @@ final class UriStringTest extends TestCase
                 ],
             ],
             'URI is a object with __toString' => [
-                new class() {
+                new class () {
                     public function __toString(): string
                     {
                         return 'http://example.org/hello:12?foo=bar#test';

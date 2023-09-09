@@ -54,8 +54,8 @@ interface AuthorityInterface extends UriComponentInterface
      * A null value provided for the host is equivalent to removing the host
      * information.
      *
-     * @throws SyntaxError    for invalid component or transformations
-     *                        that would result in an object in invalid state.
+     * @throws SyntaxError for invalid component or transformations
+     *                     that would result in an object in invalid state.
      * @throws MissingFeature for component or transformations
      *                        requiring IDN support when IDN support is not present
      *                        or misconfigured.

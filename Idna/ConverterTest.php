@@ -71,7 +71,7 @@ final class ConverterTest extends TestCase
                 'expectedDomain' => 'www.食狮.公司.cn',
             ],
             'IDN to IDN domain' => [
-                'domain' => new class() implements Stringable {
+                'domain' => new class () implements Stringable {
                     public function __toString(): string
                     {
                         return 'www.食狮.公司.cn';
@@ -117,7 +117,7 @@ final class ConverterTest extends TestCase
                 'expectedDomain' => 'www.ulb.ac.be.',
             ],
             'ASCII to ASCII domain' => [
-                'domain' => new class() implements Stringable {
+                'domain' => new class () implements Stringable {
                     public function __toString(): string
                     {
                         return 'www.xn--85x722f.xn--55qx5d.cn';
@@ -153,7 +153,7 @@ final class ConverterTest extends TestCase
     public static function provideIDNUri(): iterable
     {
         yield 'ascii host' => [
-            'host' => new class() implements Stringable {
+            'host' => new class () implements Stringable {
                 public function __toString(): string
                 {
                     return 'www.example.com';
