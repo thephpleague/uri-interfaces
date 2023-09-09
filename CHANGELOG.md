@@ -18,6 +18,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Fixed
 
 - `League\Uri\KeyValuePair\Converter` fix encoding when the value is a float or the boolean `false`
+- Exception message typo fix [#121](https://github.com/thephpleague/uri-src/pull/121) by [GrahamCampbell](https://github.com/GrahamCampbell)
 
 ### Deprecated
 
