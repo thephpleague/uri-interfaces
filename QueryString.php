@@ -79,7 +79,7 @@ final class QueryString
      * @throws SyntaxError If the encoding type is invalid
      * @throws SyntaxError If a pair is invalid
      */
-    public static function buildFromPairs(iterable $pairs, Converter $converter = null): ?string
+    public static function buildFromPairs(iterable $pairs, ?Converter $converter = null): ?string
     {
         $keyValuePairs = [];
         foreach ($pairs as $pair) {
@@ -124,7 +124,7 @@ final class QueryString
      *
      * @throws SyntaxError
      */
-    public static function extractFromValue(Stringable|string|bool|null $query, Converter $converter = null): array
+    public static function extractFromValue(Stringable|string|bool|null $query, ?Converter $converter = null): array
     {
         return self::convert(self::decodePairs(
             ($converter ?? Converter::fromRFC3986())->toPairs($query),
@@ -153,7 +153,7 @@ final class QueryString
      *
      * @return array<int, array{0:string, 1:string|null}>
      */
-    public static function parseFromValue(Stringable|string|bool|null $query, Converter $converter = null): array
+    public static function parseFromValue(Stringable|string|bool|null $query, ?Converter $converter = null): array
     {
         return self::decodePairs(
             ($converter ?? Converter::fromRFC3986())->toPairs($query),

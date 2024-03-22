@@ -81,7 +81,7 @@ interface SegmentedPathInterface extends Countable, IteratorAggregate, PathInter
      *
      * If $length is null it returns all elements from $offset to the end of the Path.
      */
-    public function slice(int $offset, int $length = null): self;
+    public function slice(int $offset, ?int $length = null): self;
 
     /**
      * Prepends a segment to the path.

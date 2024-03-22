@@ -73,7 +73,7 @@ interface DomainHostInterface extends Countable, HostInterface, IteratorAggregat
      *
      * If $length is null it returns all elements from $offset to the end of the Domain.
      */
-    public function slice(int $offset, int $length = null): self;
+    public function slice(int $offset, ?int $length = null): self;
 
     /**
      * Returns an instance with its Root label.
