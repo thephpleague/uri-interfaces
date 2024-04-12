@@ -14,6 +14,7 @@ namespace League\Uri;
 use ArrayIterator;
 use League\Uri\Components\Fragment;
 use League\Uri\Exceptions\SyntaxError;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 
@@ -58,12 +59,10 @@ final class QueryStringTest extends TestCase
         QueryString::build([['foo', 'boo' => 'bar']]); /* @phpstan-ignore-line */
     }
 
-    /**
-     * @dataProvider extractQueryProvider
-     */
-    public function testExtractQuery(Stringable|string|null|bool $query, array $expectedData): void
+    #[DataProvider('extractQueryProvider')]
+    public function testExtractQuery(Stringable|string|null|bool $query, array $expected): void
     {
-        self::assertSame($expectedData, QueryString::extract($query));
+        self::assertSame($expected, QueryString::extract($query));
     }
 
     public static function extractQueryProvider(): array
@@ -148,10 +147,9 @@ final class QueryStringTest extends TestCase
     }
 
     /**
-     * @dataProvider parserProvider
-     *
      * @param non-empty-string $separator
      */
+    #[DataProvider('parserProvider')]
     public function testParse(Stringable|string|null|bool $query, string $separator, array $expected, int $encoding): void
     {
         self::assertSame($expected, QueryString::parse($query, $separator, $encoding));
@@ -300,9 +298,7 @@ final class QueryStringTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider buildProvider
-     */
+    #[DataProvider('buildProvider')]
     public function testBuild(
         iterable $pairs,
         ?string $expected_rfc1738,
@@ -403,9 +399,7 @@ final class QueryStringTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider failedBuilderProvider
-     */
+    #[DataProvider('failedBuilderProvider')]
     public function testBuildQueryThrowsException(iterable $pairs, string $separator, int $enc_type): void
     {
         $this->expectException(SyntaxError::class);
@@ -448,9 +442,7 @@ final class QueryStringTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider queryProvider
-     */
+    #[DataProvider('queryProvider')]
     public function testStringRepresentationComponent(string|array $input, string|null $expected): void
     {
         $query = is_array($input) ? QueryString::build($input) : QueryString::build(QueryString::parse($input));

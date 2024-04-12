@@ -13,17 +13,15 @@ declare(strict_types=1);
 
 namespace League\Uri\Idna;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 
-/**
- * @coversDefaultClass \League\Uri\Idna\Converter
- */
+#[CoversClass(Converter::class)]
 final class ConverterTest extends TestCase
 {
-    /**
-     * @dataProvider invalidDomainProvider
-     */
+    #[DataProvider('invalidDomainProvider')]
     public function testToAsciiThrowsException(string $domain): void
     {
         self::assertNotEmpty(Converter::toAscii($domain)->errors());
@@ -48,9 +46,7 @@ final class ConverterTest extends TestCase
         self::assertNotEmpty(Converter::toUnicode('xn--a-ecp.ru')->errors());
     }
 
-    /**
-     * @dataProvider toUnicodeProvider
-     */
+    #[DataProvider('toUnicodeProvider')]
     public function testToIDN(Stringable|string $domain, string $expectedDomain): void
     {
         self::assertSame($expectedDomain, Converter::toUnicode($domain)->domain());
@@ -94,9 +90,7 @@ final class ConverterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider toAsciiProvider
-     */
+    #[DataProvider('toAsciiProvider')]
     public function testToAscii(Stringable|string $domain, string $expectedDomain): void
     {
         self::assertSame($expectedDomain, Converter::toAscii($domain)->domain());
@@ -142,9 +136,7 @@ final class ConverterTest extends TestCase
         self::assertNotEmpty(Converter::toAscii('aa'.str_repeat('A', 64))->errors());
     }
 
-    /**
-     * @dataProvider provideIDNUri
-     */
+    #[DataProvider('provideIDNUri')]
     public function testHostIsIDN(Stringable|string|null $host, bool $expected): void
     {
         self::assertSame($expected, Converter::isIdn($host));

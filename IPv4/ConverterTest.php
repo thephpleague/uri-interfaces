@@ -13,24 +13,20 @@ declare(strict_types=1);
 
 namespace League\Uri\IPv4;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @coversDefaultClass \League\Uri\IPv4\Converter
- */
+#[CoversClass(Converter::class)]
 final class ConverterTest extends TestCase
 {
-    /**
-     * @dataProvider providerHost
-     */
+    #[DataProvider('providerHost')]
     public function testParseWithAutoDetectCalculator(?string $input, ?string $expected): void
     {
         self::assertEquals($expected, Converter::fromEnvironment()->toDecimal($input) ?? $input);
     }
 
-    /**
-     * @dataProvider providerHost
-     */
+    #[DataProvider('providerHost')]
     public function testConvertToDecimal(string $input, string $decimal, string $octal, string $hexadecimal): void
     {
         self::assertSame($octal, Converter::fromGMP()->toOctal($input));
@@ -64,9 +60,7 @@ final class ConverterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerInvalidHost
-     */
+    #[DataProvider('providerInvalidHost')]
     public function testParseWithInvalidHost(?string $input): void
     {
         self::assertNull(Converter::fromBCMath()->toHexadecimal($input));

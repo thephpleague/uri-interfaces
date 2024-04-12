@@ -12,6 +12,7 @@
 namespace League\Uri;
 
 use League\Uri\Exceptions\SyntaxError;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 
@@ -19,9 +20,7 @@ use function rawurlencode;
 
 final class UriStringTest extends TestCase
 {
-    /**
-     * @dataProvider validUriProvider
-     */
+    #[DataProvider('validUriProvider')]
     public function testParseSucced(Stringable|string|int $uri, array $expected): void
     {
         self::assertSame($expected, UriString::parse($uri));
@@ -740,9 +739,7 @@ final class UriStringTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidUriProvider
-     */
+    #[DataProvider('invalidUriProvider')]
     public function testParseFailed(string $uri): void
     {
         self::expectException(SyntaxError::class);
@@ -778,9 +775,7 @@ final class UriStringTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider buildUriProvider
-     */
+    #[DataProvider('buildUriProvider')]
     public function testBuild(string $uri, string $expected): void
     {
         self::assertSame($expected, UriString::build(UriString::parse($uri)));
