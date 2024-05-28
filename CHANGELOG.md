@@ -2,6 +2,24 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## [Next](https://github.com/thephpleague/uri-interfaces/compare/7.3.1...master) - TBD
+
+### Added
+
+- `UriAccess::getIdnUriString`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [7.3.1](https://github.com/thephpleague/uri-interfaces/compare/7.3.0...7.3.1) - 2024-02-23
 
 ### Added
