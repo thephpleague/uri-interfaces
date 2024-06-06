@@ -57,7 +57,7 @@ final class UriString
     /**
      * Simple URI which do not need any parsing.
      */
-    private const URI_SCHORTCUTS = [
+    private const URI_SHORTCUTS = [
         '' => [],
         '#' => ['fragment' => ''],
         '?' => ['query' => ''],
@@ -85,7 +85,7 @@ final class UriString
     ,x';
 
     /**
-     * URI scheme regular expresssion.
+     * URI scheme regular expression.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.1
      */
@@ -258,9 +258,9 @@ final class UriString
     public static function parse(Stringable|string|int $uri): array
     {
         $uri = (string) $uri;
-        if (isset(self::URI_SCHORTCUTS[$uri])) {
+        if (isset(self::URI_SHORTCUTS[$uri])) {
             /** @var ComponentMap $components */
-            $components = array_merge(self::URI_COMPONENTS, self::URI_SCHORTCUTS[$uri]);
+            $components = array_merge(self::URI_COMPONENTS, self::URI_SHORTCUTS[$uri]);
 
             return $components;
         }
