@@ -48,6 +48,8 @@ final class UriString
 {
     /**
      * Default URI component values.
+     *
+     * @var ComponentMap
      */
     private const URI_COMPONENTS = [
         'scheme' => null, 'user' => null, 'pass' => null, 'host' => null,
@@ -56,6 +58,8 @@ final class UriString
 
     /**
      * Simple URI which do not need any parsing.
+     *
+     * @var array<string, array<string>>
      */
     private const URI_SHORTCUTS = [
         '' => [],
@@ -68,6 +72,8 @@ final class UriString
 
     /**
      * Range of invalid characters in URI string.
+     *
+     * @var string
      */
     private const REGEXP_INVALID_URI_CHARS = '/[\x00-\x1f\x7f]/';
 
@@ -75,6 +81,7 @@ final class UriString
      * RFC3986 regular expression URI splitter.
      *
      * @link https://tools.ietf.org/html/rfc3986#appendix-B
+     * @var string
      */
     private const REGEXP_URI_PARTS = ',^
         (?<scheme>(?<scontent>[^:/?\#]+):)?    # URI scheme component
@@ -88,6 +95,7 @@ final class UriString
      * URI scheme regular expression.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.1
+     * @var string
      */
     private const REGEXP_URI_SCHEME = '/^([a-z][a-z\d+.-]*)?$/i';
 
@@ -95,6 +103,7 @@ final class UriString
      * IPvFuture regular expression.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
+     * @var string
      */
     private const REGEXP_IP_FUTURE = '/^
         v(?<version>[A-F0-9])+\.
@@ -108,6 +117,7 @@ final class UriString
      * General registered name regular expression.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
+     * @var string
      */
     private const REGEXP_REGISTERED_NAME = '/(?(DEFINE)
         (?<unreserved>[a-z0-9_~\-])   # . is missing as it is used to separate labels
@@ -121,6 +131,7 @@ final class UriString
      * Invalid characters in host regular expression.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
+     * @var string
      */
     private const REGEXP_INVALID_HOST_CHARS = '/
         [:\/?#\[\]@ ]  # gen-delims characters as well as the space character
@@ -130,24 +141,38 @@ final class UriString
      * Invalid path for URI without scheme and authority regular expression.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.3
+     * @var string
      */
     private const REGEXP_INVALID_PATH = ',^(([^/]*):)(.*)?/,';
 
     /**
      * Host and Port splitter regular expression.
+     *
+     * @var string
      */
     private const REGEXP_HOST_PORT = ',^(?<host>\[.*\]|[^:]*)(:(?<port>.*))?$,';
 
     /**
      * IDN Host detector regular expression.
+     *
+     * @var string
      */
     private const REGEXP_IDN_PATTERN = '/[^\x20-\x7f]/';
 
     /**
      * Only the address block fe80::/10 can have a Zone ID attach to
      * let's detect the link local significant 10 bits.
+     *
+     * @var string
      */
     private const ZONE_ID_ADDRESS_BLOCK = "\xfe\x80";
+
+    /**
+     * Maximum number of host cached.
+     *
+     * @var int
+     */
+    private const MAXIMUM_HOST_CACHED = 100;
 
     /**
      * Generate a URI string representation from its parsed representation
@@ -379,16 +404,38 @@ final class UriString
      */
     private static function filterHost(string $host): string
     {
-        return match (true) {
-            '' === $host => '',
-            '[' !== $host[0] || !str_ends_with($host, ']') => self::filterRegisteredName($host),
-            !self::isIpHost(substr($host, 1, -1)) => throw new SyntaxError(sprintf('Host `%s` is invalid : the IP host is malformed', $host)),
-            default => $host,
-        };
+        if ('' === $host) {
+            return $host;
+        }
+
+        /** @var array<string, 1> $hostCache */
+        static $hostCache = [];
+        if (isset($hostCache[$host])) {
+            return $host;
+        }
+
+        if (self::MAXIMUM_HOST_CACHED < count($hostCache)) {
+            array_shift($hostCache);
+        }
+
+        if ('[' !== $host[0] || !str_ends_with($host, ']')) {
+            self::filterRegisteredName($host);
+            $hostCache[$host] = 1;
+
+            return $host;
+        }
+
+        if (self::isIpHost(substr($host, 1, -1))) {
+            $hostCache[$host] = 1;
+
+            return $host;
+        }
+
+        throw new SyntaxError(sprintf('Host `%s` is invalid : the IP host is malformed', $host));
     }
 
     /**
-     * Returns whether the host is an IPv4 or a registered named.
+     * Throws if the host is not a registered name and not a valid IDN host
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      *
@@ -396,11 +443,11 @@ final class UriString
      * @throws MissingFeature if IDN support or ICU requirement are not available or met.
      * @throws ConversionFailed if the submitted IDN host cannot be converted to a valid ascii form
      */
-    private static function filterRegisteredName(string $host): string
+    private static function filterRegisteredName(string $host): void
     {
         $formattedHost = rawurldecode($host);
         if (1 === preg_match(self::REGEXP_REGISTERED_NAME, $formattedHost)) {
-            return $host;
+            return;
         }
 
         //to test IDN host non-ascii characters must be present in the host
@@ -409,8 +456,6 @@ final class UriString
         }
 
         Converter::toAsciiOrFail($host);
-
-        return $host;
     }
 
     /**

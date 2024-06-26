@@ -15,9 +15,6 @@ namespace League\Uri\Contracts;
 
 use Psr\Http\Message\UriInterface as Psr7UriInterface;
 
-/**
- * @method string getIdnUriString() returns the RFC3986 string representation of the complete URI with its host in IDNA form
- */
 interface UriAccess
 {
     public function getUri(): UriInterface|Psr7UriInterface;

@@ -21,6 +21,9 @@ use Stringable;
 
 /**
  * @phpstan-import-type ComponentMap from UriString
+ *
+ * @method string|null getUsername() returns the user component of the URI.
+ * @method string|null getPassword() returns the scheme-specific information about how to gain authorization to access the resource.
  */
 interface UriInterface extends JsonSerializable, Stringable
 {
