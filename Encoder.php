@@ -16,6 +16,7 @@ namespace League\Uri;
 use Closure;
 use League\Uri\Contracts\UriComponentInterface;
 use League\Uri\Exceptions\SyntaxError;
+use SensitiveParameter;
 use Stringable;
 
 use function preg_match;
@@ -57,7 +58,7 @@ final class Encoder
      *
      * Generic delimiters ":" MUST NOT be encoded
      */
-    public static function encodePassword(Stringable|string|null $component): ?string
+    public static function encodePassword(#[SensitiveParameter] Stringable|string|null $component): ?string
     {
         static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':]+|'.self::REGEXP_PART_ENCODED.'/';
 
