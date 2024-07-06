@@ -353,13 +353,14 @@ final class UriString
      *
      * @return AuthorityMap
      */
-    public static function parseAuthority(?string $authority): array
+    public static function parseAuthority(Stringable|string|null $authority): array
     {
         $components = ['user' => null, 'pass' => null, 'host' => null, 'port' => null];
         if (null === $authority) {
             return $components;
         }
 
+        $authority = (string) $authority;
         $components['host'] = '';
         if ('' === $authority) {
             return $components;
