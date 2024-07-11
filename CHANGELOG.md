@@ -6,6 +6,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Added
 
+- `UriInterface::toComponents` returns an associative array containing all URI components values.
 - `UriInterface::getUsername` returns the encoded user component of the URI.
 - `UriInterface::getPassword` returns the encoded scheme-specific information about how to gain authorization to access the resource.
 - `Uri\IPv6\Converter` allow expanding and compressing IPv6.
@@ -17,7 +18,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Deprecated
 
-- None
+- `UriInterface::getComponents` use `UriInterface::toComponents`
 
 ### Removed
 
@@ -115,7 +116,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - New method to `UserInfoInterface::withUser`
 - New method to `UserInfoInterface::withPass`
 - New method to `UriInterface::toString`
-- New method to `UriInterface::toComponents`
+- New method to `UriInterface::getComponents`
 - `League\Uri\IPv4` tools
 - `League\Uri\Idna` tools
 - `League\Uri\UriString` parser
