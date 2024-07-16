@@ -188,26 +188,50 @@ final class UriString
      */
     public static function build(array $components): string
     {
-        $uri = $components['path'] ?? '';
-        if (isset($components['query'])) {
-            $uri .= '?'.$components['query'];
+        return self::buildUri(
+            $components['scheme'] ?? null,
+            self::buildAuthority($components),
+            $components['path'] ?? '',
+            $components['query'] ?? null,
+            $components['fragment'] ?? null,
+        );
+    }
+
+    /**
+     * Generate a URI string representation based on RFC3986 algorithm
+     *
+     * valid URI component MUST be provided without their URI delimiters
+     * but properly encoded.
+     *
+     * @link https://tools.ietf.org/html/rfc3986#section-5.3
+     * @link https://tools.ietf.org/html/rfc3986#section-7.5
+     */
+    public static function buildUri(
+        ?string $scheme,
+        ?string $authority,
+        string $path,
+        ?string $query,
+        ?string $fragment,
+    ): string {
+        $uri = '';
+        if (null !== $scheme) {
+            $uri .= $scheme.':';
         }
 
-        if (isset($components['fragment'])) {
-            $uri .= '#'.$components['fragment'];
-        }
-
-        $scheme = null;
-        if (isset($components['scheme'])) {
-            $scheme = $components['scheme'].':';
-        }
-
-        $authority = self::buildAuthority($components);
         if (null !== $authority) {
-            $authority = '//'.$authority;
+            $uri .= '//'.$authority;
         }
 
-        return $scheme.$authority.$uri;
+        $uri .= $path;
+        if (null !== $query) {
+            $uri .= '?'.$query;
+        }
+
+        if (null !== $fragment) {
+            $uri .= '#'.$fragment;
+        }
+
+        return $uri;
     }
 
     /**
