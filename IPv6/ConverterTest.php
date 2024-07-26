@@ -68,8 +68,6 @@ final class ConverterTest extends TestCase
     {
         yield 'hostname' => ['invalidIp' => 'example.com'];
 
-        yield 'IPv4' => ['invalidIp' => '127.0.0.2'];
-
         yield 'ip future' => ['invalidIp' => '[v42.fdfsffd]'];
 
         yield 'IPv6 with zoneIdentifier' => ['invalidIp' => 'fe80::a%25en1'];

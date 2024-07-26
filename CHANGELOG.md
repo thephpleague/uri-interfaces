@@ -9,12 +9,15 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriInterface::toComponents` returns an associative array containing all URI components values.
 - `UriInterface::getUsername` returns the encoded user component of the URI.
 - `UriInterface::getPassword` returns the encoded scheme-specific information about how to gain authorization to access the resource.
-- `Uri\IPv6\Converter` allow expanding and compressing IPv6.
+- `Uri\IPv6\Converter` allows expanding and compressing IPv6.
+- `Uri\IPv4\Converter::to6to4` allows converting an IPv4 into an IPv6 host using the 6to4 notation.
+- `Uri\IPv4\Converter::toIPv4MappedIPv6`  allows mapping an IPv4 address into an IPv6 one.
 
 ### Fixed
 
 - Adding Host resolution caching to speed up URI parsing in `UriString`
 - `UriString::parseAuthority` accepts `Stringable` object as valid input
+- `Uri\IPv4\Converter::toDecimal` also handles 6to4 and IPv4 mapped address algorithm.
 
 ### Deprecated
 

@@ -27,7 +27,14 @@ final class ConverterTest extends TestCase
     }
 
     #[DataProvider('providerHost')]
-    public function testConvertToDecimal(string $input, string $decimal, string $octal, string $hexadecimal): void
+    public function testConvertToDecimal(
+        string $input,
+        string $decimal,
+        string $octal,
+        string $hexadecimal,
+        string $sixToFour,
+        string $ipv4Mapped,
+    ): void
     {
         self::assertSame($octal, Converter::fromGMP()->toOctal($input));
         self::assertSame($octal, Converter::fromNative()->toOctal($input));
@@ -40,23 +47,34 @@ final class ConverterTest extends TestCase
         self::assertSame($hexadecimal, Converter::fromGMP()->toHexadecimal($input));
         self::assertSame($hexadecimal, Converter::fromNative()->toHexadecimal($input));
         self::assertSame($hexadecimal, Converter::fromBCMath()->toHexadecimal($input));
+
+        self::assertSame($sixToFour, Converter::fromBCMath()->to6to4($input));
+        self::assertSame($sixToFour, Converter::fromNative()->to6to4($input));
+        self::assertSame($sixToFour, Converter::fromBCMath()->to6to4($input));
+
+        self::assertSame($ipv4Mapped, Converter::fromBCMath()->toIPv4MappedIPv6($input));
+        self::assertSame($ipv4Mapped, Converter::fromNative()->toIPv4MappedIPv6($input));
+        self::assertSame($ipv4Mapped, Converter::fromBCMath()->toIPv4MappedIPv6($input));
+
         self::assertTrue(Converter::fromEnvironment()->isIpv4($input));
     }
 
     public static function providerHost(): array
     {
         return [
-            '0 host' => ['0', '0.0.0.0', '0000.0000.0000.0000', '0x0000'],
-            'normal IP' => ['192.168.0.1', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
-            'normal IP ending with a dot' => ['192.168.0.1.', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
-            'octal (1)' => ['030052000001', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
-            'octal (2)' => ['0300.0250.0000.0001', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
-            'hexadecimal (1)' => ['0x', '0.0.0.0', '0000.0000.0000.0000', '0x0000'],
-            'hexadecimal (2)' => ['0xffffffff', '255.255.255.255', '0377.0377.0377.0377', '0xffffffff'],
-            'decimal (1)' => ['3232235521', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801'],
-            'decimal (2)' => ['999999999', '59.154.201.255', '0073.0232.0311.0377', '0x3b9ac9ff'],
-            'decimal (3)' => ['256', '0.0.1.0', '0000.0000.0001.0000', '0x0010'],
-            'decimal (4)' => ['192.168.257', '192.168.1.1', '0300.0250.0001.0001', '0xc0a811'],
+            '0 host' => ['0', '0.0.0.0', '0000.0000.0000.0000', '0x0000', '[2002:0000:0000::]', '[::ffff:0.0.0.0]'],
+            'normal IP' => ['192.168.0.1', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801', '[2002:c0a8:0001::]', '[::ffff:192.168.0.1]'],
+            'normal IP ending with a dot' => ['192.168.0.1.', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801', '[2002:c0a8:0001::]', '[::ffff:192.168.0.1]'],
+            'octal (1)' => ['030052000001', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801',  '[2002:c0a8:0001::]', '[::ffff:192.168.0.1]'],
+            'octal (2)' => ['0300.0250.0000.0001', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801',  '[2002:c0a8:0001::]', '[::ffff:192.168.0.1]'],
+            'hexadecimal (1)' => ['0x', '0.0.0.0', '0000.0000.0000.0000', '0x0000', '[2002:0000:0000::]', '[::ffff:0.0.0.0]'],
+            'hexadecimal (2)' => ['0xffffffff', '255.255.255.255', '0377.0377.0377.0377', '0xffffffff', '[2002:ffff:ffff::]', '[::ffff:255.255.255.255]'],
+            'decimal (1)' => ['3232235521', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801', '[2002:c0a8:0001::]', '[::ffff:192.168.0.1]'],
+            'decimal (2)' => ['999999999', '59.154.201.255', '0073.0232.0311.0377', '0x3b9ac9ff', '[2002:3b9a:c9ff::]', '[::ffff:59.154.201.255]'],
+            'decimal (3)' => ['256', '0.0.1.0', '0000.0000.0001.0000', '0x0010', '[2002:0000:0100::]', '[::ffff:0.0.1.0]'],
+            'decimal (4)' => ['192.168.257', '192.168.1.1', '0300.0250.0001.0001', '0xc0a811', '[2002:c0a8:0101::]', '[::ffff:192.168.1.1]'],
+            'IPv4 Mapped to IPv6 notation' => ['[::ffff:192.168.0.1]', '192.168.0.1', '0300.0250.0000.0001', '0xc0a801', '[2002:c0a8:0001::]', '[::ffff:192.168.0.1]'],
+            'IPv4 6to4 notation' => ['[2002:c0a8:0001::]', '192.168.0.1', '0300.0250.0000.0001',  '0xc0a801', '[2002:c0a8:0001::]', '[::ffff:192.168.0.1]'],
         ];
     }
 
@@ -89,6 +107,7 @@ final class ConverterTest extends TestCase
             'invalid host (12)' => ['255.255.256.255'],
             'invalid host (13)' => ['0ffaed'],
             'invalid host (14)' => ['192.168.1.0x3000000'],
+            'invalid host (15)' => ['[::1]'],
         ];
     }
 }
