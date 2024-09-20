@@ -25,6 +25,7 @@ use function ltrim;
 use function preg_match;
 use function str_ends_with;
 use function substr;
+
 use const FILTER_FLAG_IPV4;
 use const FILTER_FLAG_IPV6;
 use const FILTER_VALIDATE_IP;
@@ -142,7 +143,7 @@ final class Converter
             explode('.', $host)
         );
 
-        return '['.self::IPV6_6TO4_PREFIX . $parts[0] . $parts[1] . ':' . $parts[2] . $parts[3] . '::]';
+        return '['.self::IPV6_6TO4_PREFIX.$parts[0].$parts[1].':'.$parts[2].$parts[3].'::]';
     }
 
     public function toIPv4MappedIPv6(Stringable|string|null $host): ?string

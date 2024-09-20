@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * League.Uri (https://uri.thephpleague.com)
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace League\Uri\IPv6;
@@ -7,15 +16,15 @@ namespace League\Uri\IPv6;
 use Stringable;
 use ValueError;
 
-use const FILTER_FLAG_IPV6;
-use const FILTER_VALIDATE_IP;
-
 use function filter_var;
-use function inet_pton;
 use function implode;
+use function inet_pton;
 use function str_split;
 use function strtolower;
 use function unpack;
+
+use const FILTER_FLAG_IPV6;
+use const FILTER_VALIDATE_IP;
 
 final class Converter
 {
@@ -40,7 +49,7 @@ final class Converter
             throw new ValueError('The submitted IP is not a valid IPv6 address.');
         }
 
-        $hex = (array) unpack("H*hex", (string) inet_pton($ipAddress));
+        $hex = (array) unpack('H*hex', (string) inet_pton($ipAddress));
 
         return implode(':', str_split(strtolower($hex['hex'] ?? ''), 4));
     }
@@ -80,7 +89,7 @@ final class Converter
         $components['ipAddress'] ??= null;
         $components['zoneIdentifier'] ??= null;
 
-        if (null === $components['ipAddress']){
+        if (null === $components['ipAddress']) {
             return '';
         }
 
@@ -97,12 +106,12 @@ final class Converter
      */
     private static function parse(Stringable|string|null $host): array
     {
-        if ($host === null) {
+        if (null === $host) {
             return ['ipAddress' => null, 'zoneIdentifier' => null];
         }
 
         $host = (string) $host;
-        if ($host === '') {
+        if ('' === $host) {
             return ['ipAddress' => null, 'zoneIdentifier' => null];
         }
 

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * League.Uri (https://uri.thephpleague.com)
+ *
+ * (c) Ignace Nyamagana Butera <nyamsprod@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace League\Uri\IPv6;
@@ -59,9 +68,9 @@ final class ConverterTest extends TestCase
     #[DataProvider('invalidIpv6')]
     public function testItFailsToExpandANonIpv6(string $invalidIp): void
     {
-         $this->expectException(ValueError::class);
+        $this->expectException(ValueError::class);
 
-         Converter::expandIp($invalidIp);
+        Converter::expandIp($invalidIp);
     }
 
     public static function invalidIpv6(): iterable

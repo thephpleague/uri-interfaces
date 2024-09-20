@@ -198,7 +198,7 @@ final class UriString
     }
 
     /**
-     * Generate a URI string representation based on RFC3986 algorithm
+     * Generate a URI string representation based on RFC3986 algorithm.
      *
      * valid URI component MUST be provided without their URI delimiters
      * but properly encoded.
@@ -345,23 +345,23 @@ final class UriString
         preg_match(self::REGEXP_URI_PARTS, $uri, $parts);
         $parts += ['query' => '', 'fragment' => ''];
 
-        if (':' === $parts['scheme'] || 1 !== preg_match(self::REGEXP_URI_SCHEME, $parts['scontent'])) {
+        if (':' === ($parts['scheme']  ?? null) || 1 !== preg_match(self::REGEXP_URI_SCHEME, $parts['scontent'] ?? '')) {
             throw new SyntaxError(sprintf('The uri `%s` contains an invalid scheme', $uri));
         }
 
-        if ('' === $parts['scheme'].$parts['authority'] && 1 === preg_match(self::REGEXP_INVALID_PATH, $parts['path'])) {
+        if ('' === ($parts['scheme'] ?? '').($parts['authority'] ?? '') && 1 === preg_match(self::REGEXP_INVALID_PATH, $parts['path'] ?? '')) {
             throw new SyntaxError(sprintf('The uri `%s` contains an invalid path.', $uri));
         }
 
         /** @var ComponentMap $components */
         $components = array_merge(
             self::URI_COMPONENTS,
-            '' === $parts['authority'] ? [] : self::parseAuthority($parts['acontent']),
+            '' === ($parts['authority'] ?? null) ? [] : self::parseAuthority($parts['acontent'] ?? null),
             [
-                'path' => $parts['path'],
-                'scheme' => '' === $parts['scheme'] ? null : $parts['scontent'],
-                'query' => '' === $parts['query'] ? null : $parts['qcontent'],
-                'fragment' => '' === $parts['fragment'] ? null : $parts['fcontent'],
+                'path' => $parts['path'] ?? '',
+                'scheme' => '' === ($parts['scheme'] ?? null) ? null : ($parts['scontent'] ?? null),
+                'query' => '' === $parts['query'] ? null : ($parts['qcontent'] ?? null),
+                'fragment' => '' === $parts['fragment'] ? null : ($parts['fcontent'] ?? null),
             ]
         );
 
@@ -399,7 +399,7 @@ final class UriString
         $matches += ['port' => ''];
 
         $components['port'] = self::filterPort($matches['port']);
-        $components['host'] = self::filterHost($matches['host']);
+        $components['host'] = self::filterHost($matches['host'] ?? '');
 
         return $components;
     }
@@ -460,7 +460,7 @@ final class UriString
     }
 
     /**
-     * Throws if the host is not a registered name and not a valid IDN host
+     * Throws if the host is not a registered name and not a valid IDN host.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      *

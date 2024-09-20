@@ -34,8 +34,7 @@ final class ConverterTest extends TestCase
         string $hexadecimal,
         string $sixToFour,
         string $ipv4Mapped,
-    ): void
-    {
+    ): void {
         self::assertSame($octal, Converter::fromGMP()->toOctal($input));
         self::assertSame($octal, Converter::fromNative()->toOctal($input));
         self::assertSame($octal, Converter::fromBCMath()->toOctal($input));
