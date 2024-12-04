@@ -47,13 +47,13 @@ final class ConverterTest extends TestCase
         self::assertSame($hexadecimal, Converter::fromNative()->toHexadecimal($input));
         self::assertSame($hexadecimal, Converter::fromBCMath()->toHexadecimal($input));
 
-        self::assertSame($sixToFour, Converter::fromBCMath()->to6to4($input));
-        self::assertSame($sixToFour, Converter::fromNative()->to6to4($input));
-        self::assertSame($sixToFour, Converter::fromBCMath()->to6to4($input));
+        self::assertSame($sixToFour, Converter::fromBCMath()->toIPv6Using6to4($input));
+        self::assertSame($sixToFour, Converter::fromNative()->toIPv6Using6to4($input));
+        self::assertSame($sixToFour, Converter::fromBCMath()->toIPv6Using6to4($input));
 
-        self::assertSame($ipv4Mapped, Converter::fromBCMath()->toIPv4MappedIPv6($input));
-        self::assertSame($ipv4Mapped, Converter::fromNative()->toIPv4MappedIPv6($input));
-        self::assertSame($ipv4Mapped, Converter::fromBCMath()->toIPv4MappedIPv6($input));
+        self::assertSame($ipv4Mapped, Converter::fromBCMath()->toIPv6UsingMapping($input));
+        self::assertSame($ipv4Mapped, Converter::fromNative()->toIPv6UsingMapping($input));
+        self::assertSame($ipv4Mapped, Converter::fromBCMath()->toIPv6UsingMapping($input));
 
         self::assertTrue(Converter::fromEnvironment()->isIpv4($input));
     }
