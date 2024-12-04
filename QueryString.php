@@ -249,23 +249,27 @@ final class QueryString
         }
 
         $key = substr($name, 0, $leftBracketPosition);
+        if ('' === $key) {
+            $key = '0';
+        }
+
         if (!array_key_exists($key, $data) || !is_array($data[$key])) {
             $data[$key] = [];
         }
 
-        $index = substr($name, $leftBracketPosition + 1, $rightBracketPosition - $leftBracketPosition - 1);
-        if ('' === $index) {
+        $remaining = substr($name, $rightBracketPosition + 1);
+        if (!str_starts_with($remaining, '[') || !str_contains($remaining, ']')) {
+            $remaining = '';
+        }
+
+        $name = substr($name, $leftBracketPosition + 1, $rightBracketPosition - $leftBracketPosition - 1).$remaining;
+        if ('' === $name) {
             $data[$key][] = $value;
 
             return $data;
         }
 
-        $remaining = substr($name, $rightBracketPosition + 1);
-        if (!str_starts_with($remaining, '[') || false === strpos($remaining, ']', 1)) {
-            $remaining = '';
-        }
-
-        $data[$key] = self::extractPhpVariable($data[$key], $index.$remaining, $value);
+        $data[$key] = self::extractPhpVariable($data[$key], $name, $value);
 
         return $data;
     }

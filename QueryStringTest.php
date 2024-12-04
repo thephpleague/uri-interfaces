@@ -15,6 +15,7 @@ use ArrayIterator;
 use League\Uri\Components\Fragment;
 use League\Uri\Exceptions\SyntaxError;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 
@@ -475,6 +476,45 @@ final class QueryStringTest extends TestCase
             "Don't encode path segments" => ['q=va/lue', 'q=va%2Flue'],
             "Don't encode unreserved chars or sub-delimiters" => [$unreserved, 'a-zA-Z0-9.-_~%21%24&%27%28%29%2A%2C%3B=%3A%40'],
             'Encoded unreserved chars are not decoded' => ['q=v%61lue', 'q=value'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('queryWithInnerEmptyBracetsProvider')]
+    public function it_should_parse_empty_bracets_issue_146(string $query, string $expected): void
+    {
+        $data = QueryString::extract($query);
+        parse_str($query, $result);
+
+        self::assertSame($data, $result);
+        self::assertSame($expected, http_build_query($data, '', '&', PHP_QUERY_RFC3986));
+    }
+
+    public static function queryWithInnerEmptyBracetsProvider(): iterable
+    {
+        yield 'query with on level empty bracets' => [
+            'query' => 'foo[]=bar',
+            'expected' => 'foo%5B0%5D=bar',
+        ];
+
+        yield 'query with two level bracets' => [
+            'query' => 'key[][][foo][9]=bar',
+            'expected' => 'key%5B0%5D%5B0%5D%5Bfoo%5D%5B9%5D=bar',
+        ];
+
+        yield 'query with invalid remaining; close bracet without an opening bracet' => [
+            'query' => 'key[][]foo][9]=bar',
+            'expected' => 'key%5B0%5D%5B0%5D=bar',
+        ];
+
+        yield 'query with invalid remaining; no opening bracet' => [
+            'query' => 'key[]9=bar',
+            'expected' => 'key%5B0%5D=bar',
+        ];
+
+        yield 'query with invalid remaining; opening bracet no at the start of the remaining string' => [
+            'query' => 'key[]9[]=bar',
+            'expected' => 'key%5B0%5D=bar',
         ];
     }
 }
