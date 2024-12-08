@@ -2,7 +2,7 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## [Next](https://github.com/thephpleague/uri-interfaces/compare/7.3.1...master) - TBD
+## [7.5.0](https://github.com/thephpleague/uri-interfaces/compare/7.3.1...7.5.0) - 2024-12-08
 
 ### Added
 
@@ -12,6 +12,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `Uri\IPv6\Converter` allows expanding and compressing IPv6.
 - `Uri\IPv4\Converter::toIPv6Using6to4` allows converting an IPv4 into an IPv6 host using the 6to4 notation.
 - `Uri\IPv4\Converter::toIPv6UsingMapping` allows mapping an IPv4 address into an IPv6 one.
+- Using PHP8.4 `Deprecated` attribute to signal deprecated public API methods and constants.
 
 ### Fixed
 
