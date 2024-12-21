@@ -15,6 +15,9 @@ namespace League\Uri\Contracts;
 
 use Psr\Http\Message\UriInterface as Psr7UriInterface;
 
+/**
+ * @method self when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null) conditionally return a new instance
+ */
 interface UriAccess
 {
     public function getUri(): UriInterface|Psr7UriInterface;

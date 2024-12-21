@@ -25,6 +25,7 @@ use Stringable;
  * @method string|null getUsername() returns the user component of the URI.
  * @method string|null getPassword() returns the scheme-specific information about how to gain authorization to access the resource.
  * @method array toComponents() returns an associative array containing all the URI components.
+ * @method self when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null) conditionally return a new instance
  */
 interface UriInterface extends JsonSerializable, Stringable
 {
