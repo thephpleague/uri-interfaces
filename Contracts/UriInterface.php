@@ -24,6 +24,9 @@ use Stringable;
  *
  * @method string|null getUsername() returns the user component of the URI.
  * @method string|null getPassword() returns the scheme-specific information about how to gain authorization to access the resource.
+ * @method string|null toUnixPath() returns the Unix filesystem path. The method returns null for any other scheme
+ * @method string|null toWindowsPath() returns the Windows filesystem path. The method returns null for any other scheme
+ * @method string|null toRfc8089() returns a string representation of a File URI according to RFC8089. The method returns null for any other scheme
  * @method string toNormalizedString() returns the normalized string representation of the URI
  * @method array toComponents() returns an associative array containing all the URI components.
  * @method self normalize() returns a new URI instance with normalized components
