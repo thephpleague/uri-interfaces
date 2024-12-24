@@ -2,6 +2,36 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## [Next](https://github.com/thephpleague/uri-interfaces/compare/7.5.0...master) - TBD
+
+### Added
+
+- `Contidionable` interface
+- `UriInterface::resolve`
+- `UriInterface::relativize`
+- `UriInterface::isAbsolute`
+- `UriInterface::isNetworkPath`
+- `UriInterface::isAbsolutePath`
+- `UriInterface::isRelativePath`
+- `UriInterface::isSameDocument`
+- `UriInterface::equals`
+- `UriInterface::toNormalizedString`
+- `UriInterface::getOrigin`
+- `UriInterface::isSameOrigin`
+- `UriInterface::isCrossOrigin`
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [7.5.0](https://github.com/thephpleague/uri-interfaces/compare/7.3.1...7.5.0) - 2024-12-08
 
 ### Added
