@@ -7,18 +7,13 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Added
 
 - `Contidionable` interface
+- `UriInspector` interface
+- `UriEncoder` interface
 - `UriInterface::resolve`
 - `UriInterface::relativize`
-- `UriInterface::isAbsolute`
-- `UriInterface::isNetworkPath`
-- `UriInterface::isAbsolutePath`
-- `UriInterface::isRelativePath`
-- `UriInterface::isSameDocument`
 - `UriInterface::equals`
 - `UriInterface::toNormalizedString`
-- `UriInterface::getOrigin`
-- `UriInterface::isSameOrigin`
-- `UriInterface::isCrossOrigin`
+- `UriInterface::getUser`
 
 ### Fixed
 
@@ -26,7 +21,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Deprecated
 
-- None
+- `UriInterface::getUsername` replaced by `UriInterface::getUser`
 
 ### Removed
 
