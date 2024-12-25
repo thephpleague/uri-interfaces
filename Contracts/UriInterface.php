@@ -24,7 +24,9 @@ use Stringable;
  *
  * @method string|null getUsername() returns the user component of the URI (deprecated).
  * @method string|null getUser() returns the user component of the URI.
+ * @method self withUser(?string $user) returns a new URI instance with user component updated, if the user is set to null the password also will be set to null.
  * @method string|null getPassword() returns the scheme-specific information about how to gain authorization to access the resource.
+ * @method self withPassword(?string $password) returns a new URI instance with password component updated, if the user is set to null the password also will be set to null.
  * @method string toNormalizedString() returns the normalized string representation of the URI
  * @method array toComponents() returns an associative array containing all the URI components.
  * @method self normalize() returns a new URI instance with normalized components
