@@ -22,26 +22,14 @@ use Stringable;
 /**
  * @phpstan-import-type ComponentMap from UriString
  *
- * @method string|null getUsername() returns the user component of the URI.
+ * @method string|null getUsername() returns the user component of the URI (deprecated).
+ * @method string|null getUser() returns the user component of the URI.
  * @method string|null getPassword() returns the scheme-specific information about how to gain authorization to access the resource.
- * @method string|null toUnixPath() returns the Unix filesystem path. The method returns null for any other scheme
- * @method string|null toWindowsPath() returns the Windows filesystem path. The method returns null for any other scheme
- * @method string|null toRfc8089() returns a string representation of a File URI according to RFC8089. The method returns null for any other scheme
  * @method string toNormalizedString() returns the normalized string representation of the URI
  * @method array toComponents() returns an associative array containing all the URI components.
  * @method self normalize() returns a new URI instance with normalized components
  * @method self resolve(UriInterface $uri) resolves a URI against a base URI using RFC3986 rules
  * @method self relativize(UriInterface $uri) relativize a URI against a base URI using RFC3986 rules
- * @method self|null getOrigin() returns the URI origin as described in the WHATWG URL Living standard specification
- * @method bool isOpaque() tells whether the given URI object represents an opaque URI.
- * @method bool isAbsolute() tells whether the URI represents an absolute URI.
- * @method bool isNetworkPath() tells whether the URI represents a network path URI.
- * @method bool isAbsolutePath() tells whether the URI represents an absolute URI path.
- * @method bool isRelativePath() tells whether the given URI object represents a relative path.
- * @method bool isCrossOrigin(UriInterface $uri) tells whether the URI comes from a different origin than the current instance.
- * @method bool isSameOrigin(UriInterface $uri) tells whether the URI comes from the same origin as the current instance.
- * @method bool isSameDocument(UriInterface $uri) tells whether the given URI object represents the same document.
- * @method bool isLocalFile() tells whether the `file` scheme base URI represents a local file.
  * @method bool equals(UriInterface $uri, bool $excludeFragment) tells whether the given URI object represents the same document. It can take the fragment in account if it is explicitly specified
  */
 interface UriInterface extends JsonSerializable, Stringable
