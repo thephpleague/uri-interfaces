@@ -16,11 +16,15 @@ namespace League\Uri\Contracts;
 use DOMException;
 use JsonSerializable;
 use League\Uri\UriString;
+use RuntimeException;
+use SplFileInfo;
+use SplFileObject;
+use Stringable;
 
 /**
  * @phpstan-import-type ComponentMap from UriString
  */
-interface UriEncoder extends JsonSerializable
+interface UriRenderer extends JsonSerializable
 {
     /**
      * Returns the string representation as a URI reference.
@@ -52,18 +56,36 @@ interface UriEncoder extends JsonSerializable
     public function jsonSerialize(): string;
 
     /**
+     * Returns the markdown string representation of the anchor tag with the current instance as its href attribute.
+     */
+    public function toMarkdown(?string $linkTextTemplate = null): string;
+
+    /**
      * Returns the HTML string representation of the anchor tag with the current instance as its href attribute.
      *
-     * @param list<string>|string|null $class
+     * @param iterable<string, string|null> $attributes an ordered map of key value. you must quote the value if needed
      *
      * @throws DOMException
      */
-    public function toAnchorTag(?string $linkText = null, array|string|null $class = null, ?string $target = null): string;
+    public function toAnchorTag(?string $linkTextTemplate = null, iterable $attributes = []): string;
 
     /**
-     * Returns the markdown string representation of the anchor tag with the current instance as its href attribute.
+     * Returns the Link tag content for the current instance.
+     *
+     * @param iterable<string, string|null> $attributes an ordered map of key value. you must quote the value if needed
+     *
+     * @throws DOMException
      */
-    public function toMarkdown(?string $linkText = null): string;
+    public function toLinkTag(iterable $attributes = []): string;
+
+    /**
+     * Returns the Link header content for a single item.
+     *
+     * @param iterable<string, string|int|float|bool> $parameters an ordered map of key value. you must quote the value if needed
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc7230.html#section-3.2.6
+     */
+    public function toLinkFieldValue(iterable $parameters = []): string;
 
     /**
      * Returns the Unix filesystem path. The method returns null for any other scheme except the file scheme.
@@ -81,4 +103,26 @@ interface UriEncoder extends JsonSerializable
      * @return ComponentMap
      */
     public function toComponents(): array;
+
+    /**
+     * Returns a string representation of a File URI according to RFC8089.
+     *
+     * The method will return null if the URI scheme is not the `file` scheme
+     *
+     * @see https://datatracker.ietf.org/doc/html/rfc8089
+     */
+    public function toRfc8089(): ?string;
+
+    /**
+     * Save the data to a specific file.
+     *
+     * The method returns the number of bytes written to the file
+     * or null for any other scheme except the data scheme
+     *
+     * @param SplFileInfo|SplFileObject|resource|Stringable|string $destination
+     * @param ?resource $context
+     *
+     * @throws RuntimeException if the content can not be stored.
+     */
+    public function toFileContents(mixed $destination, $context = null): ?int;
 }

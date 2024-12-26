@@ -81,4 +81,23 @@ final class ConverterTest extends TestCase
 
         yield 'IPv6 with zoneIdentifier' => ['invalidIp' => 'fe80::a%25en1'];
     }
+
+    #[DataProvider('providerInvalidHost')]
+    public function testParseWithInvalidHost(?string $input): void
+    {
+        self::assertFalse(Converter::isIpv6($input));
+    }
+
+    public static function providerInvalidHost(): array
+    {
+        return [
+            'null host' => ['input' => null],
+            'empty host' => ['input' => ''],
+            'non ip host' => ['input' => 'ulb.ac.be'],
+            'invalid host (0)' => ['input' => '192.168.1.1'],
+            'invalid host (1)' => ['input' => '[192.168.1.1]'],
+            'invalid host (2)' => ['input' => 'v42.fdfsffd'],
+            'invalid host (3)' => ['input' => '::1'],
+        ];
+    }
 }
