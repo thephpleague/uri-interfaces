@@ -33,6 +33,7 @@ use function preg_match;
 use function rawurldecode;
 use function sprintf;
 use function strpos;
+use function strtolower;
 use function substr;
 
 use const FILTER_FLAG_IPV6;
@@ -275,10 +276,8 @@ final class UriString
      * Parses and normalizes the URI following RFC3986 destructive and non-destructive constraints.
      *
      * @throws SyntaxError if the URI is not parsable
-     *
-     * @return ComponentMap
      */
-    public static function normalize(Stringable|string $uri): array
+    public static function normalize(Stringable|string $uri): string
     {
         $components = UriString::parse($uri);
         if (null !== $components['scheme']) {
@@ -299,13 +298,31 @@ final class UriString
             $path = '/';
         }
 
-        $components['path'] = (string) $path;
+        $components['path'] = $path;
         $components['query'] = Encoder::decodeUnreservedCharacters($components['query']);
         $components['fragment'] = Encoder::decodeUnreservedCharacters($components['fragment']);
         $components['user'] = Encoder::decodeUnreservedCharacters($components['user']);
         $components['pass'] = Encoder::decodeUnreservedCharacters($components['pass']);
 
-        return $components;
+        return self::build($components);
+    }
+
+    /**
+     * Parses and normalizes the URI following RFC3986 destructive and non-destructive constraints.
+     *
+     * @throws SyntaxError if the URI is not parsable
+     */
+    public static function normalizeAuthority(Stringable|string $authority): string
+    {
+        $components = UriString::parseAuthority($authority);
+        if (null !== $components['host']) {
+            $components['host'] = IdnaConverter::toUnicode((string)IPv6Converter::compress($components['host']))->domain();
+        }
+
+        $components['user'] = Encoder::decodeUnreservedCharacters($components['user']);
+        $components['pass'] = Encoder::decodeUnreservedCharacters($components['pass']);
+
+        return (string) self::buildAuthority($components);
     }
 
     /**
@@ -320,10 +337,8 @@ final class UriString
      * @see https://www.rfc-editor.org/rfc/rfc3986.html#section-5
      *
      * @throws SyntaxError if the BaseUri is not absolute or in absence of a BaseUri if the uri is not absolute
-     *
-     * @return ComponentMap
      */
-    public static function resolve(Stringable|string $uri, Stringable|string|null $baseUri = null): array
+    public static function resolve(Stringable|string $uri, Stringable|string|null $baseUri = null): string
     {
         $uri = self::parse($uri);
         $baseUri = null !== $baseUri ? self::parse($baseUri) : $uri;
@@ -334,14 +349,14 @@ final class UriString
         if (null !== $uri['scheme'] && '' !== $uri['scheme']) {
             $uri['path'] = self::removeDotSegments($uri['path']);
 
-            return $uri;
+            return UriString::build($uri);
         }
 
         if (null !== self::buildAuthority($uri)) {
             $uri['scheme'] = $baseUri['scheme'];
             $uri['path'] = self::removeDotSegments($uri['path']);
 
-            return $uri;
+            return UriString::build($uri);
         }
 
         [$path, $query] = self::resolvePathAndQuery($uri, $baseUri);
@@ -354,7 +369,7 @@ final class UriString
         $baseUri['query'] = $query;
         $baseUri['fragment'] = $uri['fragment'];
 
-        return $baseUri;
+        return UriString::build($baseUri);
     }
 
     /**

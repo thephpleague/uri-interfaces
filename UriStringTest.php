@@ -980,7 +980,7 @@ final class UriStringTest extends TestCase
     #[DataProvider('resolveProvider')]
     public function testCreateResolve(string $baseUri, string $uri, string $expected): void
     {
-        self::assertSame($expected, UriString::build(UriString::resolve($uri, $baseUri)));
+        self::assertSame($expected, UriString::resolve($uri, $baseUri));
     }
 
     public static function resolveProvider(): array
