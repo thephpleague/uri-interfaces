@@ -141,7 +141,7 @@ final class Converter
         $domain = rawurldecode((string) $domain);
 
         if (false === stripos($domain, 'xn--')) {
-            return Result::fromIntl(['result' => $domain, 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
+            return Result::fromIntl(['result' => strtolower($domain), 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
         }
 
         FeatureDetection::supportsIdn();

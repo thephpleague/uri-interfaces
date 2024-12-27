@@ -17,11 +17,17 @@ use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Converter;
+use League\Uri\Idna\Converter as IdnaConverter;
+use League\Uri\IPv6\Converter as IPv6Converter;
 use Stringable;
 
 use function array_merge;
+use function array_pop;
+use function array_reduce;
+use function end;
 use function explode;
 use function filter_var;
+use function implode;
 use function inet_pton;
 use function preg_match;
 use function rawurldecode;
@@ -40,8 +46,8 @@ use const FILTER_VALIDATE_IP;
  * @author  Ignace Nyamagana Butera <nyamsprod@gmail.com>
  * @since   6.0.0
  *
- * @phpstan-type AuthorityMap array{user:?string, pass:?string, host:?string, port:?int}
- * @phpstan-type ComponentMap array{scheme:?string, user:?string, pass:?string, host:?string, port:?int, path:string, query:?string, fragment:?string}
+ * @phpstan-type AuthorityMap array{user: ?string, pass: ?string, host: ?string, port: ?int}
+ * @phpstan-type ComponentMap array{scheme: ?string, user: ?string, pass: ?string, host: ?string, port: ?int, path: string, query: ?string, fragment: ?string}
  * @phpstan-type InputComponentMap array{scheme? : ?string, user? : ?string, pass? : ?string, host? : ?string, port? : ?int, path? : ?string, query? : ?string, fragment? : ?string}
  */
 final class UriString
@@ -159,6 +165,9 @@ final class UriString
      */
     private const REGEXP_IDN_PATTERN = '/[^\x20-\x7f]/';
 
+    /** @var array<string,int> */
+    private const DOT_SEGMENTS = ['.' => 1, '..' => 1];
+
     /**
      * Only the address block fe80::/10 can have a Zone ID attach to
      * let's detect the link local significant 10 bits.
@@ -263,6 +272,161 @@ final class UriString
     }
 
     /**
+     * Parses and normalizes the URI following RFC3986 destructive and non-destructive constraints.
+     *
+     * @throws SyntaxError if the URI is not parsable
+     *
+     * @return ComponentMap
+     */
+    public static function normalize(Stringable|string $uri): array
+    {
+        $components = UriString::parse($uri);
+        if (null !== $components['scheme']) {
+            $components['scheme'] = strtolower($components['scheme']);
+        }
+
+        if (null !== $components['host']) {
+            $components['host'] = IdnaConverter::toUnicode((string)IPv6Converter::compress($components['host']))->domain();
+        }
+
+        $path = $components['path'];
+        if ('/' === ($path[0] ?? '') || '' !== $components['scheme'].self::buildAuthority($components)) {
+            $path = self::removeDotSegments($path);
+        }
+
+        $path = Encoder::decodeUnreservedCharacters($path);
+        if (null !== self::buildAuthority($components) && ('' === $path || null === $path)) {
+            $path = '/';
+        }
+
+        $components['path'] = (string) $path;
+        $components['query'] = Encoder::decodeUnreservedCharacters($components['query']);
+        $components['fragment'] = Encoder::decodeUnreservedCharacters($components['fragment']);
+        $components['user'] = Encoder::decodeUnreservedCharacters($components['user']);
+        $components['pass'] = Encoder::decodeUnreservedCharacters($components['pass']);
+
+        return $components;
+    }
+
+    /**
+     * Resolves a URI against a base URI using RFC3986 rules.
+     *
+     * This method MUST retain the state of the submitted URI instance, and return
+     * a URI instance of the same type that contains the applied modifications.
+     *
+     * This method MUST be transparent when dealing with error and exceptions.
+     * It MUST not alter or silence them apart from validating its own parameters.
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc3986.html#section-5
+     *
+     * @throws SyntaxError if the BaseUri is not absolute or in absence of a BaseUri if the uri is not absolute
+     *
+     * @return ComponentMap
+     */
+    public static function resolve(Stringable|string $uri, Stringable|string|null $baseUri = null): array
+    {
+        $uri = self::parse($uri);
+        $baseUri = null !== $baseUri ? self::parse($baseUri) : $uri;
+        if (null === $baseUri['scheme']) {
+            throw new SyntaxError('The base URI must be an absolute URI or null; If the base URI is null the URI must be an absolute URI.');
+        }
+
+        if (null !== $uri['scheme'] && '' !== $uri['scheme']) {
+            $uri['path'] = self::removeDotSegments($uri['path']);
+
+            return $uri;
+        }
+
+        if (null !== self::buildAuthority($uri)) {
+            $uri['scheme'] = $baseUri['scheme'];
+            $uri['path'] = self::removeDotSegments($uri['path']);
+
+            return $uri;
+        }
+
+        [$path, $query] = self::resolvePathAndQuery($uri, $baseUri);
+        $path = UriString::removeDotSegments($path);
+        if ('' !== $path && '/' !== $path[0] && null !== self::buildAuthority($baseUri)) {
+            $path = '/'.$path;
+        }
+
+        $baseUri['path'] = $path;
+        $baseUri['query'] = $query;
+        $baseUri['fragment'] = $uri['fragment'];
+
+        return $baseUri;
+    }
+
+    /**
+     * Filter Dot segment according to RFC3986.
+     *
+     * @see http://tools.ietf.org/html/rfc3986#section-5.2.4
+     */
+    public static function removeDotSegments(Stringable|string $path): string
+    {
+        $path = (string) $path;
+        if (!str_contains($path, '.')) {
+            return $path;
+        }
+
+        $reducer = function (array $carry, string $segment): array {
+            if ('..' === $segment) {
+                array_pop($carry);
+
+                return $carry;
+            }
+
+            if (!isset(self::DOT_SEGMENTS[$segment])) {
+                $carry[] = $segment;
+            }
+
+            return $carry;
+        };
+
+        $oldSegments = explode('/', $path);
+        $newPath = implode('/', array_reduce($oldSegments, $reducer(...), []));
+        if (isset(self::DOT_SEGMENTS[end($oldSegments)])) {
+            $newPath .= '/';
+        }
+
+        return $newPath;
+    }
+
+    /**
+     * Resolves an URI path and query component.
+     *
+     * @param ComponentMap $uri
+     * @param ComponentMap $baseUri
+     *
+     * @return array{0:string, 1:string|null}
+     */
+    private static function resolvePathAndQuery(array $uri, array $baseUri): array
+    {
+        if (str_starts_with($uri['path'], '/')) {
+            return [$uri['path'], $uri['query']];
+        }
+
+        if ('' === $uri['path']) {
+            return [$baseUri['path'], $uri['query'] ?? $baseUri['query']];
+        }
+
+        $targetPath = $uri['path'];
+        if (null !== self::buildAuthority($baseUri) && '' === $baseUri['path']) {
+            $targetPath = '/'.$targetPath;
+        }
+
+        if ('' !== $baseUri['path']) {
+            $segments = explode('/', $baseUri['path']);
+            array_pop($segments);
+            if ([] !== $segments) {
+                $targetPath = implode('/', $segments).'/'.$targetPath;
+            }
+        }
+
+        return [$targetPath, $uri['query']];
+    }
+
+    /**
      * Parse a URI string into its components.
      *
      * This method parses a URI and returns an associative array containing any
@@ -309,7 +473,7 @@ final class UriString
         $uri = (string) $uri;
         if (isset(self::URI_SHORTCUTS[$uri])) {
             /** @var ComponentMap $components */
-            $components = array_merge(self::URI_COMPONENTS, self::URI_SHORTCUTS[$uri]);
+            $components = [...self::URI_COMPONENTS, ...self::URI_SHORTCUTS[$uri]];
 
             return $components;
         }

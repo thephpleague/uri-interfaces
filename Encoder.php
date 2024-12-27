@@ -42,6 +42,13 @@ final class Encoder
     private const REGEXP_PART_ENCODED = '%(?![A-Fa-f\d]{2})';
 
     /**
+     * Unreserved characters.
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc3986.html#section-2.3
+     */
+    private const REGEXP_UNRESERVED_CHARACTERS = ',%(2[1-9A-Fa-f]|[3-7][0-9A-Fa-f]|61|62|64|65|66|7[AB]|5F),';
+
+    /**
      * Encode User.
      *
      * All generic delimiters MUST be encoded
@@ -171,6 +178,19 @@ final class Encoder
             1 === preg_match(self::REGEXP_CHARS_INVALID, $component) => throw new SyntaxError('Invalid component string: '.$component.'.'),
             1 === preg_match(self::REGEXP_CHARS_ENCODED, $component) => preg_replace_callback(self::REGEXP_CHARS_ENCODED, $decodeMatches(...), $component),
             default => $component,
+        };
+    }
+
+    public static function decodeUnreservedCharacters(?string $str): ?string
+    {
+        return match (true) {
+            null === $str,
+            '' === $str => $str,
+            default => preg_replace_callback(
+                self::REGEXP_UNRESERVED_CHARACTERS,
+                static fn (array $matches): string => rawurldecode($matches[0]),
+                $str
+            ) ?? '',
         };
     }
 }
