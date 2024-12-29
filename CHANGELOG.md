@@ -17,8 +17,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `League\Uri\IPv6\Converter::isIpv6`
 - `UriString::resolve`
 - `UriString::removeDotSegments`
-- `UriString::parseAndNormalize`
-- `UriString::parseAuthorityAndNormalize`
+- `UriString::normalize`
+- `UriString::normalizeAuthority`
 
 ### Fixed
 

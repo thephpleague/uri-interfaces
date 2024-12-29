@@ -16,7 +16,6 @@ namespace League\Uri;
 use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\Exceptions\SyntaxError;
-use League\Uri\Idna\Converter;
 use League\Uri\Idna\Converter as IdnaConverter;
 use League\Uri\IPv6\Converter as IPv6Converter;
 use Stringable;
@@ -486,7 +485,6 @@ final class UriString
     public static function parse(Stringable|string|int $uri): array
     {
         $uri = (string) $uri;
-
         if (isset(self::URI_SHORTCUTS[$uri])) {
             /** @var ComponentMap $components */
             $components = [...self::URI_COMPONENTS, ...self::URI_SHORTCUTS[$uri]];
@@ -660,7 +658,7 @@ final class UriString
             throw new SyntaxError(sprintf('Host `%s` is invalid: the host is not a valid registered name', $host));
         }
 
-        Converter::toAsciiOrFail($host);
+        IdnaConverter::toAsciiOrFail($host);
     }
 
     /**
