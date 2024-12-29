@@ -11,8 +11,10 @@
 
 namespace League\Uri;
 
+use League\Uri\Contracts\UriException;
 use League\Uri\Exceptions\SyntaxError;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 
@@ -1026,5 +1028,23 @@ final class UriStringTest extends TestCase
             'origin uri without path' => ['http://h:b@a', 'b/../y',        'http://h:b@a/y'],
             'not same origin'         => [self::BASE_URI, 'ftp://a/b/c/d', 'ftp://a/b/c/d'],
         ];
+    }
+
+    #[Test]
+    #[DataProvider('invalidUriWithWhitespaceProvider')]
+    public function it_fails_parsing_uri_string_with_whitespace(string $uri): void
+    {
+        $this->expectException(UriException::class);
+
+        UriString::parse($uri);
+    }
+
+    public static function invalidUriWithWhitespaceProvider(): iterable
+    {
+        yield 'uri containing only whitespaces' => ['uri' => '     '];
+        yield 'uri stating with whitespace' => ['uri' => '    https://a/b?c'];
+        yield 'uri ending with whitespace' => ['uri' => 'https://a/b?c   '];
+        yield 'uri surrounded with whitespace' => ['uri' => '   https://a/b?c   '];
+        yield 'uri containing with whitespace' => ['uri' => 'https://a/b ?c'];
     }
 }

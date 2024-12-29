@@ -82,7 +82,7 @@ final class UriString
      *
      * @var string
      */
-    private const REGEXP_INVALID_URI_CHARS = '/[\x00-\x1f\x7f]/';
+    private const REGEXP_INVALID_URI_CHARS = '/[\x00-\x1f\x7f\s]/';
 
     /**
      * RFC3986 regular expression URI splitter.
@@ -486,6 +486,7 @@ final class UriString
     public static function parse(Stringable|string|int $uri): array
     {
         $uri = (string) $uri;
+
         if (isset(self::URI_SHORTCUTS[$uri])) {
             /** @var ComponentMap $components */
             $components = [...self::URI_COMPONENTS, ...self::URI_SHORTCUTS[$uri]];
