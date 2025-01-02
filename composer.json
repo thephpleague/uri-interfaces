@@ -52,7 +52,8 @@
         "ext-gmp": "to improve IPV4 host parsing",
         "ext-intl": "to handle IDN host with the best performance",
         "php-64bit": "to improve IPV4 host parsing",
-        "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
+        "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present",
+        "rowbot/url": "to handle WHATWG URL"
     },
     "extra": {
         "branch-alias": {
