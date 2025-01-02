@@ -68,7 +68,6 @@ final class UriString
      * @var array<string, array<string>>
      */
     private const URI_SHORTCUTS = [
-        '' => [],
         '#' => ['fragment' => ''],
         '?' => ['query' => ''],
         '?#' => ['query' => '', 'fragment' => ''],
@@ -278,7 +277,7 @@ final class UriString
      */
     public static function normalize(Stringable|string $uri): string
     {
-        $components = UriString::parse($uri);
+        $components = self::parse($uri);
         if (null !== $components['scheme']) {
             $components['scheme'] = strtolower($components['scheme']);
         }
@@ -339,6 +338,10 @@ final class UriString
      */
     public static function resolve(Stringable|string $uri, Stringable|string|null $baseUri = null): string
     {
+        if ('' === $uri) {
+            $uri = $baseUri ?? throw new SyntaxError('The uri can not be the empty string when there\'s no base URI.');
+        }
+
         $uri = self::parse($uri);
         $baseUri = null !== $baseUri ? self::parse($baseUri) : $uri;
         if (null === $baseUri['scheme']) {
@@ -492,7 +495,7 @@ final class UriString
             return $components;
         }
 
-        if (1 === preg_match(self::REGEXP_INVALID_URI_CHARS, $uri)) {
+        if ('' === $uri || 1 === preg_match(self::REGEXP_INVALID_URI_CHARS, $uri)) {
             throw new SyntaxError(sprintf('The uri `%s` contains invalid characters', $uri));
         }
 

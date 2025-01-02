@@ -22,7 +22,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Fixed
 
-- `UriString::parse` will fail if the URI contains whitespace.
+- `UriString::parse` will fail if the URI contains whitespace or is the empty string.
 
 ### Deprecated
 

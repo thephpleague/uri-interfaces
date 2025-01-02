@@ -579,19 +579,6 @@ final class UriStringTest extends TestCase
                     'fragment' => 'foo=1/bar=2',
                 ],
             ],
-            'empty string' => [
-                '',
-                [
-                    'scheme' => null,
-                    'user' => null,
-                    'pass' => null,
-                    'host' => null,
-                    'port' => null,
-                    'path' => '',
-                    'query' => null,
-                    'fragment' => null,
-                ],
-            ],
             'complex URI' => [
                 'htà+d/s:totot',
                 [
@@ -776,6 +763,7 @@ final class UriStringTest extends TestCase
             'invalid host with fullwidth escaped' =>  ['http://%ef%bc%85%ef%bc%94%ef%bc%91.com],'],
             //'invalid pseudo IDN to ASCII string' => ['http://xn--3/foo.'],
             'invalid IDN' => ['//:�@�����������������������������������������������������������������������������������������/'],
+            'empty string' => [''],
         ];
     }
 
@@ -943,10 +931,6 @@ final class UriStringTest extends TestCase
             'fragment with pseudo segment' => [
                 'http://example.com#foo=1/bar=2',
                 'http://example.com#foo=1/bar=2',
-            ],
-            'empty string' => [
-                '',
-                '',
             ],
             'complex URI' => [
                 'htà+d/s:totot',
