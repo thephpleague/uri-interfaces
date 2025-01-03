@@ -85,7 +85,7 @@ interface UriRenderer extends JsonSerializable
      *
      * @see https://www.rfc-editor.org/rfc/rfc7230.html#section-3.2.6
      */
-    public function toLinkFieldValue(iterable $parameters = []): string;
+    public function toLinkHeaderValue(iterable $parameters = []): string;
 
     /**
      * Returns the Unix filesystem path. The method returns null for any other scheme except the file scheme.
