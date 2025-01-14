@@ -1025,10 +1025,11 @@ final class UriStringTest extends TestCase
 
     public static function invalidUriWithWhitespaceProvider(): iterable
     {
+        yield 'empty string' => ['uri' => ''];
         yield 'uri containing only whitespaces' => ['uri' => '     '];
-        yield 'uri stating with whitespace' => ['uri' => '    https://a/b?c'];
-        yield 'uri ending with whitespace' => ['uri' => 'https://a/b?c   '];
-        yield 'uri surrounded with whitespace' => ['uri' => '   https://a/b?c   '];
-        yield 'uri containing with whitespace' => ['uri' => 'https://a/b ?c'];
+        yield 'uri starting with whitespaces' => ['uri' => '    https://a/b?c'];
+        yield 'uri ending with whitespaces' => ['uri' => 'https://a/b?c   '];
+        yield 'uri surrounded by whitespaces' => ['uri' => '   https://a/b?c   '];
+        yield 'uri containing with whitespaces' => ['uri' => 'https://a/b ?c'];
     }
 }

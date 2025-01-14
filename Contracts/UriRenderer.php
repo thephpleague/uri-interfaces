@@ -45,7 +45,7 @@ interface UriRenderer extends JsonSerializable
      *
      * @see https://datatracker.ietf.org/doc/html/rfc3986#section-6.2
      */
-    public function toDisplayString(): ?string;
+    public function toDisplayString(): string;
 
     /**
      * Returns the string representation as a URI reference.

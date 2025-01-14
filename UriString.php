@@ -338,40 +338,45 @@ final class UriString
      */
     public static function resolve(Stringable|string $uri, Stringable|string|null $baseUri = null): string
     {
+        $uri = (string) $uri;
         if ('' === $uri) {
             $uri = $baseUri ?? throw new SyntaxError('The uri can not be the empty string when there\'s no base URI.');
         }
 
-        $uri = self::parse($uri);
-        $baseUri = null !== $baseUri ? self::parse($baseUri) : $uri;
-        if (null === $baseUri['scheme']) {
+        $uriComponents = self::parse($uri);
+        $baseUriComponents = $uriComponents;
+        if (null !== $baseUri && (string) $uri !== (string) $baseUri) {
+            $baseUriComponents = self::parse($baseUri);
+        }
+
+        if (null === $baseUriComponents['scheme']) {
             throw new SyntaxError('The base URI must be an absolute URI or null; If the base URI is null the URI must be an absolute URI.');
         }
 
-        if (null !== $uri['scheme'] && '' !== $uri['scheme']) {
-            $uri['path'] = self::removeDotSegments($uri['path']);
+        if (null !== $uriComponents['scheme'] && '' !== $uriComponents['scheme']) {
+            $uriComponents['path'] = self::removeDotSegments($uriComponents['path']);
 
-            return UriString::build($uri);
+            return UriString::build($uriComponents);
         }
 
-        if (null !== self::buildAuthority($uri)) {
-            $uri['scheme'] = $baseUri['scheme'];
-            $uri['path'] = self::removeDotSegments($uri['path']);
+        if (null !== self::buildAuthority($uriComponents)) {
+            $uriComponents['scheme'] = $baseUriComponents['scheme'];
+            $uriComponents['path'] = self::removeDotSegments($uriComponents['path']);
 
-            return UriString::build($uri);
+            return UriString::build($uriComponents);
         }
 
-        [$path, $query] = self::resolvePathAndQuery($uri, $baseUri);
+        [$path, $query] = self::resolvePathAndQuery($uriComponents, $baseUriComponents);
         $path = UriString::removeDotSegments($path);
-        if ('' !== $path && '/' !== $path[0] && null !== self::buildAuthority($baseUri)) {
+        if ('' !== $path && '/' !== $path[0] && null !== self::buildAuthority($baseUriComponents)) {
             $path = '/'.$path;
         }
 
-        $baseUri['path'] = $path;
-        $baseUri['query'] = $query;
-        $baseUri['fragment'] = $uri['fragment'];
+        $baseUriComponents['path'] = $path;
+        $baseUriComponents['query'] = $query;
+        $baseUriComponents['fragment'] = $uriComponents['fragment'];
 
-        return UriString::build($baseUri);
+        return UriString::build($baseUriComponents);
     }
 
     /**
