@@ -17,6 +17,8 @@ use finfo;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\IPv4\Calculator;
 
+use function extension_loaded;
+
 use const PHP_INT_SIZE;
 
 /**
@@ -51,6 +53,16 @@ final class FeatureDetection
 
         if (!$isSupported) {
             throw new MissingFeature('A '.Calculator::class.' implementation could not be automatically loaded. To perform IPv4 conversion use a x.64 PHP build or install one of the following extension GMP or BCMath. You can also ship your own implmentation.');
+        }
+    }
+
+    public static function supportsDom(): void
+    {
+        static $isSupported = null;
+        $isSupported = $isSupported ?? extension_loaded('dom');
+
+        if (!$isSupported) {
+            throw new MissingFeature('To use a DOM related feature, the DOM extension must be installed in your system.');
         }
     }
 }

@@ -19,6 +19,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriString::removeDotSegments`
 - `UriString::normalize`
 - `UriString::normalizeAuthority`
+- `FeatureDetection::supportsDom`
 
 ### Fixed
 

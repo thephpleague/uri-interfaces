@@ -58,7 +58,7 @@ interface UriRenderer extends JsonSerializable
     /**
      * Returns the markdown string representation of the anchor tag with the current instance as its href attribute.
      */
-    public function toMarkdown(?string $linkTextTemplate = null): string;
+    public function toMarkdownAnchor(?string $linkTextTemplate = null): string;
 
     /**
      * Returns the HTML string representation of the anchor tag with the current instance as its href attribute.
@@ -67,25 +67,25 @@ interface UriRenderer extends JsonSerializable
      *
      * @throws DOMException
      */
-    public function toAnchorTag(?string $linkTextTemplate = null, iterable $attributes = []): string;
+    public function toHtmlAnchor(?string $linkTextTemplate = null, iterable $attributes = []): string;
 
     /**
      * Returns the Link tag content for the current instance.
      *
-     * @param iterable<string, string|null> $attributes an ordered map of key value. you must quote the value if needed
+     * @param iterable<string, string|null> $attributes an ordered map of key value
      *
      * @throws DOMException
      */
-    public function toLinkTag(iterable $attributes = []): string;
+    public function toHtmlLink(iterable $attributes = []): string;
 
     /**
      * Returns the Link header content for a single item.
      *
-     * @param iterable<string, string|int|float|bool> $parameters an ordered map of key value. you must quote the value if needed
+     * @param iterable<string, string|int|float|bool|null> $parameters an ordered map of key value.
      *
      * @see https://www.rfc-editor.org/rfc/rfc7230.html#section-3.2.6
      */
-    public function toLinkHeaderValue(iterable $parameters = []): string;
+    public function toHeaderLinkValue(iterable $parameters = []): string;
 
     /**
      * Returns the Unix filesystem path. The method returns null for any other scheme except the file scheme.
