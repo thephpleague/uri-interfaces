@@ -70,24 +70,6 @@ interface UriRenderer extends JsonSerializable
     public function toHtmlAnchor(?string $linkTextTemplate = null, iterable $attributes = []): string;
 
     /**
-     * Returns the Link tag content for the current instance.
-     *
-     * @param iterable<string, string|null> $attributes an ordered map of key value
-     *
-     * @throws DOMException
-     */
-    public function toHtmlLink(iterable $attributes = []): string;
-
-    /**
-     * Returns the Link header content for a single item.
-     *
-     * @param iterable<string, string|int|float|bool|null> $parameters an ordered map of key value.
-     *
-     * @see https://www.rfc-editor.org/rfc/rfc7230.html#section-3.2.6
-     */
-    public function toHeaderLinkValue(iterable $parameters = []): string;
-
-    /**
      * Returns the Unix filesystem path. The method returns null for any other scheme except the file scheme.
      */
     public function toUnixPath(): ?string;
