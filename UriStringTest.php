@@ -1032,4 +1032,49 @@ final class UriStringTest extends TestCase
         yield 'uri surrounded by whitespaces' => ['uri' => '   https://a/b?c   '];
         yield 'uri containing with whitespaces' => ['uri' => 'https://a/b ?c'];
     }
+
+    #[Test]
+    #[DataProvider('normalizedUriProvider')]
+    public function it_can_normalize_uri_string(string $uri, string $expected): void
+    {
+        self::assertSame($expected, UriString::normalize($uri));
+    }
+
+    public static function normalizedUriProvider(): iterable
+    {
+        yield 'URI is unchanged' => [
+            'uri' => 'http://a/b/c',
+            'expected' => 'http://a/b/c',
+        ];
+
+        yield 'URI scheme is normalized to lowercase' => [
+            'uri' => 'HtTp://a/b/c',
+            'expected' => 'http://a/b/c',
+        ];
+
+        yield 'URI host is normalized to lowercase' => [
+            'uri' => 'HtTp://AaAa/b/c',
+            'expected' => 'http://aaaa/b/c',
+        ];
+
+        yield 'URI path is partially decoded without affecting delimiter characters' => [
+            'uri' => 'https://example.com/foo/bar%2Fbaz',
+            'expected' => 'https://example.com/foo/bar%2Fbaz',
+        ];
+
+        yield 'URI query is partially decoded without affecting delimiter characters' => [
+            'uri' => 'https://example.com?foo=bar%26baz%3Dqux',
+            'expected' => 'https://example.com/?foo=bar%26baz%3Dqux',
+        ];
+
+        yield 'URI IPv6 host is not compressed' => [
+            'uri' => 'https://[fe80:0000:0000:0000:0000:0000:0000:000a%25en1]/foo/bar',
+            'expected' => 'https://[fe80:0000:0000:0000:0000:0000:0000:000a%25en1]/foo/bar',
+        ];
+
+        yield 'URI let port unchanged' => [
+            'uri' => 'https://foobar:443/foo/bar',
+            'expected' => 'https://foobar:443/foo/bar',
+        ];
+    }
 }

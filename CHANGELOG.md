@@ -20,6 +20,9 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriString::normalize`
 - `UriString::normalizeAuthority`
 - `FeatureDetection::supportsDom`
+- `Encoder::decodePath`
+- `Encoder::decodeQuery`
+- `Encoder::decodeFragment`
 
 ### Fixed
 

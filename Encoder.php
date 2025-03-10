@@ -19,6 +19,7 @@ use League\Uri\Exceptions\SyntaxError;
 use SensitiveParameter;
 use Stringable;
 
+use function in_array;
 use function preg_match;
 use function preg_replace_callback;
 use function rawurldecode;
@@ -133,9 +134,7 @@ final class Encoder
      */
     public static function decodeAll(Stringable|string|int|null $component): ?string
     {
-        $decodeMatches = static fn (array $matches): string => rawurldecode($matches[0]);
-
-        return self::decode($component, $decodeMatches);
+        return self::decode($component, static fn (array $matches): string => rawurldecode($matches[0]));
     }
 
     private static function filterComponent(mixed $component): ?string
@@ -172,25 +171,63 @@ final class Encoder
     private static function decode(Stringable|string|int|null $component, Closure $decodeMatches): ?string
     {
         $component = self::filterComponent($component);
+        if (null === $component || '' === $component) {
+            return $component;
+        }
 
-        return match (true) {
-            null === $component => null,
-            1 === preg_match(self::REGEXP_CHARS_INVALID, $component) => throw new SyntaxError('Invalid component string: '.$component.'.'),
-            1 === preg_match(self::REGEXP_CHARS_ENCODED, $component) => preg_replace_callback(self::REGEXP_CHARS_ENCODED, $decodeMatches(...), $component),
-            default => $component,
-        };
+        if (1 === preg_match(self::REGEXP_CHARS_INVALID, $component)) {
+            throw new SyntaxError('Invalid component string: '.$component.'.');
+        }
+
+        if (1 === preg_match(self::REGEXP_CHARS_ENCODED, $component)) {
+            return (string) preg_replace_callback(self::REGEXP_CHARS_ENCODED, $decodeMatches(...), $component);
+        }
+
+        return $component;
     }
 
     public static function decodeUnreservedCharacters(?string $str): ?string
     {
-        return match (true) {
-            null === $str,
-            '' === $str => $str,
-            default => preg_replace_callback(
-                self::REGEXP_UNRESERVED_CHARACTERS,
-                static fn (array $matches): string => rawurldecode($matches[0]),
-                $str
-            ) ?? '',
+        if (null === $str || '' === $str) {
+            return $str;
+        }
+
+        return preg_replace_callback(self::REGEXP_UNRESERVED_CHARACTERS, static fn (array $matches): string => rawurldecode($matches[0]), $str) ?? '';
+    }
+
+    /**
+     * Decodes the URI query path while preserving delim character that should not be decoded for a path inside a URI.
+     */
+    public static function decodePath(Stringable|string|null $path): ?string
+    {
+        $decodeMatches = static function (array $matches): string {
+            $encodedChar = strtoupper($matches[0]);
+
+            return in_array($encodedChar, ['%2F', '%20', '%3F', '%23'], true) ? $encodedChar : rawurldecode($encodedChar);
         };
+
+        return self::decode($path, $decodeMatches);
+    }
+
+    /**
+     * Decodes the URI query string while preserving delim character that should not be decoded for a query inside a URI.
+     */
+    public static function decodeQuery(Stringable|string|null $path): ?string
+    {
+        $decodeMatches = static function (array $matches): string {
+            $encodedChar = strtoupper($matches[0]);
+
+            return in_array($encodedChar, ['%26', '%3D', '%20', '%23'], true) ? $encodedChar : rawurldecode($encodedChar);
+        };
+
+        return self::decode($path, $decodeMatches);
+    }
+
+    /**
+     * Decodes the URI query string while preserving delim character that should not be decoded for a query inside a URI.
+     */
+    public static function decodeFragment(Stringable|string|null $path): ?string
+    {
+        return self::decode($path, static fn (array $matches): string => '%20' === $matches[0] ? $matches[0] : rawurldecode($matches[0]));
     }
 }

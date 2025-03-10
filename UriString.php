@@ -17,6 +17,7 @@ use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Converter as IdnaConverter;
+use League\Uri\IPv4\Converter as Ipv4Converter;
 use League\Uri\IPv6\Converter as IPv6Converter;
 use Stringable;
 
@@ -282,8 +283,11 @@ final class UriString
             $components['scheme'] = strtolower($components['scheme']);
         }
 
-        if (null !== $components['host']) {
-            $components['host'] = IdnaConverter::toUnicode((string)IPv6Converter::compress($components['host']))->domain();
+        if (null !== $components['host'] &&
+            !IPv6Converter::isIpv6($components['host']) &&
+            !Ipv4Converter::fromEnvironment()->isIpv4($components['host'])
+        ) {
+            $components['host'] = IdnaConverter::toUnicode($components['host'])->domain();
         }
 
         $path = $components['path'];
@@ -291,14 +295,14 @@ final class UriString
             $path = self::removeDotSegments($path);
         }
 
-        $path = Encoder::decodeUnreservedCharacters($path);
+        $path = Encoder::decodePath($path);
         if (null !== self::buildAuthority($components) && ('' === $path || null === $path)) {
             $path = '/';
         }
 
         $components['path'] = $path;
-        $components['query'] = Encoder::decodeUnreservedCharacters($components['query']);
-        $components['fragment'] = Encoder::decodeUnreservedCharacters($components['fragment']);
+        $components['query'] = Encoder::decodeQuery($components['query']);
+        $components['fragment'] = Encoder::decodeFragment($components['fragment']);
         $components['user'] = Encoder::decodeUnreservedCharacters($components['user']);
         $components['pass'] = Encoder::decodeUnreservedCharacters($components['pass']);
 
@@ -313,8 +317,11 @@ final class UriString
     public static function normalizeAuthority(Stringable|string $authority): string
     {
         $components = UriString::parseAuthority($authority);
-        if (null !== $components['host']) {
-            $components['host'] = IdnaConverter::toUnicode((string)IPv6Converter::compress($components['host']))->domain();
+        if (null !== $components['host'] &&
+            !IPv6Converter::isIpv6($components['host']) &&
+            !Ipv4Converter::fromEnvironment()->isIpv4($components['host'])
+        ) {
+            $components['host'] = IdnaConverter::toUnicode((string) $components['host'])->domain();
         }
 
         $components['user'] = Encoder::decodeUnreservedCharacters($components['user']);
