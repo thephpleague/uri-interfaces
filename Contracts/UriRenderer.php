@@ -51,7 +51,7 @@ interface UriRenderer extends JsonSerializable
      * Returns the string representation as a URI reference.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
-     * @see ::__toString
+     * @see ::toString
      */
     public function jsonSerialize(): string;
 

@@ -27,12 +27,10 @@ use Stringable;
  * @method self withUser(?string $user) returns a new URI instance with user component updated, if the user is set to null the password also will be set to null.
  * @method string|null getPassword() returns the scheme-specific information about how to gain authorization to access the resource.
  * @method self withPassword(?string $password) returns a new URI instance with password component updated, if the user is set to null the password also will be set to null.
- * @method string toNormalizedString() returns the normalized string representation of the URI
  * @method array toComponents() returns an associative array containing all the URI components.
  * @method self normalize() returns a new URI instance with normalized components
  * @method self resolve(UriInterface $uri) resolves a URI against a base URI using RFC3986 rules
  * @method self relativize(UriInterface $uri) relativize a URI against a base URI using RFC3986 rules
- * @method bool equals(UriInterface $uri, bool $excludeFragment) tells whether the given URI object represents the same document. It can take the fragment in account if it is explicitly specified
  */
 interface UriInterface extends JsonSerializable, Stringable
 {
