@@ -25,7 +25,6 @@ use function array_map;
 use function array_merge;
 use function array_pop;
 use function array_reduce;
-use function end;
 use function explode;
 use function filter_var;
 use function implode;
@@ -420,7 +419,7 @@ final class UriString
 
         $oldSegments = explode('/', $path);
         $newPath = implode('/', array_reduce($oldSegments, $reducer(...), []));
-        if (isset(self::DOT_SEGMENTS[end($oldSegments)])) {
+        if (isset(self::DOT_SEGMENTS[$oldSegments[array_key_last($oldSegments)]])) {
             $newPath .= '/';
         }
 
