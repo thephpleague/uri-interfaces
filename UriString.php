@@ -17,7 +17,6 @@ use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Converter as IdnaConverter;
-use League\Uri\IPv4\Converter as Ipv4Converter;
 use League\Uri\IPv6\Converter as IPv6Converter;
 use Stringable;
 
@@ -40,6 +39,7 @@ use function strtolower;
 use function substr;
 use function uksort;
 
+use const FILTER_FLAG_IPV4;
 use const FILTER_FLAG_IPV6;
 use const FILTER_VALIDATE_IP;
 use const PREG_SPLIT_NO_EMPTY;
@@ -289,8 +289,8 @@ final class UriString
         }
 
         if (null !== $components['host'] &&
-            !IPv6Converter::isIpv6($components['host']) &&
-            !Ipv4Converter::fromEnvironment()->isIpv4($components['host'])
+            false === filter_var($components['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
+            !IPv6Converter::isIpv6($components['host'])
         ) {
             $components['host'] = IdnaConverter::toUnicode($components['host'])->domain();
         }
@@ -323,8 +323,8 @@ final class UriString
     {
         $components = UriString::parseAuthority($authority);
         if (null !== $components['host'] &&
-            !IPv6Converter::isIpv6($components['host']) &&
-            !Ipv4Converter::fromEnvironment()->isIpv4($components['host'])
+            false === filter_var($components['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
+            !IPv6Converter::isIpv6($components['host'])
         ) {
             $components['host'] = IdnaConverter::toUnicode((string) $components['host'])->domain();
         }
