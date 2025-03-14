@@ -295,16 +295,16 @@ final class UriString
             $path = self::removeDotSegments($path);
         }
 
-        $path = Encoder::decodePath($path);
-        if (null !== self::buildAuthority($components) && ('' === $path || null === $path)) {
+        $path = Encoder::encodePath(Encoder::decodePath($path));
+        if (null !== self::buildAuthority($components) && ('' === $path)) {
             $path = '/';
         }
 
         $components['path'] = $path;
-        $components['query'] = Encoder::decodeQuery($components['query']);
-        $components['fragment'] = Encoder::decodeFragment($components['fragment']);
-        $components['user'] = Encoder::decodeUnreservedCharacters($components['user']);
-        $components['pass'] = Encoder::decodeUnreservedCharacters($components['pass']);
+        $components['query'] = Encoder::encodeQueryOrFragment(Encoder::decodeQuery($components['query']));
+        $components['fragment'] = Encoder::encodeQueryOrFragment(Encoder::decodeFragment($components['fragment']));
+        $components['user'] = Encoder::encodeUser(Encoder::decodeUnreservedCharacters($components['user']));
+        $components['pass'] = Encoder::encodePassword(Encoder::decodeUnreservedCharacters($components['pass']));
 
         return self::build($components);
     }
