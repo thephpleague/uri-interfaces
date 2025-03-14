@@ -20,7 +20,6 @@ use League\Uri\Idna\Converter as IdnaConverter;
 use League\Uri\IPv6\Converter as IPv6Converter;
 use Stringable;
 
-use function array_map;
 use function array_merge;
 use function array_pop;
 use function array_reduce;
@@ -30,19 +29,15 @@ use function implode;
 use function in_array;
 use function inet_pton;
 use function preg_match;
-use function preg_split;
 use function rawurldecode;
 use function sprintf;
-use function strcmp;
 use function strpos;
 use function strtolower;
 use function substr;
-use function uksort;
 
 use const FILTER_FLAG_IPV4;
 use const FILTER_FLAG_IPV6;
 use const FILTER_VALIDATE_IP;
-use const PREG_SPLIT_NO_EMPTY;
 
 /**
  * A class to parse a URI string according to RFC3986.
@@ -292,7 +287,7 @@ final class UriString
             false === filter_var($components['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
             !IPv6Converter::isIpv6($components['host'])
         ) {
-            $components['host'] = IdnaConverter::toUnicode($components['host'])->domain();
+            $components['host'] = IdnaConverter::toAscii($components['host'])->domain();
         }
 
         $path = $components['path'];
@@ -306,7 +301,7 @@ final class UriString
         }
 
         $components['path'] = $path;
-        $components['query'] = Encoder::decodeQuery(self::sortQuery($components['query']));
+        $components['query'] = Encoder::decodeQuery($components['query']);
         $components['fragment'] = Encoder::decodeFragment($components['fragment']);
         $components['user'] = Encoder::decodeUnreservedCharacters($components['user']);
         $components['pass'] = Encoder::decodeUnreservedCharacters($components['pass']);
@@ -707,37 +702,5 @@ final class UriString
 
         return false !== filter_var($ipHost, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
             && str_starts_with((string)inet_pton($ipHost), self::ZONE_ID_ADDRESS_BLOCK);
-    }
-
-    private static function sortQuery(?string $query): ?string
-    {
-        if (null === $query || !str_contains($query, '&')) {
-            return $query;
-        }
-
-        $codepoints = fn (?string $str): string => in_array($str, ['', null], true) ? '' : implode('.', array_map(
-            mb_ord(...), /* @phpstan-ignore-line */
-            (array) preg_split(pattern:'//u', subject: $str, flags: PREG_SPLIT_NO_EMPTY)
-        ));
-        $compare = fn (string $name1, string $name2): int => match (1) {
-            preg_match('/[^\x20-\x7f]/', $name1.$name2) => strcmp($codepoints($name1), $codepoints($name2)),
-            default => strcmp($name1, $name2),
-        };
-
-        $parameters = array_reduce(QueryString::parse($query), function (array $carry, array $pair) {
-            $carry[$pair[0]] ??= [];
-            $carry[$pair[0]][] = $pair[1];
-
-            return $carry;
-        }, []);
-
-        uksort($parameters, $compare);
-
-        $pairs = [];
-        foreach ($parameters as $key => $values) {
-            $pairs = [...$pairs, ...array_map(fn ($value) => [$key, $value], $values)];
-        }
-
-        return QueryString::buildFromPairs($pairs);
     }
 }
