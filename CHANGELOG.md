@@ -20,6 +20,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriString::normalize`
 - `UriString::normalizeAuthority`
 - `FeatureDetection::supportsDom`
+- `Encoder::decodeSafe`
 - `Encoder::decodePath`
 - `Encoder::decodeQuery`
 - `Encoder::decodeFragment`
@@ -31,6 +32,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Deprecated
 
 - `UriInterface::getUsername` replaced by `UriInterface::getUser`
+- `Encoder::decodePartial` replaced by `Encoder::decodeSafe`
 
 ### Removed
 
