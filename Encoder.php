@@ -65,6 +65,18 @@ final class Encoder
     }
 
     /**
+     * Normalize user component.
+     *
+     * The value returned MUST be percent-encoded, but MUST NOT double-encode
+     * any characters. To determine what characters to encode, please refer to
+     * RFC 3986.
+     */
+    public static function normalizeUser(Stringable|string|null $user): ?string
+    {
+        return self::encodeUser(self::decodeUnreservedCharacters($user));
+    }
+
+    /**
      * Encode Password.
      *
      * Generic delimiters ":" MUST NOT be encoded
@@ -77,40 +89,15 @@ final class Encoder
     }
 
     /**
-     * Encode Path.
+     * Normalize password component.
      *
-     * Generic delimiters ":", "@", and "/" MUST NOT be encoded
+     * The value returned MUST be percent-encoded, but MUST NOT double-encode
+     * any characters. To determine what characters to encode, please refer to
+     * RFC 3986.
      */
-    public static function encodePath(Stringable|string|null $component): string
+    public static function normalizePassword(Stringable|string|null $password): ?string
     {
-        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':@\/]+|'.self::REGEXP_PART_ENCODED.'/';
-
-        return (string) self::encode($component, $pattern);
-    }
-
-    /**
-     * Encode Query or Fragment.
-     *
-     * Generic delimiters ":", "@", "?", and "/" MUST NOT be encoded
-     */
-    public static function encodeQueryOrFragment(Stringable|string|null $component): ?string
-    {
-        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':@\/?]+|'.self::REGEXP_PART_ENCODED.'/';
-
-        return self::encode($component, $pattern);
-    }
-
-    public static function encodeQueryKeyValue(mixed $component): ?string
-    {
-        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.']+|'.self::REGEXP_PART_ENCODED.'/';
-        $encoder = static fn (array $found): string => 1 === preg_match('/[^'.self::REGEXP_PART_UNRESERVED.']/', rawurldecode($found[0])) ? rawurlencode($found[0]) : $found[0];
-        $filteredComponent = self::filterComponent($component);
-
-        return match (true) {
-            null === $filteredComponent => throw new SyntaxError(sprintf('A pair key/value must be a scalar value `%s` given.', gettype($component))),
-            1 === preg_match(self::REGEXP_CHARS_INVALID, $filteredComponent) => rawurlencode($filteredComponent),
-            default => (string) preg_replace_callback($pattern, $encoder, $filteredComponent),
-        };
+        return self::encodePassword(self::decodeUnreservedCharacters($password));
     }
 
     /**
@@ -142,12 +129,15 @@ final class Encoder
      */
     public static function decodeUnreservedCharacters(Stringable|string|null $str): ?string
     {
-        $str = self::filterComponent($str);
-        if (null === $str || '' === $str) {
-            return $str;
+        if (null === $str) {
+            return null;
         }
 
-        return preg_replace_callback(self::REGEXP_UNRESERVED_CHARACTERS, static fn (array $matches): string => rawurldecode($matches[0]), $str) ?? '';
+        return preg_replace_callback(
+            self::REGEXP_UNRESERVED_CHARACTERS,
+            static fn (array $matches): string => rawurldecode($matches[0]),
+            (string) $str
+        );
     }
 
     /**
@@ -165,6 +155,30 @@ final class Encoder
     }
 
     /**
+     * Encode Path.
+     *
+     * Generic delimiters ":", "@", and "/" MUST NOT be encoded
+     */
+    public static function encodePath(Stringable|string|null $component): string
+    {
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':@\/]+|'.self::REGEXP_PART_ENCODED.'/';
+
+        return (string) self::encode($component, $pattern);
+    }
+
+    /**
+     * Normalize path component.
+     *
+     * The value returned MUST be percent-encoded, but MUST NOT double-encode
+     * any characters. To determine what characters to encode, please refer to
+     * RFC 3986.
+     */
+    public static function normalizePath(Stringable|string|null $component): ?string
+    {
+        return self::encodePath(self::decodePath($component));
+    }
+
+    /**
      * Decodes the query component while preserving characters that should not be decoded in the context of a full valid URI.
      */
     public static function decodeQuery(Stringable|string|null $path): ?string
@@ -179,11 +193,60 @@ final class Encoder
     }
 
     /**
+     * Normalize query component.
+     *
+     * The value returned MUST be percent-encoded, but MUST NOT double-encode
+     * any characters. To determine what characters to encode, please refer to
+     * RFC 3986.
+     */
+    public static function normalizeQuery(Stringable|string|null $query): ?string
+    {
+        return self::encodeQueryOrFragment(self::decodeQuery($query));
+    }
+
+    /**
      * Decodes the fragment component while preserving characters that should not be decoded in the context of a full valid URI.
      */
     public static function decodeFragment(Stringable|string|null $path): ?string
     {
         return self::decode($path, static fn (array $matches): string => '%20' === $matches[0] ? $matches[0] : rawurldecode($matches[0]));
+    }
+
+    /**
+     * Normalize fragment component.
+     *
+     * The value returned MUST be percent-encoded, but MUST NOT double-encode
+     * any characters. To determine what characters to encode, please refer to
+     * RFC 3986.
+     */
+    public static function normalizeFragment(Stringable|string|null $fragment): ?string
+    {
+        return self::encodeQueryOrFragment(self::decodeFragment($fragment));
+    }
+
+    /**
+     * Encode Query or Fragment.
+     *
+     * Generic delimiters ":", "@", "?", and "/" MUST NOT be encoded
+     */
+    public static function encodeQueryOrFragment(Stringable|string|null $component): ?string
+    {
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':@\/?]+|'.self::REGEXP_PART_ENCODED.'/';
+
+        return self::encode($component, $pattern);
+    }
+
+    public static function encodeQueryKeyValue(mixed $component): ?string
+    {
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.']+|'.self::REGEXP_PART_ENCODED.'/';
+        $encoder = static fn (array $found): string => 1 === preg_match('/[^'.self::REGEXP_PART_UNRESERVED.']/', rawurldecode($found[0])) ? rawurlencode($found[0]) : $found[0];
+        $filteredComponent = self::filterComponent($component);
+
+        return match (true) {
+            null === $filteredComponent => throw new SyntaxError(sprintf('A pair key/value must be a scalar value `%s` given.', gettype($component))),
+            1 === preg_match(self::REGEXP_CHARS_INVALID, $filteredComponent) => rawurlencode($filteredComponent),
+            default => (string) preg_replace_callback($pattern, $encoder, $filteredComponent),
+        };
     }
 
     private static function filterComponent(mixed $component): ?string
