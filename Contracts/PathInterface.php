@@ -16,7 +16,7 @@ namespace League\Uri\Contracts;
 use League\Uri\Exceptions\SyntaxError;
 
 /**
- * @method string|null normalized() returns the normalized string representation of the component
+ * @method static normalize() returns the normalized string representation of the component
  */
 interface PathInterface extends UriComponentInterface
 {

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace League\Uri\Contracts;
 
 /**
- * @method string|null normalized() returns the normalized string representation of the component
+ * @method self normalize() returns the normalized string representation of the component
  */
 interface FragmentInterface extends UriComponentInterface
 {
