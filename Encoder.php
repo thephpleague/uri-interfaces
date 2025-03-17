@@ -112,7 +112,7 @@ final class Encoder
     /**
      * Decodes the URI component without decoding the unreserved characters which are already encoded.
      */
-    public static function decodeSafe(Stringable|string|int|null $component): ?string
+    public static function decodeNecessary(Stringable|string|int|null $component): ?string
     {
         $decoder = static function (array $matches): string {
             if (1 === preg_match(self::REGEXP_CHARS_PREVENTS_DECODING, $matches[0])) {
@@ -308,13 +308,13 @@ final class Encoder
      *
      * @deprecated Since version 7.6.0
      * @codeCoverageIgnore
-     * @see Encoder::decodeSafe()
+     * @see Encoder::decodeNecessary()
      *
      * Create a new instance from the environment.
      */
-    #[Deprecated(message:'use League\Uri\Encoder::decodeSafe() instead', since:'league/uri:7.6.0')]
+    #[Deprecated(message:'use League\Uri\Encoder::decodeNecessary() instead', since:'league/uri:7.6.0')]
     public static function decodePartial(Stringable|string|int|null $component): ?string
     {
-        return self::decodeSafe($component);
+        return self::decodeNecessary($component);
     }
 }

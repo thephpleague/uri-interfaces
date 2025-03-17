@@ -200,7 +200,7 @@ final class UriString
         return self::buildUri(
             $components['scheme'] ?? null,
             self::buildAuthority($components),
-            $components['path'] ?? '',
+            $components['path'] ?? null,
             $components['query'] ?? null,
             $components['fragment'] ?? null,
         );
@@ -218,7 +218,7 @@ final class UriString
     public static function buildUri(
         ?string $scheme,
         ?string $authority,
-        string $path,
+        ?string $path,
         ?string $query,
         ?string $fragment,
     ): string {

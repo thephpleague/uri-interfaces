@@ -20,7 +20,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriString::normalize`
 - `UriString::normalizeAuthority`
 - `FeatureDetection::supportsDom`
-- `Encoder::decodeSafe`
+- `Encoder::decodeNecessary`
 - `Encoder::decodePath`
 - `Encoder::decodeQuery`
 - `Encoder::decodeFragment`
@@ -28,11 +28,12 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Fixed
 
 - `UriString::parse` will fail if the URI contains whitespace or is the empty string.
+- `UriString::buildUri` allows the `$path` argument to be `null`.
 
 ### Deprecated
 
 - `UriInterface::getUsername` replaced by `UriInterface::getUser`
-- `Encoder::decodePartial` replaced by `Encoder::decodeSafe`
+- `Encoder::decodePartial` replaced by `Encoder::decodeNecessary`
 
 ### Removed
 
