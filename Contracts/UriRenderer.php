@@ -34,16 +34,9 @@ interface UriRenderer extends JsonSerializable
     public function toString(): string;
 
     /**
-     * Returns the normalized string representation of the URI.
+     * Returns the human-readable string representation of the URI as an IRI.
      *
-     * @see https://datatracker.ietf.org/doc/html/rfc3986#section-6.2
-     */
-    public function toNormalizedString(): ?string;
-
-    /**
-     * Returns the human-readable string representation of the URI.
-     *
-     * @see https://datatracker.ietf.org/doc/html/rfc3986#section-6.2
+     * @see https://datatracker.ietf.org/doc/html/rfc3987
      */
     public function toDisplayString(): string;
 
