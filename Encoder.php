@@ -54,6 +54,16 @@ final class Encoder
     private const REGEXP_UNRESERVED_CHARACTERS = ',%(2[1-9A-Fa-f]|[3-7][0-9A-Fa-f]|61|62|64|65|66|7[AB]|5F),';
 
     /**
+     * Tell whether the user component is correctly encoded.
+     */
+    public static function isUserEncoded(Stringable|string|null $encoded): bool
+    {
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.']+|'.self::REGEXP_PART_ENCODED.'/';
+
+        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
+    }
+
+    /**
      * Encode User.
      *
      * All generic delimiters MUST be encoded
@@ -78,6 +88,16 @@ final class Encoder
     }
 
     /**
+     * Tell whether the password component is correctly encoded.
+     */
+    public static function isPasswordEncoded(#[SensitiveParameter] Stringable|string|null $encoded): bool
+    {
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':]+|'.self::REGEXP_PART_ENCODED.'/';
+
+        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
+    }
+
+    /**
      * Encode Password.
      *
      * Generic delimiters ":" MUST NOT be encoded
@@ -96,7 +116,7 @@ final class Encoder
      * any characters. To determine what characters to encode, please refer to
      * RFC 3986.
      */
-    public static function normalizePassword(Stringable|string|null $password): ?string
+    public static function normalizePassword(#[SensitiveParameter] Stringable|string|null $password): ?string
     {
         return self::encodePassword(self::decodeUnreservedCharacters($password));
     }
@@ -142,17 +162,13 @@ final class Encoder
     }
 
     /**
-     * Decodes the path component while preserving characters that should not be decoded in the context of a full valid URI.
+     * Tell whether the path component is correctly encoded.
      */
-    public static function decodePath(Stringable|string|null $path): ?string
+    public static function isPathEncoded(Stringable|string|null $encoded): bool
     {
-        $decoder = static function (array $matches): string {
-            $encodedChar = strtoupper($matches[0]);
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':@\/]+|'.self::REGEXP_PART_ENCODED.'/';
 
-            return in_array($encodedChar, ['%2F', '%20', '%3F', '%23'], true) ? $encodedChar : rawurldecode($encodedChar);
-        };
-
-        return self::decode($path, $decoder);
+        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
     }
 
     /**
@@ -168,6 +184,20 @@ final class Encoder
     }
 
     /**
+     * Decodes the path component while preserving characters that should not be decoded in the context of a full valid URI.
+     */
+    public static function decodePath(Stringable|string|null $path): ?string
+    {
+        $decoder = static function (array $matches): string {
+            $encodedChar = strtoupper($matches[0]);
+
+            return in_array($encodedChar, ['%2F', '%20', '%3F', '%23'], true) ? $encodedChar : rawurldecode($encodedChar);
+        };
+
+        return self::decode($path, $decoder);
+    }
+
+    /**
      * Normalize path component.
      *
      * The value returned MUST be percent-encoded, but MUST NOT double-encode
@@ -177,6 +207,16 @@ final class Encoder
     public static function normalizePath(Stringable|string|null $component): ?string
     {
         return self::encodePath(self::decodePath($component));
+    }
+
+    /**
+     * Tell whether the query component is correctly encoded.
+     */
+    public static function isQueryEncoded(Stringable|string|null $encoded): bool
+    {
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.'\/?%]+|'.self::REGEXP_PART_ENCODED.'/';
+
+        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
     }
 
     /**
@@ -203,6 +243,16 @@ final class Encoder
     public static function normalizeQuery(Stringable|string|null $query): ?string
     {
         return self::encodeQueryOrFragment(self::decodeQuery($query));
+    }
+
+    /**
+     * Tell whether the query component is correctly encoded.
+     */
+    public static function isFragmentEncoded(Stringable|string|null $encoded): bool
+    {
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':@\/?%]|'.self::REGEXP_PART_ENCODED.'/';
+
+        return null === $encoded || 1 !== preg_match($pattern, (string) $encoded);
     }
 
     /**
