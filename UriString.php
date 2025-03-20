@@ -272,11 +272,11 @@ final class UriString
     }
 
     /**
-     * Parses and normalizes the URI following RFC3986 destructive and non-destructive constraints.
+     * @param Stringable|string $uri
      *
-     * @throws SyntaxError if the URI is not parsable
+     * @return ComponentMap
      */
-    public static function normalize(Stringable|string $uri): string
+    public static function parseNormalized(Stringable|string $uri): array
     {
         $components = self::parse($uri);
         if (null !== $components['scheme']) {
@@ -306,7 +306,17 @@ final class UriString
         $components['user'] = Encoder::normalizeUser($components['user']);
         $components['pass'] = Encoder::normalizePassword($components['pass']);
 
-        return self::build($components);
+        return $components;
+    }
+
+    /**
+     * Parses and normalizes the URI following RFC3986 destructive and non-destructive constraints.
+     *
+     * @throws SyntaxError if the URI is not parsable
+     */
+    public static function normalize(Stringable|string $uri): string
+    {
+        return self::build(self::parseNormalized($uri));
     }
 
     /**
