@@ -630,9 +630,13 @@ final class UriString
      *
      * @throws SyntaxError if the registered name is invalid
      */
-    private static function filterHost(string $host): string
+    public static function filterHost(Stringable|string|null $host): string
     {
-        if ('' === $host) {
+        if (null !== $host) {
+            $host = (string) $host;
+        }
+
+        if (null === $host || '' === $host) {
             return $host;
         }
 
