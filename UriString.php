@@ -20,6 +20,7 @@ use League\Uri\Idna\Converter as IdnaConverter;
 use League\Uri\IPv6\Converter as IPv6Converter;
 use Stringable;
 
+use Throwable;
 use function array_merge;
 use function array_pop;
 use function array_reduce;
@@ -632,7 +633,7 @@ final class UriString
      *
      * @throws SyntaxError if the registered name is invalid
      */
-    public static function filterHost(Stringable|string|null $host): ?string
+    private static function filterHost(Stringable|string|null $host): ?string
     {
         if (null !== $host) {
             $host = (string) $host;
@@ -666,6 +667,16 @@ final class UriString
         }
 
         throw new SyntaxError(sprintf('Host `%s` is invalid : the IP host is malformed', $host));
+    }
+
+    public static function isHost(Stringable|string|null $host): bool
+    {
+        try {
+            self::filterHost($host);
+            return true;
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     /**
