@@ -272,6 +272,9 @@ final class UriString
     }
 
     /**
+     * Parses and normalizes the URI following RFC3986 destructive and non-destructive constraints.
+     *
+     * @throws SyntaxError if the URI is not parsable
      *
      * @return ComponentMap
      */
