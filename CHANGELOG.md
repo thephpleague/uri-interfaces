@@ -50,6 +50,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `Uri\IPv4\Converter::toIPv6Using6to4` allows converting an IPv4 into an IPv6 host using the 6to4 notation.
 - `Uri\IPv4\Converter::toIPv6UsingMapping` allows mapping an IPv4 address into an IPv6 one.
 - Using PHP8.4 `Deprecated` attribute to signal deprecated public API methods and constants.
+- `HostInterface::encoded` method to RFC3986 URL encode the host
 
 ### Fixed
 

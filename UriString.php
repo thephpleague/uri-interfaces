@@ -19,21 +19,25 @@ use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Converter as IdnaConverter;
 use League\Uri\IPv6\Converter as IPv6Converter;
 use Stringable;
-
 use Throwable;
+
 use function array_merge;
 use function array_pop;
 use function array_reduce;
+use function defined;
 use function explode;
 use function filter_var;
+use function function_exists;
 use function implode;
 use function in_array;
 use function inet_pton;
 use function preg_match;
+use function preg_replace_callback;
 use function rawurldecode;
 use function sprintf;
 use function strpos;
 use function strtolower;
+use function strtoupper;
 use function substr;
 
 use const FILTER_FLAG_IPV4;
@@ -286,11 +290,19 @@ final class UriString
             $components['scheme'] = strtolower($components['scheme']);
         }
 
+        static $isSupported = null;
+        $isSupported ??= (function_exists('\idn_to_ascii') && defined('\INTL_IDNA_VARIANT_UTS46'));
+
         if (null !== $components['host'] &&
             false === filter_var($components['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
             !IPv6Converter::isIpv6($components['host'])
         ) {
-            $components['host'] = IdnaConverter::toAscii($components['host'])->domain();
+            $formattedHost = rawurldecode($components['host']);
+            $components['host'] = $isSupported ? IdnaConverter::toAscii($formattedHost)->domain() : (string) preg_replace_callback(
+                '/%[0-9A-F]{2}/i',
+                fn (array $matches): string => strtoupper($matches[0]),
+                strtolower($components['host'])
+            );
         }
 
         $path = $components['path'];
@@ -691,6 +703,14 @@ final class UriString
     private static function filterRegisteredName(string $host): void
     {
         $formattedHost = rawurldecode($host);
+        if ($formattedHost !== $host) {
+            if (IdnaConverter::toAscii($formattedHost)->hasErrors()) {
+                throw new SyntaxError(sprintf('Host `%s` is invalid: the host is not a valid registered name', $host));
+            }
+
+            return;
+        }
+
         if (1 === preg_match(self::REGEXP_REGISTERED_NAME, $formattedHost)) {
             return;
         }
