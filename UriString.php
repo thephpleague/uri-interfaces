@@ -272,7 +272,6 @@ final class UriString
     }
 
     /**
-     * @param Stringable|string $uri
      *
      * @return ComponentMap
      */
@@ -300,7 +299,7 @@ final class UriString
             $path = '/';
         }
 
-        $components['path'] = $path;
+        $components['path'] = (string) $path;
         $components['query'] = Encoder::normalizeQuery($components['query']);
         $components['fragment'] = Encoder::normalizeFragment($components['fragment']);
         $components['user'] = Encoder::normalizeUser($components['user']);
@@ -630,7 +629,7 @@ final class UriString
      *
      * @throws SyntaxError if the registered name is invalid
      */
-    public static function filterHost(Stringable|string|null $host): string
+    public static function filterHost(Stringable|string|null $host): ?string
     {
         if (null !== $host) {
             $host = (string) $host;
