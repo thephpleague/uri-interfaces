@@ -202,6 +202,8 @@ final class UriString
      */
     public static function build(array $components): string
     {
+        $components = self::validateComponents($components);
+
         return self::buildUri(
             $components['scheme'] ?? null,
             self::buildAuthority($components),
@@ -592,7 +594,7 @@ final class UriString
      * @link https://tools.ietf.org/html/rfc3986#section-3
      * @link https://tools.ietf.org/html/rfc3986#section-3.3
      *
-     * @param ComponentMap $components
+     * @param ComponentMap|InputComponentMap $components
      *
      * @throws SyntaxError
      *
@@ -600,6 +602,8 @@ final class UriString
      */
     public static function validateComponents(array $components): array
     {
+        /** @var ComponentMap $components */
+        $components = [...self::URI_COMPONENTS, ...$components];
         $authority = UriString::buildAuthority($components);
         $path = $components['path'];
 
