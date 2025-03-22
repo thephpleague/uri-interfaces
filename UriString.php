@@ -583,7 +583,7 @@ final class UriString
             ]
         );
 
-        return self::validateComponents($components);
+        return $components;
     }
 
     /**
@@ -598,7 +598,7 @@ final class UriString
      *
      * @return ComponentMap
      */
-    private static function validateComponents(array $components): array
+    public static function validateComponents(array $components): array
     {
         $authority = UriString::buildAuthority($components);
         $path = $components['path'];
