@@ -763,7 +763,6 @@ final class UriStringTest extends TestCase
             'invalid host with fullwidth escaped' =>  ['http://%ef%bc%85%ef%bc%94%ef%bc%91.com],'],
             //'invalid pseudo IDN to ASCII string' => ['http://xn--3/foo.'],
             'invalid IDN' => ['//:�@�����������������������������������������������������������������������������������������/'],
-            'empty string' => [''],
         ];
     }
 
@@ -1025,7 +1024,6 @@ final class UriStringTest extends TestCase
 
     public static function invalidUriWithWhitespaceProvider(): iterable
     {
-        yield 'empty string' => ['uri' => ''];
         yield 'uri containing only whitespaces' => ['uri' => '     '];
         yield 'uri starting with whitespaces' => ['uri' => '    https://a/b?c'];
         yield 'uri ending with whitespaces' => ['uri' => 'https://a/b?c   '];

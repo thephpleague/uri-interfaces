@@ -74,6 +74,7 @@ final class UriString
      * @var array<string, array<string>>
      */
     private const URI_SHORTCUTS = [
+        '' => ['path' => ''],
         '#' => ['fragment' => ''],
         '?' => ['query' => ''],
         '?#' => ['query' => '', 'fragment' => ''],
@@ -534,7 +535,7 @@ final class UriString
             return $components;
         }
 
-        if ('' === $uri || 1 === preg_match(self::REGEXP_INVALID_URI_CHARS, $uri)) {
+        if (1 === preg_match(self::REGEXP_INVALID_URI_CHARS, $uri)) {
             throw new SyntaxError(sprintf('The uri `%s` contains invalid characters', $uri));
         }
 
