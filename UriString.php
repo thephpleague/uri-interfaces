@@ -583,6 +583,50 @@ final class UriString
             ]
         );
 
+        return self::validateComponents($components);
+    }
+
+    /**
+     * Assert the URI internal state is valid.
+     *
+     * @link https://tools.ietf.org/html/rfc3986#section-3
+     * @link https://tools.ietf.org/html/rfc3986#section-3.3
+     *
+     * @param ComponentMap $components
+     *
+     * @throws SyntaxError
+     *
+     * @return ComponentMap
+     */
+    private static function validateComponents(array $components): array
+    {
+        $authority = UriString::buildAuthority($components);
+        $path = $components['path'];
+
+        if (null !== $authority) {
+            if (null !== $path && '' !== $path && '/' !== $path[0]) {
+                throw new SyntaxError('If an authority is present the path must be empty or start with a `/`.');
+            }
+
+            return $components;
+        }
+
+        if (null === $path || '' === $path) {
+            return $components;
+        }
+
+        if (str_starts_with($path, '//')) {
+            throw new SyntaxError('If there is no authority the path `'.$path.'` cannot start with a `//`.');
+        }
+
+        if (null !== $components['scheme'] || false === ($pos = strpos($path, ':'))) {
+            return $components;
+        }
+
+        if (!str_contains(substr($path, 0, $pos), '/')) {
+            throw new SyntaxError('In absence of a scheme and an authority the first path segment cannot contain a colon (":") character.');
+        }
+
         return $components;
     }
 
