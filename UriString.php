@@ -601,7 +601,7 @@ final class UriString
      *
      * @return ComponentMap
      */
-    public static function validateComponents(array $components): array
+    private static function validateComponents(array $components): array
     {
         /** @var ComponentMap $components */
         $components = [...self::URI_COMPONENTS, ...$components];
