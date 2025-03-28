@@ -203,8 +203,6 @@ final class UriString
      */
     public static function build(array $components): string
     {
-        $components = self::validateComponents($components);
-
         return self::buildUri(
             $components['scheme'] ?? null,
             self::buildAuthority($components),
@@ -221,7 +219,7 @@ final class UriString
      * but properly encoded.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-5.3
-     * @link https://tools.ietf.org/html/rfc3986#section-7.5
+     * @link https://tools.ietf.org/html/rfc3986#section-7.5§
      */
     public static function buildUri(
         ?string $scheme,
@@ -230,6 +228,7 @@ final class UriString
         ?string $query,
         ?string $fragment,
     ): string {
+        self::validateComponents($scheme, $authority, $path);
         $uri = '';
         if (null !== $scheme) {
             $uri .= $scheme.':';
@@ -342,8 +341,12 @@ final class UriString
      *
      * @throws SyntaxError if the URI is not parsable
      */
-    public static function normalizeAuthority(Stringable|string $authority): string
+    public static function normalizeAuthority(Stringable|string|null $authority): ?string
     {
+        if (null === $authority) {
+            return null;
+        }
+
         $components = UriString::parseAuthority($authority);
         if (null !== $components['host'] &&
             false === filter_var($components['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
@@ -595,44 +598,33 @@ final class UriString
      * @link https://tools.ietf.org/html/rfc3986#section-3
      * @link https://tools.ietf.org/html/rfc3986#section-3.3
      *
-     * @param ComponentMap|InputComponentMap $components
-     *
      * @throws SyntaxError
-     *
-     * @return ComponentMap
      */
-    private static function validateComponents(array $components): array
+    private static function validateComponents(?string $scheme, ?string $authority, ?string $path): void
     {
-        /** @var ComponentMap $components */
-        $components = [...self::URI_COMPONENTS, ...$components];
-        $authority = UriString::buildAuthority($components);
-        $path = $components['path'];
-
         if (null !== $authority) {
             if (null !== $path && '' !== $path && '/' !== $path[0]) {
                 throw new SyntaxError('If an authority is present the path must be empty or start with a `/`.');
             }
 
-            return $components;
+            return;
         }
 
         if (null === $path || '' === $path) {
-            return $components;
+            return;
         }
 
         if (str_starts_with($path, '//')) {
             throw new SyntaxError('If there is no authority the path `'.$path.'` cannot start with a `//`.');
         }
 
-        if (null !== $components['scheme'] || false === ($pos = strpos($path, ':'))) {
-            return $components;
+        if (null !== $scheme || false === ($pos = strpos($path, ':'))) {
+            return;
         }
 
         if (!str_contains(substr($path, 0, $pos), '/')) {
             throw new SyntaxError('In absence of a scheme and an authority the first path segment cannot contain a colon (":") character.');
         }
-
-        return $components;
     }
 
     /**
@@ -731,11 +723,9 @@ final class UriString
     }
 
     /**
-     * Tells whether the scheme component is valid
+     * Tells whether the scheme component is valid.
      *
-     * @param Stringable|string|null $scheme
      *
-     * @return bool
      */
     public static function isScheme(Stringable|string|null $scheme): bool
     {
@@ -743,11 +733,9 @@ final class UriString
     }
 
     /**
-     * Tells whether the host component is valid
+     * Tells whether the host component is valid.
      *
-     * @param Stringable|string|null $host
      *
-     * @return bool
      */
     public static function isHost(Stringable|string|null $host): bool
     {
