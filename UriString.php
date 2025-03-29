@@ -80,6 +80,7 @@ final class UriString
         '?#' => ['query' => '', 'fragment' => ''],
         '/' => ['path' => '/'],
         '//' => ['host' => ''],
+        '///' => ['host' => '', 'path' => '/'],
     ];
 
     /**
@@ -758,6 +759,10 @@ final class UriString
      */
     private static function filterRegisteredName(string $host): void
     {
+        if ($host !== Encoder::decodeUnreservedCharacters($host)) {
+            throw new SyntaxError('Host `'.$host.'` is invalid: only UTF-8 characters sequence can be percent encoded in host.');
+        }
+
         $formattedHost = rawurldecode($host);
         if ($formattedHost !== $host) {
             if (IdnaConverter::toAscii($formattedHost)->hasErrors()) {
