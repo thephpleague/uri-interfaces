@@ -320,8 +320,8 @@ final class UriString
         }
 
         $path = Encoder::normalizePath($path);
-        if (null !== self::buildAuthority($components) && ('' === $path)) {
-            $path = '/';
+        if (null !== self::buildAuthority($components) && ('/' === $path)) {
+            $path = '';
         }
 
         $components['path'] = (string) $path;

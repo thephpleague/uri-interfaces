@@ -1063,7 +1063,7 @@ final class UriStringTest extends TestCase
 
         yield 'URI query is partially decoded without affecting delimiter characters' => [
             'uri' => 'https://example.com?foo=bar%26baz%3Dqux',
-            'expected' => 'https://example.com/?foo=bar%26baz%3Dqux',
+            'expected' => 'https://example.com?foo=bar%26baz%3Dqux',
         ];
 
         yield 'URI IPv6 host is not compressed' => [
