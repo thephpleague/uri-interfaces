@@ -296,15 +296,16 @@ final class Encoder
             $host = (string) $host;
         }
 
-        if (null === $host || '' === $host) {
-            return $host;
-        }
-
-        if (false !== filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) || IPv6Converter::isIpv6($host)) {
+        if (null === $host || '' === $host || false !== filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             return $host;
         }
 
         $host = strtolower($host);
+        if (IPv6Converter::isIpv6($host)) {
+            [$ipAddress, $zoneIdentifier] = explode('%', substr($host, 1, -1)) + [1 => null];
+
+            return IPv6Converter::build(['ipAddress' => strtolower((string) $ipAddress), 'zoneIdentifier' =>  $zoneIdentifier]);
+        }
 
         return (!str_contains($host, '%')) ? $host : preg_replace_callback(
             '/%[a-fA-F0-9]{2}/',

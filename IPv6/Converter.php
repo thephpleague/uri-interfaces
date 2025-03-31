@@ -84,7 +84,7 @@ final class Converter
         return self::build($components);
     }
 
-    private static function build(array $components): string
+    public static function build(array $components): string
     {
         $components['ipAddress'] ??= null;
         $components['zoneIdentifier'] ??= null;
