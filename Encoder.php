@@ -17,9 +17,11 @@ use Closure;
 use Deprecated;
 use League\Uri\Contracts\UriComponentInterface;
 use League\Uri\Exceptions\SyntaxError;
+use League\Uri\IPv6\Converter as IPv6Converter;
 use SensitiveParameter;
 use Stringable;
 
+use function filter_var;
 use function gettype;
 use function in_array;
 use function is_scalar;
@@ -28,7 +30,11 @@ use function preg_replace_callback;
 use function rawurldecode;
 use function rawurlencode;
 use function sprintf;
+use function strtolower;
 use function strtoupper;
+
+use const FILTER_FLAG_IPV4;
+use const FILTER_VALIDATE_IP;
 
 final class Encoder
 {
@@ -273,6 +279,38 @@ final class Encoder
     public static function normalizeFragment(Stringable|string|null $fragment): ?string
     {
         return self::encodeQueryOrFragment(self::decodeFragment($fragment));
+    }
+
+    /**
+     * Normalize host component.
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc3986.html#section-3.2.2
+     *
+     * The value returned MUST be percent-encoded, but MUST NOT double-encode
+     * any characters. To determine what characters to encode, please refer to
+     * RFC 3986.
+     */
+    public static function normalizeHost(Stringable|string|null $host): ?string
+    {
+        if ($host instanceof Stringable) {
+            $host = (string) $host;
+        }
+
+        if (null === $host || '' === $host) {
+            return $host;
+        }
+
+        if (false !== filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) || IPv6Converter::isIpv6($host)) {
+            return $host;
+        }
+
+        $host = strtolower($host);
+
+        return (!str_contains($host, '%')) ? $host : preg_replace_callback(
+            '/%[a-fA-F0-9]{2}/',
+            fn (array $matches): string => strtoupper($matches[0]),
+            $host
+        );
     }
 
     /**

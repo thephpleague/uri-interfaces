@@ -300,12 +300,18 @@ final class UriString
             false === filter_var($components['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
             !IPv6Converter::isIpv6($components['host'])
         ) {
-            $formattedHost = rawurldecode($components['host']);
-            $components['host'] = $isSupported ? IdnaConverter::toAscii($formattedHost)->domain() : (string) preg_replace_callback(
+            $decodedHost = rawurldecode($components['host']);
+            $components['host'] = (string) preg_replace_callback(
                 '/%[0-9A-F]{2}/i',
                 fn (array $matches): string => strtoupper($matches[0]),
                 strtolower($components['host'])
             );
+            if ($isSupported) {
+                $host = IdnaConverter::toAscii($decodedHost);
+                if (!$host->hasErrors()) {
+                    $components['host'] = $host->domain();
+                }
+            }
         }
 
         $path = $components['path'];
