@@ -100,8 +100,6 @@ final class Converter
     }
 
     /**
-     * @param Stringable|string|null $host
-     *
      * @return array{ipAddress:string|null, zoneIdentifier:string|null}
      */
     private static function parse(Stringable|string|null $host): array
@@ -145,9 +143,14 @@ final class Converter
 
     public static function normalize(Stringable|string|null $host): ?string
     {
+        if (null === $host || '' === $host) {
+            return $host;
+        }
+
+        $host = (string) $host;
         $components = self::parse($host);
         if (null === $components['ipAddress']) {
-            return $host;
+            return strtolower($host);
         }
 
         $components['ipAddress'] = strtolower($components['ipAddress']);

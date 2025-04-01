@@ -298,12 +298,12 @@ final class UriString
 
         $host = $components['host'];
         if (null !== $host && false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $host = IPv6Converter::normalize($host);
+            $host = (string) IPv6Converter::normalize($host);
             if ($host === $components['host']) {
                 $host = (string) preg_replace_callback(
                     '/%[0-9A-F]{2}/i',
                     fn (array $matches): string => strtoupper($matches[0]),
-                    strtolower($components['host'])
+                    strtolower($host)
                 );
                 if ($isSupported) {
                     $idnaHost = IdnaConverter::toAscii(rawurldecode($components['host']));

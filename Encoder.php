@@ -30,6 +30,7 @@ use function preg_replace_callback;
 use function rawurldecode;
 use function rawurlencode;
 use function sprintf;
+use function str_starts_with;
 use function strtolower;
 use function strtoupper;
 
@@ -300,8 +301,8 @@ final class Encoder
             return $host;
         }
 
-        if (($newHost = IPv6Converter::normalize($host)) !== $host) {
-            return $newHost;
+        if (str_starts_with($host, '[')) {
+            return IPv6Converter::normalize($host);
         }
 
         $host = strtolower($host);
