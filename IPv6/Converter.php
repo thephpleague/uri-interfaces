@@ -99,7 +99,7 @@ final class Converter
         }.']';
     }
 
-    /**]
+    /**
      * @param Stringable|string|null $host
      *
      * @return array{ipAddress:string|null, zoneIdentifier:string|null}
@@ -141,5 +141,17 @@ final class Converter
     public static function isIpv6(Stringable|string|null $host): bool
     {
         return null !== self::parse($host)['ipAddress'];
+    }
+
+    public static function normalize(Stringable|string|null $host): ?string
+    {
+        $components = self::parse($host);
+        if (null === $components['ipAddress']) {
+            return $host;
+        }
+
+        $components['ipAddress'] = strtolower($components['ipAddress']);
+
+        return self::build($components);
     }
 }

@@ -300,15 +300,14 @@ final class Encoder
             return $host;
         }
 
-        $host = strtolower($host);
-        if (IPv6Converter::isIpv6($host)) {
-            [$ipAddress, $zoneIdentifier] = explode('%', substr($host, 1, -1)) + [1 => null];
-
-            return IPv6Converter::build(['ipAddress' => strtolower((string) $ipAddress), 'zoneIdentifier' =>  $zoneIdentifier]);
+        if (($newHost = IPv6Converter::normalize($host)) !== $host) {
+            return $newHost;
         }
 
+        $host = strtolower($host);
+
         return (!str_contains($host, '%')) ? $host : preg_replace_callback(
-            '/%[a-fA-F0-9]{2}/',
+            '/%[a-f0-9]{2}/',
             fn (array $matches): string => strtoupper($matches[0]),
             $host
         );

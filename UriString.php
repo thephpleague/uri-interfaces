@@ -296,24 +296,24 @@ final class UriString
         static $isSupported = null;
         $isSupported ??= (function_exists('\idn_to_ascii') && defined('\INTL_IDNA_VARIANT_UTS46'));
 
-        if (null !== $components['host'] && false === filter_var($components['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            // if host is IPv6 it should be lowercased according to
-            // https://www.rfc-editor.org/rfc/rfc5952#section-4.3
-            $components['host'] = strtolower($components['host']);
-            if (!IPv6Converter::isIpv6($components['host'])) {
-                $decodedHost = rawurldecode($components['host']);
-                $components['host'] = (string) preg_replace_callback(
+        $host = $components['host'];
+        if (null !== $host && false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $host = IPv6Converter::normalize($host);
+            if ($host === $components['host']) {
+                $host = (string) preg_replace_callback(
                     '/%[0-9A-F]{2}/i',
                     fn (array $matches): string => strtoupper($matches[0]),
-                    $components['host']
+                    strtolower($components['host'])
                 );
                 if ($isSupported) {
-                    $host = IdnaConverter::toAscii($decodedHost);
-                    if (!$host->hasErrors()) {
-                        $components['host'] = $host->domain();
+                    $idnaHost = IdnaConverter::toAscii(rawurldecode($components['host']));
+                    if (!$idnaHost->hasErrors()) {
+                        $host = $idnaHost->domain();
                     }
                 }
             }
+
+            $components['host'] = $host;
         }
 
         $path = $components['path'];
