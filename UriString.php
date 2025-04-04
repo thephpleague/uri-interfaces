@@ -495,6 +495,16 @@ final class UriString
         return [$targetPath, $uri['query']];
     }
 
+    public static function containsValidRfc3986Characters(Stringable|string $uri): bool
+    {
+        return 1 === preg_match('/^(?:[A-Za-z0-9\-._~:\/?#[\]@!$&\'()*+,;=%]|%[0-9A-Fa-f]{2})*$/', (string) $uri);
+    }
+
+    public static function containsValidCharacters(Stringable|string $uri): bool
+    {
+        return 1 === preg_match(self::REGEXP_INVALID_URI_CHARS, (string) $uri);
+    }
+
     /**
      * Parse a URI string into its components.
      *
