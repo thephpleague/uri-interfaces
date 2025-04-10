@@ -84,11 +84,18 @@ final class UriString
     ];
 
     /**
-     * Range of invalid characters in URI string.
+     * Range of invalid characters in URI 3986 string.
      *
      * @var string
      */
-    private const REGEXP_INVALID_URI_CHARS = '/[\x00-\x1f\x7f\s]/';
+    private const REGEXP_INVALID_URI_RFC3986_CHARS = '/^(?:[A-Za-z0-9\-._~:\/?#[\]@!$&\'()*+,;=%]|%[0-9A-Fa-f]{2})*$/';
+
+    /**
+     * Range of invalid characters in URI 3987 string.
+     *
+     * @var string
+     */
+    private const REGEXP_INVALID_URI_RFC3987_CHARS = '/[\x00-\x1f\x7f\s]/';
 
     /**
      * RFC3986 regular expression URI splitter.
@@ -497,12 +504,12 @@ final class UriString
 
     public static function containsValidRfc3986Characters(Stringable|string $uri): bool
     {
-        return 1 === preg_match('/^(?:[A-Za-z0-9\-._~:\/?#[\]@!$&\'()*+,;=%]|%[0-9A-Fa-f]{2})*$/', (string) $uri);
+        return 1 === preg_match(self::REGEXP_INVALID_URI_RFC3986_CHARS, (string) $uri);
     }
 
-    public static function containsValidCharacters(Stringable|string $uri): bool
+    public static function containsValidRfc3987Characters(Stringable|string $uri): bool
     {
-        return 1 === preg_match(self::REGEXP_INVALID_URI_CHARS, (string) $uri);
+        return 1 === preg_match(self::REGEXP_INVALID_URI_RFC3987_CHARS, (string) $uri);
     }
 
     /**
@@ -557,9 +564,7 @@ final class UriString
             return $components;
         }
 
-        if (1 === preg_match(self::REGEXP_INVALID_URI_CHARS, $uri)) {
-            throw new SyntaxError(sprintf('The uri `%s` contains invalid characters', $uri));
-        }
+        self::containsValidRfc3987Characters($uri) || throw new SyntaxError(sprintf('The uri `%s` contains invalid characters', $uri));
 
         //if the first character is a known URI delimiter parsing can be simplified
         $first_char = $uri[0];
