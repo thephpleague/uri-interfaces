@@ -509,7 +509,7 @@ final class UriString
 
     public static function containsValidRfc3987Characters(Stringable|string $uri): bool
     {
-        return 1 === preg_match(self::REGEXP_INVALID_URI_RFC3987_CHARS, (string) $uri);
+        return 1 !== preg_match(self::REGEXP_INVALID_URI_RFC3987_CHARS, (string) $uri);
     }
 
     /**
