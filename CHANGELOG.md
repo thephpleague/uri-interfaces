@@ -32,7 +32,6 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Deprecated
 
-- `UriInterface::getUsername` replaced by `UriInterface::getUser`
 - `Encoder::decodePartial` replaced by `Encoder::decodeNecessary`
 
 ### Removed
