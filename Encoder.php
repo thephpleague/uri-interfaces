@@ -309,7 +309,7 @@ final class Encoder
 
         return (!str_contains($host, '%')) ? $host : preg_replace_callback(
             '/%[a-f0-9]{2}/',
-            fn (array $matches): string => strtoupper($matches[0]),
+            fn (array $matches) => 1 === preg_match('/%([0-7][0-9a-f])/', $matches[0]) ? rawurldecode($matches[0]) : strtoupper($matches[0]),
             $host
         );
     }

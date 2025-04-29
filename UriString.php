@@ -32,12 +32,10 @@ use function implode;
 use function in_array;
 use function inet_pton;
 use function preg_match;
-use function preg_replace_callback;
 use function rawurldecode;
 use function sprintf;
 use function strpos;
 use function strtolower;
-use function strtoupper;
 use function substr;
 
 use const FILTER_FLAG_IPV4;
@@ -305,18 +303,11 @@ final class UriString
 
         $host = $components['host'];
         if (null !== $host && false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $host = (string) IPv6Converter::normalize($host);
-            if ($host === $components['host']) {
-                $host = (string) preg_replace_callback(
-                    '/%[0-9A-F]{2}/i',
-                    fn (array $matches): string => strtoupper($matches[0]),
-                    strtolower($host)
-                );
-                if ($isSupported) {
-                    $idnaHost = IdnaConverter::toAscii(rawurldecode($components['host']));
-                    if (!$idnaHost->hasErrors()) {
-                        $host = $idnaHost->domain();
-                    }
+            $host = (string) Encoder::normalizeHost($host);
+            if ($isSupported) {
+                $idnaHost = IdnaConverter::toAscii($host);
+                if (!$idnaHost->hasErrors()) {
+                    $host = $idnaHost->domain();
                 }
             }
 
@@ -782,10 +773,6 @@ final class UriString
      */
     private static function filterRegisteredName(string $host): void
     {
-        if ($host !== Encoder::decodeUnreservedCharacters($host)) {
-            throw new SyntaxError('Host `'.$host.'` is invalid: only UTF-8 characters sequence can be percent encoded in host.');
-        }
-
         $formattedHost = rawurldecode($host);
         if ($formattedHost !== $host) {
             if (IdnaConverter::toAscii($formattedHost)->hasErrors()) {

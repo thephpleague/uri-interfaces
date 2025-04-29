@@ -745,7 +745,6 @@ final class UriStringTest extends TestCase
             'invalid port (1)' => ['//host:port/path?query#fragment'],
             'invalid port (2)' => ['//host:-892358/path?query#fragment'],
             'invalid host' => ['http://exam ple.com'],
-            'invalid host with invalid encoded characters' => ['http://ex%61mple.com'],
             'invalid ipv6 host (1)' => ['scheme://[127.0.0.1]/path?query#fragment'],
             'invalid ipv6 host (2)' => ['scheme://]::1[/path?query#fragment'],
             'invalid ipv6 host (3)' => ['scheme://[::1|/path?query#fragment'],
