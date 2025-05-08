@@ -129,6 +129,21 @@ final class Encoder
     }
 
     /**
+     * Tell whether the userInfo component is correctly encoded.
+     */
+    public static function isUserInfoEncoded(#[SensitiveParameter] Stringable|string|null $userInfo): bool
+    {
+        if (null === $userInfo) {
+            return true;
+        }
+
+        [$user, $password] = explode(':', (string) $userInfo, 2) + [1 => null];
+
+        return self::isUserEncoded($user)
+            && self::isPasswordEncoded($password);
+    }
+
+    /**
      * Decodes all the URI component characters.
      */
     public static function decodeAll(Stringable|string|null $component): ?string

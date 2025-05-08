@@ -739,20 +739,16 @@ final class UriString
 
     /**
      * Tells whether the scheme component is valid.
-     *
-     *
      */
-    public static function isScheme(Stringable|string|null $scheme): bool
+    public static function isValidScheme(Stringable|string|null $scheme): bool
     {
         return null === $scheme || 1 === preg_match('/^[A-Za-z]([-A-Za-z\d+.]+)?$/', (string) $scheme);
     }
 
     /**
      * Tells whether the host component is valid.
-     *
-     *
      */
-    public static function isHost(Stringable|string|null $host): bool
+    public static function isValidHost(Stringable|string|null $host): bool
     {
         try {
             self::filterHost($host);

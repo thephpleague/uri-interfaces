@@ -8,22 +8,39 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 - `Contidionable` interface
 - `UriInspector` interface
-- `UriEncoder` interface
+- `UriRenderer` interface
 - `UriInterface::resolve`
 - `UriInterface::relativize`
 - `UriInterface::equals`
 - `UriInterface::toNormalizedString`
 - `UriInterface::getUser`
 - `League\Uri\IPv6\Converter::isIpv6`
+- `League\Uri\IPv6\Converter::normalize`
 - `UriString::resolve`
 - `UriString::removeDotSegments`
 - `UriString::normalize`
 - `UriString::normalizeAuthority`
+- `UriString::containsValidRfc3986Characters`
+- `UriString::containsValidRfc3987Characters`
+- `UriString::isValidScheme`
+- `UriString::isValidHost`
 - `FeatureDetection::supportsDom`
 - `Encoder::decodeNecessary`
 - `Encoder::decodePath`
 - `Encoder::decodeQuery`
 - `Encoder::decodeFragment`
+- `Encoder::isUserEncoded`
+- `Encoder::isPasswordEncoded`
+- `Encoder::isUserInfoEncoded`
+- `Encoder::isPathEncoded`
+- `Encoder::isQueryEncoded`
+- `Encoder::isFragmentEncoded`
+- `Encoder::normalizeUser`
+- `Encoder::normalizePassword`
+- `Encoder::normalizePath`
+- `Encoder::normalizeQuery`
+- `Encoder::normalizeFragment`
+- `Encoder::normalizeHost`
 
 ### Fixed
 
