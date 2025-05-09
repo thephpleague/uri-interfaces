@@ -21,6 +21,7 @@ use League\Uri\IPv6\Converter as IPv6Converter;
 use SensitiveParameter;
 use Stringable;
 
+use function explode;
 use function filter_var;
 use function gettype;
 use function in_array;
@@ -141,6 +142,36 @@ final class Encoder
 
         return self::isUserEncoded($user)
             && self::isPasswordEncoded($password);
+    }
+
+    public static function encodeUserInfo(#[SensitiveParameter] Stringable|string|null $userInfo): ?string
+    {
+        if (null === $userInfo) {
+            return null;
+        }
+
+        [$user, $password] = explode(':', (string) $userInfo, 2) + [1 => null];
+        $userInfo = self::encodeUser($user);
+        if (null === $password) {
+            return $userInfo;
+        }
+
+        return $userInfo.':'.self::encodePassword($password);
+    }
+
+    public static function normalizeUserInfo(#[SensitiveParameter] Stringable|string|null $userInfo): ?string
+    {
+        if (null === $userInfo) {
+            return null;
+        }
+
+        [$user, $password] = explode(':', (string) $userInfo, 2) + [1 => null];
+        $userInfo = self::normalizeUser($user);
+        if (null === $password) {
+            return $userInfo;
+        }
+
+        return $userInfo.':'.self::normalizePassword($password);
     }
 
     /**

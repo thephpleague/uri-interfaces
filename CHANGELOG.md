@@ -37,6 +37,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `Encoder::isFragmentEncoded`
 - `Encoder::normalizeUser`
 - `Encoder::normalizePassword`
+- `Encoder::normalizeUserInfo`
 - `Encoder::normalizePath`
 - `Encoder::normalizeQuery`
 - `Encoder::normalizeFragment`
