@@ -54,7 +54,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Removed
 
-- None
+- Dependency to `psr/http-factory` package which is never required in the package.
 
 ## [7.5.0](https://github.com/thephpleague/uri-interfaces/compare/7.3.1...7.5.0) - 2024-12-08
 
