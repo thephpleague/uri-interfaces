@@ -13,7 +13,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriInterface::relativize`
 - `UriInterface::equals`
 - `UriInterface::toNormalizedString`
-- `UriInterface::getUser`
+- `UriInterface::withUsername`
+- `UriInterface::withPassword`
 - `League\Uri\IPv6\Converter::isIpv6`
 - `League\Uri\IPv6\Converter::normalize`
 - `UriString::resolve`
@@ -45,7 +46,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Fixed
 
-- `UriString::parse` will fail if the URI contains whitespace or is the empty string.
+- `UriString::parse` will fail if the URI contains whitespace.
 - `UriString::buildUri` allows the `$path` argument to be `null`.
 
 ### Deprecated
