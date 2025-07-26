@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use League\Uri\ComparisonMode;
+
 interface UriInspector
 {
     /**
@@ -52,7 +54,7 @@ interface UriInspector
      *
      * It can take the fragment into account if it is explicitly specified
      */
-    public function equals(UriInterface $uri, bool $excludeFragment): bool;
+    public function equals(UriInterface $uri, ComparisonMode $comparisonMode = ComparisonMode::ExcludeFragment): bool;
 
     /**
      * Tells whether the `file` scheme base URI represents a local file.
