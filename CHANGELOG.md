@@ -15,8 +15,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriInterface::toNormalizedString`
 - `UriInterface::withUsername`
 - `UriInterface::withPassword`
-- `League\Uri\IPv6\Converter::isIpv6`
-- `League\Uri\IPv6\Converter::normalize`
+- `IPv6\Converter::isIpv6`
+- `IPv6\Converter::normalize`
 - `UriString::resolve`
 - `UriString::removeDotSegments`
 - `UriString::normalize`
@@ -25,6 +25,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriString::containsValidRfc3987Characters`
 - `UriString::isValidScheme`
 - `UriString::isValidHost`
+- `UriString::buildUserInfo`
 - `FeatureDetection::supportsDom`
 - `Encoder::decodeNecessary`
 - `Encoder::decodePath`
@@ -58,7 +59,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - Dependency to `psr/http-factory` package which is never required in the package.
 
 ## [7.5.0](https://github.com/thephpleague/uri-interfaces/compare/7.3.1...7.5.0) - 2024-12-08
-
+    
 ### Added
 
 - `UriInterface::toComponents` returns an associative array containing all URI components values.

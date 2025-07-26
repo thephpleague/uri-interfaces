@@ -276,12 +276,31 @@ final class UriString
             return $authority;
         }
 
-        $authority = '@'.$authority;
-        if (!isset($components['pass'])) {
-            return $components['user'].$authority;
+        $userInfo = self::buildUserInfo($components);
+        if (null !== $userInfo) {
+            return $userInfo.'@'.$authority;
         }
 
-        return $components['user'].':'.$components['pass'].$authority;
+        return $authority;
+    }
+
+    /**
+     * Generate a URI UserInfo representation from the URI parsed representation.
+     *
+     * @param InputComponentMap $components
+     */
+    public static function buildUserInfo(array $components): ?string
+    {
+        if (!isset($components['user'])) {
+            return null;
+        }
+
+        $userInfo = $components['user'];
+        if (! isset($components['pass'])) {
+            return $userInfo;
+        }
+
+        return $userInfo.':'.$components['pass'];
     }
 
     /**
