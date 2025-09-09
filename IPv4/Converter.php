@@ -133,7 +133,7 @@ final class Converter
 
         $ipAddress = long2ip((int) hexdec($hexParts[0]) * 65536 + (int) hexdec($hexParts[1]));
 
-        return '' !== $ipAddress && false !== $ipAddress;
+        return false !== $ipAddress;
     }
 
     public function toIPv6Using6to4(Stringable|string|null $host): ?string
