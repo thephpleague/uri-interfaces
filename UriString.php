@@ -339,9 +339,6 @@ final class UriString
         }
 
         $path = Encoder::normalizePath($path);
-        if (null !== self::buildAuthority($components) && ('/' === $path)) {
-            $path = '';
-        }
 
         $components['path'] = (string) $path;
         $components['query'] = Encoder::normalizeQuery($components['query']);
@@ -576,7 +573,7 @@ final class UriString
 
         self::containsValidRfc3987Characters($uri) || throw new SyntaxError(sprintf('The uri `%s` contains invalid characters', $uri));
 
-        //if the first character is a known URI delimiter parsing can be simplified
+        //if the first character is a known URI delimiter, parsing can be simplified
         $first_char = $uri[0];
 
         //The URI is made of the fragment only
