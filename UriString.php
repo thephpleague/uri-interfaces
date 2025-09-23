@@ -86,7 +86,7 @@ final class UriString
      *
      * @var string
      */
-    private const REGEXP_INVALID_URI_RFC3986_CHARS = '/^(?:[A-Za-z0-9\-._~:\/?#[\]@!$&\'()*+,;=%]|%[0-9A-Fa-f]{2})*$/';
+    private const REGEXP_VALID_URI_RFC3986_CHARS = '/^(?:[A-Za-z0-9\-._~:\/?#[\]@!$&\'()*+,;=%]|%[0-9A-Fa-f]{2})*$/';
 
     /**
      * Range of invalid characters in URI 3987 string.
@@ -511,7 +511,7 @@ final class UriString
 
     public static function containsValidRfc3986Characters(Stringable|string $uri): bool
     {
-        return 1 === preg_match(self::REGEXP_INVALID_URI_RFC3986_CHARS, (string) $uri);
+        return 1 === preg_match(self::REGEXP_VALID_URI_RFC3986_CHARS, (string) $uri);
     }
 
     public static function containsValidRfc3987Characters(Stringable|string $uri): bool
@@ -780,7 +780,7 @@ final class UriString
      * @link https://tools.ietf.org/html/rfc3986#section-3.2.2
      *
      * @throws SyntaxError if the registered name is invalid
-     * @throws MissingFeature if IDN support or ICU requirement are not available or met.
+     * @throws MissingFeature if IDN support or ICU requirement, are not available or met.
      * @throws ConversionFailed if the submitted IDN host cannot be converted to a valid ascii form
      */
     private static function filterRegisteredName(string $host): void
