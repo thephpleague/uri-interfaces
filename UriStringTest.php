@@ -13,6 +13,7 @@ namespace League\Uri;
 
 use League\Uri\Contracts\UriException;
 use League\Uri\Exceptions\SyntaxError;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -20,6 +21,7 @@ use Stringable;
 
 use function rawurlencode;
 
+#[CoversClass(UriString::class)]
 final class UriStringTest extends TestCase
 {
     private const BASE_URI = 'http://a/b/c/d;p?q';
