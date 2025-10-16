@@ -17,7 +17,6 @@ use League\Uri\Exceptions\ConversionFailed;
 use League\Uri\Exceptions\MissingFeature;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Converter as IdnaConverter;
-use League\Uri\IPv6\Converter as IPv6Converter;
 use Stringable;
 use Throwable;
 
@@ -317,30 +316,24 @@ final class UriString
             $components['scheme'] = strtolower($components['scheme']);
         }
 
-        static $isSupported = null;
-        $isSupported ??= (function_exists('\idn_to_ascii') && defined('\INTL_IDNA_VARIANT_UTS46'));
-
-        $host = $components['host'];
-        if (null !== $host && false === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $host = (string) Encoder::normalizeHost($host);
-            if ($isSupported) {
-                $idnaHost = IdnaConverter::toAscii($host);
-                if (!$idnaHost->hasErrors()) {
-                    $host = $idnaHost->domain();
-                }
-            }
-
-            $components['host'] = $host;
-        }
-
+        $components['host'] = self::normalizeHost($components['host']);
         $path = $components['path'];
-        if ('/' === ($path[0] ?? '') || '' !== $components['scheme'].self::buildAuthority($components)) {
+        $authority = self::buildAuthority($components);
+        //dot segment only happens when:
+        // - the path is absolute
+        // - the scheme and/or the authority are defined
+        if ('/' === ($path[0] ?? '') || '' !== $components['scheme'].$authority) {
             $path = self::removeDotSegments($path);
         }
 
-        $path = Encoder::normalizePath($path);
+        // if there is an authority, the path must be absolute
+        if ('' !== $path && '/' !== $path[0]) {
+            if (null !== $authority) {
+                $path = '/'.$path;
+            }
+        }
 
-        $components['path'] = (string) $path;
+        $components['path'] = (string) Encoder::normalizePath($path);
         $components['query'] = Encoder::normalizeQuery($components['query']);
         $components['fragment'] = Encoder::normalizeFragment($components['fragment']);
         $components['user'] = Encoder::normalizeUser($components['user']);
@@ -371,15 +364,9 @@ final class UriString
         }
 
         $components = UriString::parseAuthority($authority);
-        if (null !== $components['host'] &&
-            false === filter_var($components['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
-            !IPv6Converter::isIpv6($components['host'])
-        ) {
-            $components['host'] = IdnaConverter::toUnicode((string) $components['host'])->domain();
-        }
-
-        $components['user'] = Encoder::decodeUnreservedCharacters($components['user']);
-        $components['pass'] = Encoder::decodeUnreservedCharacters($components['pass']);
+        $components['host'] = self::normalizeHost($components['host'] ?? null);
+        $components['user'] = Encoder::normalizeUser($components['user']);
+        $components['pass'] = Encoder::normalizePassword($components['pass']);
 
         return (string) self::buildAuthority($components);
     }
@@ -832,5 +819,26 @@ final class UriString
 
         return false !== filter_var($ipHost, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
             && str_starts_with((string)inet_pton($ipHost), self::ZONE_ID_ADDRESS_BLOCK);
+    }
+
+    private static function normalizeHost(?string $host): ?string
+    {
+        if (null === $host || false !== filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return $host;
+        }
+
+        $host = (string) Encoder::normalizeHost($host);
+        static $isSupported = null;
+        $isSupported ??= (function_exists('\idn_to_ascii') && defined('\INTL_IDNA_VARIANT_UTS46'));
+        if (! $isSupported) {
+            return $host;
+        }
+
+        $idnaHost = IdnaConverter::toAscii($host);
+        if (!$idnaHost->hasErrors()) {
+            return $idnaHost->domain();
+        }
+
+        return $host;
     }
 }
