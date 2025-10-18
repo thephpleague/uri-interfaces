@@ -23,9 +23,9 @@ use Stringable;
  * @phpstan-import-type ComponentMap from UriString
  *
  * @method string|null getUsername() returns the user component of the URI.
- * @method self withUsername(?string $user) returns a new URI instance with user component updated, if the user is set to null the password also will be set to null.
+ * @method self withUsername(?string $user) returns a new URI instance with the user component updated.
  * @method string|null getPassword() returns the scheme-specific information about how to gain authorization to access the resource.
- * @method self withPassword(?string $password) returns a new URI instance with password component updated, if the user is set to null the password also will be set to null.
+ * @method self withPassword(?string $password) returns a new URI instance with the password component updated.
  * @method array toComponents() returns an associative array containing all the URI components.
  * @method self normalize() returns a new URI instance with normalized components
  * @method self resolve(UriInterface $uri) resolves a URI against a base URI using RFC3986 rules
