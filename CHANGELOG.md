@@ -6,9 +6,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Added
 
+- `UriComponentInterface::equals`
 - `Contidionable` interface
-- `UriInspector` interface
-- `UriRenderer` interface
 - `UriInterface::resolve`
 - `UriInterface::relativize`
 - `UriInterface::equals`
