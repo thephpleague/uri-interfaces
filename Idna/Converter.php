@@ -165,7 +165,7 @@ final class Converter
     /**
      * Tells whether the submitted host is a valid IDN regardless of its format.
      *
-     * Returns false if the host is invalid or if its conversion yield the same result
+     * Returns false if the host is invalid or if its conversion yields the same result
      */
     public static function isIdn(Stringable|string|null $domain): bool
     {
