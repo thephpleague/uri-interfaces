@@ -266,18 +266,19 @@ final class UriString
             return null;
         }
 
-        $authority = $components['host'];
+        $userInfo = $components['user'] ?? null;
+        if (isset($components['pass'])) {
+            $userInfo .= ':'.$components['pass'];
+        }
+
+        $authority = '';
+        if (isset($userInfo)) {
+            $authority .= $userInfo.'@';
+        }
+
+        $authority .= $components['host'];
         if (isset($components['port'])) {
             $authority .= ':'.$components['port'];
-        }
-
-        if (!isset($components['user'])) {
-            return $authority;
-        }
-
-        $userInfo = self::buildUserInfo($components);
-        if (null !== $userInfo) {
-            return $userInfo.'@'.$authority;
         }
 
         return $authority;

@@ -48,6 +48,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 - `UriString::parse` will fail if the URI contains whitespace.
 - `UriString::buildUri` allows the `$path` argument to be `null`.
+- `UriString::buildAuthority` allows the `$user` argument to be `null` and still generate a user info component.
 
 ### Deprecated
 
