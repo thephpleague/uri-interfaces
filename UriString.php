@@ -218,20 +218,20 @@ final class UriString
     }
 
     /**
-     * Generate a URI string representation based on RFC3986 algorithm.
+     * Generates a URI string representation based on RFC3986 algorithm.
      *
-     * valid URI component MUST be provided without their URI delimiters
+     * Valid URI component MUST be provided without their URI delimiters
      * but properly encoded.
      *
      * @link https://tools.ietf.org/html/rfc3986#section-5.3
      * @link https://tools.ietf.org/html/rfc3986#section-7.5§
      */
     public static function buildUri(
-        ?string $scheme,
-        ?string $authority,
-        ?string $path,
-        ?string $query,
-        ?string $fragment,
+        ?string $scheme = null,
+        ?string $authority = null,
+        ?string $path = null,
+        ?string $query = null,
+        ?string $fragment = null,
     ): string {
         self::validateComponents($scheme, $authority, $path);
         $uri = '';
@@ -282,25 +282,6 @@ final class UriString
         }
 
         return $authority;
-    }
-
-    /**
-     * Generate a URI UserInfo representation from the URI parsed representation.
-     *
-     * @param InputComponentMap $components
-     */
-    public static function buildUserInfo(array $components): ?string
-    {
-        if (!isset($components['user'])) {
-            return null;
-        }
-
-        $userInfo = $components['user'];
-        if (! isset($components['pass'])) {
-            return $userInfo;
-        }
-
-        return $userInfo.':'.$components['pass'];
     }
 
     /**

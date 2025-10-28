@@ -24,7 +24,6 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriString::containsValidRfc3987Characters`
 - `UriString::isValidScheme`
 - `UriString::isValidHost`
-- `UriString::buildUserInfo`
 - `FeatureDetection::supportsDom`
 - `Encoder::decodeNecessary`
 - `Encoder::decodePath`
@@ -47,7 +46,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Fixed
 
 - `UriString::parse` will fail if the URI contains whitespace.
-- `UriString::buildUri` allows the `$path` argument to be `null`.
+- `UriString::buildUri` allows all arguments to be `null` including the `path`.
 - `UriString::buildAuthority` allows the `$user` argument to be `null` and still generate a user info component.
 
 ### Deprecated

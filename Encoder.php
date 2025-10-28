@@ -287,7 +287,7 @@ final class Encoder
     }
 
     /**
-     * Normalize query component.
+     * Normalize the query component.
      *
      * The value returned MUST be percent-encoded, but MUST NOT double-encode
      * any characters. To determine what characters to encode, please refer to
@@ -317,7 +317,7 @@ final class Encoder
     }
 
     /**
-     * Normalize fragment component.
+     * Normalize the fragment component.
      *
      * The value returned MUST be percent-encoded, but MUST NOT double-encode
      * any characters. To determine what characters to encode, please refer to
@@ -329,7 +329,7 @@ final class Encoder
     }
 
     /**
-     * Normalize host component.
+     * Normalize the host component.
      *
      * @see https://www.rfc-editor.org/rfc/rfc3986.html#section-3.2.2
      *
