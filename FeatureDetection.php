@@ -34,9 +34,8 @@ final class FeatureDetection
         static $isSupported = null;
         $isSupported = $isSupported ?? class_exists(finfo::class);
 
-        if (!$isSupported) {
-            throw new MissingFeature('Support for file type detection requires the `fileinfo` extension.');
-        }
+        $isSupported || throw new MissingFeature('Support for file type detection requires the `fileinfo` extension.');
+
     }
 
     public static function supportsIdn(): void
@@ -44,9 +43,8 @@ final class FeatureDetection
         static $isSupported = null;
         $isSupported = $isSupported ?? (function_exists('\idn_to_ascii') && defined('\INTL_IDNA_VARIANT_UTS46'));
 
-        if (!$isSupported) {
-            throw new MissingFeature('Support for IDN host requires the `intl` extension for best performance or run "composer require symfony/polyfill-intl-idn" to install a polyfill.');
-        }
+        $isSupported || throw new MissingFeature('Support for IDN host requires the `intl` extension for best performance or run "composer require symfony/polyfill-intl-idn" to install a polyfill.');
+
     }
 
     public static function supportsIPv4Conversion(): void
@@ -54,9 +52,7 @@ final class FeatureDetection
         static $isSupported = null;
         $isSupported = $isSupported ?? (extension_loaded('gmp') || extension_loaded('bcmath') || (4 < PHP_INT_SIZE));
 
-        if (!$isSupported) {
-            throw new MissingFeature('A '.Calculator::class.' implementation could not be automatically loaded. To perform IPv4 conversion use a x.64 PHP build or install one of the following extension GMP or BCMath. You can also ship your own implmentation.');
-        }
+        $isSupported || throw new MissingFeature('A '.Calculator::class.' implementation could not be automatically loaded. To perform IPv4 conversion use a x.64 PHP build or install one of the following extension GMP or BCMath. You can also ship your own implementation.');
     }
 
     public static function supportsDom(): void
@@ -64,8 +60,6 @@ final class FeatureDetection
         static $isSupported = null;
         $isSupported = $isSupported ?? extension_loaded('dom');
 
-        if (!$isSupported) {
-            throw new MissingFeature('To use a DOM related feature, the DOM extension must be installed in your system.');
-        }
+        $isSupported || throw new MissingFeature('To use a DOM related feature, the DOM extension must be installed in your system.');
     }
 }
