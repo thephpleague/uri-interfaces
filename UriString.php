@@ -20,6 +20,7 @@ use League\Uri\Idna\Converter as IdnaConverter;
 use Stringable;
 use Throwable;
 
+use function array_map;
 use function array_merge;
 use function array_pop;
 use function array_reduce;
@@ -33,6 +34,7 @@ use function inet_pton;
 use function preg_match;
 use function rawurldecode;
 use function sprintf;
+use function str_replace;
 use function strpos;
 use function strtolower;
 use function substr;
@@ -193,6 +195,45 @@ final class UriString
      * @var int
      */
     private const MAXIMUM_HOST_CACHED = 100;
+
+    /**
+     * Generate an IRI string representation (RFC3987) from its parsed representation
+     * returned by League\UriString::parse() or PHP's parse_url.
+     *
+     * If you supply your own array, you are responsible for providing
+     * valid components without their URI delimiters.
+     *
+     * @link https://tools.ietf.org/html/rfc3986#section-5.3
+     * @link https://tools.ietf.org/html/rfc3986#section-7.5
+     */
+    public static function toIriString(Stringable|string $uri): string
+    {
+        $components = UriString::parse($uri);
+        $port = null;
+        if (isset($components['port'])) {
+            $port = (int) $components['port'];
+            unset($components['port']);
+        }
+
+        if (null !== $components['host']) {
+            $components['host'] = IdnaConverter::toUnicode($components['host'])->domain();
+        }
+
+        $components['path'] = Encoder::decodePath($components['path']);
+        $components['user'] = Encoder::decodeNecessary($components['user']);
+        $components['pass'] = Encoder::decodeNecessary($components['pass']);
+        $components['query'] = Encoder::decodeQuery($components['query']);
+        $components['fragment'] = Encoder::decodeFragment($components['fragment']);
+
+        return self::build([
+            ...array_map(fn (?string $value) => match (true) {
+                null === $value,
+                !str_contains($value, '%20') => $value,
+                default => str_replace('%20', ' ', $value),
+            }, $components),
+            ...['port' => $port],
+        ]);
+    }
 
     /**
      * Generate a URI string representation from its parsed representation
