@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-enum ComparisonMode
+enum UrnComparisonMode
 {
-    case IncludeFragment;
-    case ExcludeFragment;
+    case IncludeComponents;
+    case ExcludeComponents;
 }

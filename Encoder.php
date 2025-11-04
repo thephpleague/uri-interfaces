@@ -280,7 +280,7 @@ final class Encoder
         $decoder = static function (array $matches): string {
             $encodedChar = strtoupper($matches[0]);
 
-            return in_array($encodedChar, ['%26', '%3D', '%20', '%23'], true) ? $encodedChar : rawurldecode($encodedChar);
+            return in_array($encodedChar, ['%26', '%3D', '%20', '%23', '%3F'], true) ? $encodedChar : rawurldecode($encodedChar);
         };
 
         return self::decode($path, $decoder);
