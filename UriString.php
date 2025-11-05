@@ -519,12 +519,12 @@ final class UriString
         return [$targetPath, $uri['query']];
     }
 
-    public static function containsValidRfc3986Characters(Stringable|string $uri): bool
+    public static function containsRfc3986Chars(Stringable|string $uri): bool
     {
         return 1 === preg_match(self::REGEXP_VALID_URI_RFC3986_CHARS, (string) $uri);
     }
 
-    public static function containsValidRfc3987Characters(Stringable|string $uri): bool
+    public static function containsRfc3987Chars(Stringable|string $uri): bool
     {
         return 1 !== preg_match(self::REGEXP_INVALID_URI_RFC3987_CHARS, (string) $uri);
     }
@@ -581,7 +581,7 @@ final class UriString
             return $components;
         }
 
-        self::containsValidRfc3987Characters($uri) || throw new SyntaxError(sprintf('The uri `%s` contains invalid characters', $uri));
+        self::containsRfc3987Chars($uri) || throw new SyntaxError(sprintf('The uri `%s` contains invalid characters', $uri));
 
         //if the first character is a known URI delimiter, parsing can be simplified
         $first_char = $uri[0];

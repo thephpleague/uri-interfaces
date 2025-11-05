@@ -20,8 +20,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `UriString::removeDotSegments`
 - `UriString::normalize`
 - `UriString::normalizeAuthority`
-- `UriString::containsValidRfc3986Characters`
-- `UriString::containsValidRfc3987Characters`
+- `UriString::containsRfc3986Chars`
+- `UriString::containsRfc3987Chars`
 - `UriString::isValidScheme`
 - `UriString::isValidHost`
 - `FeatureDetection::supportsDom`
