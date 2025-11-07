@@ -1077,4 +1077,9 @@ final class UriStringTest extends TestCase
             'expected' => 'https://foobar:443/foo/bar',
         ];
     }
+
+    public function test_it_does_resolves_uri_against_authority_less_absolte_path(): void
+    {
+        self::assertSame('foo:/c', UriString::resolve('../../c', 'foo:/a/b'));
+    }
 }

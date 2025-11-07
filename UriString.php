@@ -420,6 +420,7 @@ final class UriString
             $baseUriComponents = self::parse($baseUri);
         }
 
+        $hasLeadingSlash = str_starts_with($baseUriComponents['path'], '/');
         if (null === $baseUriComponents['scheme']) {
             throw new SyntaxError('The base URI must be an absolute URI or null; If the base URI is null the URI must be an absolute URI.');
         }
@@ -439,7 +440,7 @@ final class UriString
 
         [$path, $query] = self::resolvePathAndQuery($uriComponents, $baseUriComponents);
         $path = UriString::removeDotSegments($path);
-        if ('' !== $path && '/' !== $path[0] && null !== self::buildAuthority($baseUriComponents)) {
+        if ('' !== $path && '/' !== $path[0] && $hasLeadingSlash) {
             $path = '/'.$path;
         }
 
