@@ -716,6 +716,6 @@ final class UriString
     #[Deprecated(message:'use League\Uri\HostRecord::validate() instead', since:'league/uri:7.6.0')]
     public static function isValidHost(Stringable|string|null $host): bool
     {
-        return HostRecord::validate($host);
+        return HostRecord::isValid($host);
     }
 }
