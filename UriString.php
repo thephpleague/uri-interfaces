@@ -238,6 +238,9 @@ final class UriString
     public static function buildAuthority(array $components): ?string
     {
         if (!isset($components['host'])) {
+            (!isset($components['user']) && !isset($components['pass'])) || throw new SyntaxError('The user info component must not be set if the host is not defined.');
+            !isset($components['port']) || throw new SyntaxError('The port component must not be set if the host is not defined.');
+
             return null;
         }
 

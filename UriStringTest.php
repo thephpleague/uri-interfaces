@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 
+use function dump;
 use function rawurlencode;
 
 #[CoversClass(UriString::class)]
@@ -961,6 +962,29 @@ final class UriStringTest extends TestCase
                 'android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/The_Hitchhiker%27s_Guide_to_the_Galaxy',
                 'android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/The_Hitchhiker%27s_Guide_to_the_Galaxy',
             ],
+        ];
+    }
+
+    #[DataProvider('invalidAuthorityComponents')]
+    public function test_it_will_fails_reconstructing_the_uri_with_invalid_authority(array $components): void
+    {
+        $this->expectException(SyntaxError::class);
+
+        UriString::buildAuthority($components);
+    }
+
+    public static function invalidAuthorityComponents(): iterable
+    {
+        yield 'missing host but has port' => [
+            'components' => ['port' => 80],
+        ];
+
+        yield 'missing host but has user component' => [
+            'components' => ['user' => 'foo'],
+        ];
+
+        yield 'missing host but has pass component' => [
+            'components' => ['pass' => 'bar'],
         ];
     }
 

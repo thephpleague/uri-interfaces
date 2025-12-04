@@ -12,7 +12,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Fixed
 
-- None
+- `UriString::buildAuthority` should fails if an optional component is present when the host is missing.
 
 ### Deprecated
 
