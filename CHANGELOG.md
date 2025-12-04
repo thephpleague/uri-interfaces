@@ -2,6 +2,26 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## [Next](https://github.com/thephpleague/uri-interfaces/compare/7.6.0...master) - TBD
+
+### Added
+
+- `HostRecord` class to normalize parsing and caching Host resolution through all packages
+- `HostType` Enum
+- `HostFormat` Enum
+
+### Fixed
+
+- None
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [7.6.0](https://github.com/thephpleague/uri-interfaces/compare/7.5.0...7.6.0) - 2025-11-18
 
 ### Added
