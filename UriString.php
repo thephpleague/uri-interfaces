@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use Deprecated;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Converter as IdnaConverter;
 use Stringable;
@@ -682,14 +683,6 @@ final class UriString
         return null === $scheme || 1 === preg_match('/^[A-Za-z]([-A-Za-z\d+.]+)?$/', (string) $scheme);
     }
 
-    /**
-     * Tells whether the host component is valid.
-     */
-    public static function isValidHost(Stringable|string|null $host): bool
-    {
-        return HostRecord::validate($host);
-    }
-
     private static function normalizeHost(?string $host): ?string
     {
         if (null === $host || false !== filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
@@ -709,5 +702,20 @@ final class UriString
         }
 
         return $host;
+    }
+
+    /**
+     * DEPRECATION WARNING! This method will be removed in the next major point release.
+     *
+     * @deprecated Since version 7.6.0
+     * @codeCoverageIgnore
+     * @see HostRecoord::validate()
+     *
+     * Create a new instance from the environment.
+     */
+    #[Deprecated(message:'use League\Uri\HostRecord::validate() instead', since:'league/uri:7.6.0')]
+    public static function isValidHost(Stringable|string|null $host): bool
+    {
+        return HostRecord::validate($host);
     }
 }
