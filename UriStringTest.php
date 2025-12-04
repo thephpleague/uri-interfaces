@@ -19,7 +19,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 
-use function dump;
 use function rawurlencode;
 
 #[CoversClass(UriString::class)]
