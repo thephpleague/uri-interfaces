@@ -31,6 +31,7 @@ use function inet_pton;
 use function is_object;
 use function preg_match;
 use function rawurldecode;
+use function strpos;
 use function strtolower;
 use function substr;
 
@@ -120,6 +121,8 @@ final class HostRecord implements JsonSerializable
     private ?string $hostAsUnicode = null;
     private bool $isIpVersionLoaded = false;
     private ?string $ipVersion = null;
+    private bool $isIpValueLoaded = false;
+    private ?string $ipValue = null;
 
     private function __construct(
         public readonly ?string $value,
@@ -188,6 +191,36 @@ final class HostRecord implements JsonSerializable
         }
 
         return $this->ipVersion;
+    }
+
+    public function ipValue(): ?string
+    {
+        if (!$this->isIpValueLoaded) {
+            $this->isIpValueLoaded = true;
+            $this->ipValue = (function (): ?string {
+                if (HostType::RegisteredName === $this->type) {
+                    return null;
+                }
+
+                if (HostType::Ipv4 === $this->type) {
+                    return $this->value;
+                }
+
+                $ip = substr((string) $this->value, 1, -1);
+                if (HostType::Ipv6 !== $this->type) {
+                    return substr($ip, (int) strpos($ip, '.') + 1);
+                }
+
+                $pos = strpos($ip, '%');
+                if (false === $pos) {
+                    return $ip;
+                }
+
+                return substr($ip, 0, $pos).'%'.rawurldecode(substr($ip, $pos + 3));
+            })();
+        }
+
+        return $this->ipValue;
     }
 
     public static function isValid(Stringable|string|null $host): bool
