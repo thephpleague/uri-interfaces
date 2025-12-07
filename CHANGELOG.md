@@ -6,17 +6,18 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Added
 
-- `HostRecord` class to normalize parsing and caching Host resolution through all packages
-- `HostType` Enum
-- `HostFormat` Enum
+- `HostRecord` class to normalize parsing and caching Host resolution
+- `HostType` Host type enumeration list as defined by RFC3986
+- `HostFormat` Host format enumaration list as defined by RFC3986/RFC3987
 
 ### Fixed
 
-- `UriString::buildAuthority` should fails if an optional component is present when the host is missing.
+- `UriString::buildAuthority` should fail if an optional component is present when the host is missing.
+- `UriString::build` should fail if an optional component is present when the host is missing.
 
 ### Deprecated
 
-- `UriString::isValidHost` use `HostRecord::validate` method instead
+- `UriString::isValidHost` use `HostRecord::isValid` method instead
 
 ### Removed
 
