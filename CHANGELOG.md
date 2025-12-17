@@ -6,7 +6,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Added
 
-- None
+- `QueryString::compose` and `QueryString::composeFromValue` a userland improved `http_build_query` method.
 
 ### Fixed
 
