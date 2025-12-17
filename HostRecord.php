@@ -434,7 +434,7 @@ final class HostRecord implements JsonSerializable
         $record = self::from($properties['host'] ?? throw new Exception('The `host` property is missing from the serialized object.'));
         //if the Host computed value are already cache this avoid recomputing them
         foreach (get_object_vars($record) as $prop => $value) {
-            /** @phpstan-ignore-next-line */
+            /* @phpstan-ignore-next-line */
             $this->{$prop} = $value;
         }
     }
