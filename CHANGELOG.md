@@ -10,7 +10,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Fixed
 
-- None
+- Fix issue [#177](https://github.com/thephpleague/uri-src/issues/177) improved userInfo encoding.
 
 ### Deprecated
 
