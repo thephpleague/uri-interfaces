@@ -698,10 +698,17 @@ final class QueryStringTest extends TestCase
         ];
 
         yield 'bug resolution in php-src tests 9 - float conversion' => [
-            'variable' =>  ['x' => 1E+14, 'y' => '1E+14'],
+            'variable' => ['x' => 1E+14, 'y' => '1E+14'],
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => 'x=1.0E%2B14&y=1E%2B14',
+        ];
+
+        yield 'basic encoding from php-src tests backed enum' => [
+            'variable' => ['backed' => BackedEnum::Two],
+            'separator' => '&',
+            'encoding' => PHP_QUERY_RFC3986,
+            'expected' => 'backed=Kabiri',
         ];
     }
 
@@ -732,4 +739,23 @@ final class QueryStringTest extends TestCase
 
         QueryString::compose([tmpfile()]);
     }
+
+    public function test_it_throws_if_a_non_backed_enum_is_given(): void
+    {
+        $this->expectException(TypeError::class);
+
+        QueryString::compose(['pure' => PureEnum::One]);
+    }
+}
+
+enum PureEnum
+{
+    case One;
+    case Two;
+}
+
+enum BackedEnum: string
+{
+    case One = 'Rimwe';
+    case Two = 'Kabiri';
 }

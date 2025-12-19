@@ -13,10 +13,13 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use BackedEnum;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\KeyValuePair\Converter;
+use ReflectionEnum;
 use Stringable;
 use TypeError;
+use UnitEnum;
 use ValueError;
 
 use function array_key_exists;
@@ -126,6 +129,12 @@ final class QueryString
 
     public static function composeFromValue(array|object $data, ?Converter $converter = null): ?string
     {
+        if ($data instanceof UnitEnum) {
+            $enumType = (new ReflectionEnum($data::class))->isBacked() ? 'Backed' : 'Pure';
+
+            throw new TypeError('Argument #1 ($data) must not be an enum, '.$enumType.' given') ;
+        }
+
         return self::buildFromPairs(self::composeRecursive($data), $converter ?? Converter::fromRFC3986());
     }
 
@@ -155,6 +164,13 @@ final class QueryString
             ! is_resource($value) || throw new TypeError('composition failed; a resource has been detected and can not be converted.');
             if (null === $value || is_scalar($value)) {
                 yield [$name, $value];
+
+                continue;
+            }
+
+            if ($value instanceof UnitEnum) {
+                $value instanceof BackedEnum || throw new TypeError('Unbacked enum '.$value::class.' cannot be converted to a string');
+                yield [$name, $value->value];
 
                 continue;
             }
