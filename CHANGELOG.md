@@ -11,6 +11,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 ### Fixed
 
 - Fix issue [#177](https://github.com/thephpleague/uri-src/issues/177) improved userInfo encoding.
+- Fix `UriString::resolve` method.
 
 ### Deprecated
 

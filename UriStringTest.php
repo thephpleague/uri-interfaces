@@ -1105,4 +1105,9 @@ final class UriStringTest extends TestCase
     {
         self::assertSame('foo:/c', UriString::resolve('../../c', 'foo:/a/b'));
     }
+
+    public function test_it_can_resolve_uri_when_dot_segment_leave_the_path_relative(): void
+    {
+        self::assertSame('https://user:pass@host/toto', UriString::resolve('https://user:pass@host/./.././toto'));
+    }
 }

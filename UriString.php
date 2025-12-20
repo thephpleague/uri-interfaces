@@ -365,6 +365,9 @@ final class UriString
 
         if (null !== $uriComponents['scheme'] && '' !== $uriComponents['scheme']) {
             $uriComponents['path'] = self::removeDotSegments($uriComponents['path']);
+            if ('' !== $uriComponents['path'] && '/' !== $uriComponents['path'][0] && $hasLeadingSlash) {
+                $uriComponents['path'] = '/'.$uriComponents['path'];
+            }
 
             return UriString::build($uriComponents);
         }
@@ -372,6 +375,9 @@ final class UriString
         if (null !== self::buildAuthority($uriComponents)) {
             $uriComponents['scheme'] = $baseUriComponents['scheme'];
             $uriComponents['path'] = self::removeDotSegments($uriComponents['path']);
+            if ('' !== $uriComponents['path'] && '/' !== $uriComponents['path'][0] && $hasLeadingSlash) {
+                $uriComponents['path'] = '/'.$uriComponents['path'];
+            }
 
             return UriString::build($uriComponents);
         }
