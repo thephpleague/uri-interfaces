@@ -28,11 +28,13 @@ use function array_key_exists;
 use function array_keys;
 use function get_object_vars;
 use function http_build_query;
+use function implode;
 use function is_array;
 use function is_object;
 use function is_resource;
 use function is_scalar;
 use function rawurldecode;
+use function str_replace;
 use function strpos;
 use function substr;
 
@@ -258,39 +260,62 @@ final class QueryString
     }
 
     /**
-     * Parses the query string like parse_str without mangling the results.
+     * Parses the query string.
+     *
+     * The result depends on the query parsing mode
      *
      * @see QueryString::extractFromValue()
-     * @see http://php.net/parse_str
-     * @see https://wiki.php.net/rfc/on_demand_name_mangling
      *
      * @param non-empty-string $separator
      *
      * @throws SyntaxError
      */
-    public static function extract(Stringable|string|bool|null $query, string $separator = '&', int $encType = PHP_QUERY_RFC3986): array
-    {
-        return self::extractFromValue($query, Converter::fromEncodingType($encType)->withSeparator($separator));
+    public static function extract(
+        Stringable|string|bool|null $query,
+        string $separator = '&',
+        int $encType = PHP_QUERY_RFC3986,
+        QueryParsingMode $queryParsingMode = QueryParsingMode::Unmangled,
+    ): array {
+        return self::extractFromValue(
+            $query,
+            Converter::fromEncodingType($encType)->withSeparator($separator),
+            $queryParsingMode,
+        );
     }
 
     /**
-     * Parses the query string like parse_str without mangling the results.
+     * Parses the query string.
      *
-     * The result is similar as PHP parse_str when used with its
-     * second argument with the difference that variable names are
-     * not mangled.
-     *
-     * @see http://php.net/parse_str
-     * @see https://wiki.php.net/rfc/on_demand_name_mangling
+     * The result depends on the query parsing mode
      *
      * @throws SyntaxError
      */
-    public static function extractFromValue(Stringable|string|bool|null $query, ?Converter $converter = null): array
-    {
-        return self::convert(self::decodePairs(
-            ($converter ?? Converter::fromRFC3986())->toPairs($query),
-            self::PAIR_VALUE_PRESERVED
-        ));
+    public static function extractFromValue(
+        Stringable|string|bool|null $query,
+        ?Converter $converter = null,
+        QueryParsingMode $queryParsingMode = QueryParsingMode::Unmangled,
+    ): array {
+        $pairs = ($converter ?? Converter::fromRFC3986())->toPairs($query);
+        if (QueryParsingMode::Native === $queryParsingMode) {
+            if ([] === $pairs) {
+                return [];
+            }
+
+            $data = [];
+            foreach ($pairs as [$key, $value]) {
+                $key = str_replace('&', '%26', (string) $key);
+                $data[] = null === $value ? $key : $key.'='.str_replace('&', '%26', $value);
+            }
+
+            parse_str(implode('&', $data), $result);
+
+            return $result;
+        }
+
+        return self::convert(
+            self::decodePairs($pairs, self::PAIR_VALUE_PRESERVED),
+            $queryParsingMode
+        );
     }
 
     /**
@@ -349,11 +374,11 @@ final class QueryString
      * Converts a collection of key/value pairs and returns
      * the store PHP variables as elements of an array.
      */
-    public static function convert(iterable $pairs): array
+    public static function convert(iterable $pairs, QueryParsingMode $queryParsingMode = QueryParsingMode::Unmangled): array
     {
         $returnedValue = [];
         foreach ($pairs as $pair) {
-            $returnedValue = self::extractPhpVariable($returnedValue, $pair);
+            $returnedValue = self::extractPhpVariable($returnedValue, $pair, queryParsingMode: $queryParsingMode);
         }
 
         return $returnedValue;
@@ -384,11 +409,17 @@ final class QueryString
      * @param array|string $name the pair key
      * @param string $value the pair value
      */
-    private static function extractPhpVariable(array $data, array|string $name, string $value = ''): array
-    {
+    private static function extractPhpVariable(
+        array $data,
+        array|string $name,
+        ?string $value = '',
+        QueryParsingMode $queryParsingMode = QueryParsingMode::Unmangled
+    ): array {
         if (is_array($name)) {
             [$name, $value] = $name;
-            $value = rawurldecode((string) $value);
+            if (null !== $value || QueryParsingMode::PreserveNull !== $queryParsingMode) {
+                $value = rawurldecode((string) $value);
+            }
         }
 
         if ('' === $name) {
@@ -430,7 +461,7 @@ final class QueryString
             return $data;
         }
 
-        $data[$key] = self::extractPhpVariable($data[$key], $name, $value);
+        $data[$key] = self::extractPhpVariable($data[$key], $name, $value, $queryParsingMode);
 
         return $data;
     }
