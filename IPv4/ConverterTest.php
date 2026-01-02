@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 final class ConverterTest extends TestCase
 {
     #[DataProvider('providerHost')]
-    public function testParseWithAutoDetectCalculator(?string $input, ?string $expected): void
+    public function testParseWithAutoDetectCalculator(?string $input, ?string $expected, string ...$params): void
     {
         self::assertEquals($expected, Converter::fromEnvironment()->toDecimal($input) ?? $input);
     }
