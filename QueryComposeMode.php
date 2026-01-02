@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-enum QueryBuildingMode
+enum QueryComposeMode
 {
     /**
      * Pre-PHP 8.4 Mode.

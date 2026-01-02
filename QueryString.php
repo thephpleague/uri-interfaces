@@ -131,28 +131,28 @@ final class QueryString
         array|object $data,
         string $separator = '&',
         int $encType = PHP_QUERY_RFC1738,
-        QueryBuildingMode $queryBuildingMode = QueryBuildingMode::Native
+        QueryComposeMode $composeMode = QueryComposeMode::Native
     ): ?string {
-        if (QueryBuildingMode::Native === $queryBuildingMode) {
+        if (QueryComposeMode::Native === $composeMode) {
             return http_build_query(data: $data, arg_separator: $separator, encoding_type: $encType);
         }
 
-        $query = self::composeFromValue($data, Converter::fromEncodingType($encType)->withSeparator($separator), $queryBuildingMode);
+        $query = self::composeFromValue($data, Converter::fromEncodingType($encType)->withSeparator($separator), $composeMode);
 
-        return QueryBuildingMode::Safe !== $queryBuildingMode ? (string) $query : $query;
+        return QueryComposeMode::Safe !== $composeMode ? (string) $query : $query;
     }
 
     public static function composeFromValue(
         array|object $data,
         ?Converter $converter = null,
-        QueryBuildingMode $queryBuildingMode = QueryBuildingMode::Native,
+        QueryComposeMode $composeMode = QueryComposeMode::Native,
     ): ?string {
-        QueryBuildingMode::Safe !== $queryBuildingMode || is_array($data) || throw new TypeError('In safe mode only arrays are supported.');
+        QueryComposeMode::Safe !== $composeMode || is_array($data) || throw new TypeError('In safe mode only arrays are supported.');
 
         $converter ??= Converter::fromRFC3986();
 
-        $pairs = QueryBuildingMode::Native !== $queryBuildingMode
-            ? self::composeRecursive($queryBuildingMode, $data)
+        $pairs = QueryComposeMode::Native !== $composeMode
+            ? self::composeRecursive($composeMode, $data)
             : self::parseFromValue(http_build_query(data: $data, arg_separator: '&'), Converter::fromRFC1738());
 
         return self::buildFromPairs($pairs, $converter);
@@ -167,17 +167,17 @@ final class QueryString
      * @return iterable<array{0: array-key, 1: string|int|float|bool|null}>
      */
     private static function composeRecursive(
-        QueryBuildingMode $queryBuildingMode,
+        QueryComposeMode $composeMode,
         array|object $data,
         string|int $prefix = '',
         SplObjectStorage $seenObjects = new SplObjectStorage(),
     ): iterable {
-        QueryBuildingMode::Safe !== $queryBuildingMode || is_array($data) || throw new TypeError('In safe mode only arrays are supported.');
-        QueryBuildingMode::EnumCompatible !== $queryBuildingMode || !$data instanceof UnitEnum || throw new TypeError('Argument #1 ($data) must not be an enum, '.((new ReflectionEnum($data::class))->isBacked() ? 'Backed' : 'Pure').' given') ;
+        QueryComposeMode::Safe !== $composeMode || is_array($data) || throw new TypeError('In safe mode only arrays are supported.');
+        QueryComposeMode::EnumCompatible !== $composeMode || !$data instanceof UnitEnum || throw new TypeError('Argument #1 ($data) must not be an enum, '.((new ReflectionEnum($data::class))->isBacked() ? 'Backed' : 'Pure').' given') ;
 
         if (is_object($data)) {
             if ($seenObjects->contains($data)) {
-                QueryBuildingMode::Safe !== $queryBuildingMode || throw new ValueError('composition failed; object recursion detected.');
+                QueryComposeMode::Safe !== $composeMode || throw new ValueError('composition failed; object recursion detected.');
 
                 return;
             }
@@ -187,12 +187,12 @@ final class QueryString
         }
 
         if (self::isRecursive($data)) {
-            QueryBuildingMode::Safe !== $queryBuildingMode || throw new ValueError('composition failed; array recursion detected.');
+            QueryComposeMode::Safe !== $composeMode || throw new ValueError('composition failed; array recursion detected.');
 
             return;
         }
 
-        $stripIndices = QueryBuildingMode::Safe === $queryBuildingMode && array_is_list($data);
+        $stripIndices = QueryComposeMode::Safe === $composeMode && array_is_list($data);
 
         foreach ($data as $name => $value) {
             $name = $stripIndices ? '' : $name;
@@ -201,7 +201,7 @@ final class QueryString
             }
 
             if (is_resource($value)) {
-                QueryBuildingMode::Safe !== $queryBuildingMode || throw new TypeError('composition failed; a resource has been detected and can not be converted.');
+                QueryComposeMode::Safe !== $composeMode || throw new TypeError('composition failed; a resource has been detected and can not be converted.');
                 continue;
             }
 
@@ -212,7 +212,7 @@ final class QueryString
             }
 
             if ($value instanceof BackedEnum) {
-                if (QueryBuildingMode::Compatible !== $queryBuildingMode) {
+                if (QueryComposeMode::Compatible !== $composeMode) {
                     yield [$name, $value->value];
 
                     continue;
@@ -222,16 +222,16 @@ final class QueryString
             }
 
             if ($value instanceof UnitEnum) {
-                QueryBuildingMode::Compatible === $queryBuildingMode || throw new TypeError('Unbacked enum '.$value::class.' cannot be converted to a string');
+                QueryComposeMode::Compatible === $composeMode || throw new TypeError('Unbacked enum '.$value::class.' cannot be converted to a string');
 
                 $value = get_object_vars($value);
             }
 
-            if (QueryBuildingMode::Safe === $queryBuildingMode && is_object($value)) {
+            if (QueryComposeMode::Safe === $composeMode && is_object($value)) {
                 throw new ValueError('In conservative mode only arrays, scalar value or null are supported.');
             }
 
-            yield from self::composeRecursive($queryBuildingMode, $value, $name, $seenObjects);
+            yield from self::composeRecursive($composeMode, $value, $name, $seenObjects);
         }
     }
 
@@ -274,12 +274,12 @@ final class QueryString
         Stringable|string|bool|null $query,
         string $separator = '&',
         int $encType = PHP_QUERY_RFC3986,
-        QueryParsingMode $queryParsingMode = QueryParsingMode::Unmangled,
+        QueryExtractMode $extractMode = QueryExtractMode::Unmangled,
     ): array {
         return self::extractFromValue(
             $query,
             Converter::fromEncodingType($encType)->withSeparator($separator),
-            $queryParsingMode,
+            $extractMode,
         );
     }
 
@@ -293,10 +293,10 @@ final class QueryString
     public static function extractFromValue(
         Stringable|string|bool|null $query,
         ?Converter $converter = null,
-        QueryParsingMode $queryParsingMode = QueryParsingMode::Unmangled,
+        QueryExtractMode $extractMode = QueryExtractMode::Unmangled,
     ): array {
         $pairs = ($converter ?? Converter::fromRFC3986())->toPairs($query);
-        if (QueryParsingMode::Native === $queryParsingMode) {
+        if (QueryExtractMode::Native === $extractMode) {
             if ([] === $pairs) {
                 return [];
             }
@@ -314,7 +314,7 @@ final class QueryString
 
         return self::convert(
             self::decodePairs($pairs, self::PAIR_VALUE_PRESERVED),
-            $queryParsingMode
+            $extractMode
         );
     }
 
@@ -374,11 +374,11 @@ final class QueryString
      * Converts a collection of key/value pairs and returns
      * the store PHP variables as elements of an array.
      */
-    public static function convert(iterable $pairs, QueryParsingMode $queryParsingMode = QueryParsingMode::Unmangled): array
+    public static function convert(iterable $pairs, QueryExtractMode $extractMode = QueryExtractMode::Unmangled): array
     {
         $returnedValue = [];
         foreach ($pairs as $pair) {
-            $returnedValue = self::extractPhpVariable($returnedValue, $pair, queryParsingMode: $queryParsingMode);
+            $returnedValue = self::extractPhpVariable($returnedValue, $pair, extractMode: $extractMode);
         }
 
         return $returnedValue;
@@ -413,11 +413,11 @@ final class QueryString
         array $data,
         array|string $name,
         ?string $value = '',
-        QueryParsingMode $queryParsingMode = QueryParsingMode::Unmangled
+        QueryExtractMode $extractMode = QueryExtractMode::Unmangled
     ): array {
         if (is_array($name)) {
             [$name, $value] = $name;
-            if (null !== $value || QueryParsingMode::PreserveNull !== $queryParsingMode) {
+            if (null !== $value || QueryExtractMode::LossLess !== $extractMode) {
                 $value = rawurldecode((string) $value);
             }
         }
@@ -461,7 +461,7 @@ final class QueryString
             return $data;
         }
 
-        $data[$key] = self::extractPhpVariable($data[$key], $name, $value, $queryParsingMode);
+        $data[$key] = self::extractPhpVariable($data[$key], $name, $value, $extractMode);
 
         return $data;
     }

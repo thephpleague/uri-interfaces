@@ -17,7 +17,7 @@ use Countable;
 use Deprecated;
 use Iterator;
 use IteratorAggregate;
-use League\Uri\QueryBuildingMode;
+use League\Uri\QueryComposeMode;
 use Stringable;
 
 /**
@@ -39,8 +39,8 @@ use Stringable;
  * @method bool hasPair(string $key, ?string $value) Tells whether the pair exists in the query.
  * @method array getList(string $name) Returns the list associated with the given name or an empty array if it does not exist.
  * @method bool hasList(string ...$names) Tells whether the parameter list exists in the query.
- * @method self appendList(string $name, array $values, QueryBuildingMode $queryBuildingMode = QueryBuildingMode::Native) Appends a parameter to the query string
- * @method self withList(string $name, array $values, QueryBuildingMode $queryBuildingMode = QueryBuildingMode::Native) Adds a new parameter to the query string and remove any previously set values
+ * @method self appendList(string $name, array $values, QueryComposeMode $composeMode = QueryComposeMode::Native) Appends a parameter to the query string
+ * @method self withList(string $name, array $values, QueryComposeMode $composeMode = QueryComposeMode::Native) Adds a new parameter to the query string and remove any previously set values
  * @method self withoutList(string ...$names) Removes any given list associated with the given names
  * @method self withoutLists() Removes all lists from the query string
  * @method self onlyLists() Removes all pairs without a valid PHP's bracket notation

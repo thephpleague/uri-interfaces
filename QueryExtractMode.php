@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
-enum QueryParsingMode
+enum QueryExtractMode
 {
     /**
      * Parses the query string using parse_str algorithm.
@@ -46,5 +46,5 @@ enum QueryParsingMode
      * preserves null values instead of converting them
      * to empty strings.
      */
-    case PreserveNull;
+    case LossLess;
 }

@@ -532,7 +532,7 @@ final class QueryStringTest extends TestCase
         string $separator,
         int $encoding,
         ?string $expected,
-        QueryBuildingMode $mode,
+        QueryComposeMode $mode,
     ): void {
         self::assertSame($expected, QueryString::compose($variable, $separator, $encoding, $mode));
     }
@@ -544,7 +544,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => '',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'null if the variable is empty' => [
@@ -552,7 +552,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => null,
-            'mode' => QueryBuildingMode::Safe,
+            'mode' => QueryComposeMode::Safe,
         ];
 
         yield 'null if the object properties are not accessible' => [
@@ -560,7 +560,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => '',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 1' => [
@@ -568,7 +568,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => 'foo=bar&baz=1&test=a+%27+%22+&0=abc&float=10.42&true=1&false=0',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 2 - with a different separator' => [
@@ -576,7 +576,7 @@ final class QueryStringTest extends TestCase
             'separator' => ';',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => 'foo=bar;baz=1;test=a+%27+%22+;0=abc;float=10.42;true=1;false=0',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         $data = new class () implements Stringable {
@@ -594,7 +594,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => 'public=input',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 3 - with null object' => [
@@ -602,7 +602,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => '',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         $data = new class () implements Stringable {
@@ -617,7 +617,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => '0=hello',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 5 -  with stringable object without public property' => [
@@ -625,7 +625,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => '',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         $o = new class () {
@@ -639,7 +639,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => 'public%5Bpublic%5D=input',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         $obj = new stdClass();
@@ -652,7 +652,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => 'name=homepage&page=1&sort=desc%2Cname',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 8 - array' => [
@@ -680,7 +680,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => '0=20&5=13&9%5B1%5D=val1&9%5B3%5D=val2&9%5Bstring%5D=string&name=homepage&page=10&sort%5B0%5D=desc&sort%5Badmin%5D%5B0%5D=admin1&sort%5Badmin%5D%5Badmin2%5D%5Bwho%5D=admin2&sort%5Badmin%5D%5Badmin2%5D%5B2%5D=test',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 8 - array with rfc1738 encoding' => [
@@ -692,7 +692,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC1738,
             'expected' => 'name=main+page&sort=desc%2Cadmin&equation=10+%2B+10+-+5',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 8 - array with rfc3986 encoding' => [
@@ -704,7 +704,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => 'name=main%20page&sort=desc%2Cadmin&equation=10%20%2B%2010%20-%205',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 8 - with null in default mode' => [
@@ -712,7 +712,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => '',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests 8 - with null in conservative mode' => [
@@ -720,7 +720,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => '',
-            'mode' => QueryBuildingMode::Safe,
+            'mode' => QueryComposeMode::Safe,
         ];
 
         $v = 'value';
@@ -731,7 +731,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => '0=value',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'bug resolution in php-src tests 9 - float conversion' => [
@@ -739,7 +739,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => 'x=1.0E%2B14&y=1E%2B14',
-            'mode' => QueryBuildingMode::Native,
+            'mode' => QueryComposeMode::Native,
         ];
 
         yield 'basic encoding from php-src tests backed enum' => [
@@ -747,7 +747,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => 'backed%5Bname%5D=Two&backed%5Bvalue%5D=Kabiri',
-            'mode' => QueryBuildingMode::Compatible,
+            'mode' => QueryComposeMode::Compatible,
         ];
 
         yield 'basic encoding from php-src tests backed enum in modern handled form' => [
@@ -755,7 +755,7 @@ final class QueryStringTest extends TestCase
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => 'backed=Kabiri',
-            'mode' => QueryBuildingMode::EnumCompatible,
+            'mode' => QueryComposeMode::EnumCompatible,
         ];
     }
 
@@ -767,12 +767,12 @@ final class QueryStringTest extends TestCase
 
         $recursive->public = $recursive;
 
-        self::assertSame('', QueryString::compose($recursive, queryBuildingMode: QueryBuildingMode::Native));
-        self::assertSame('', QueryString::compose($recursive, queryBuildingMode: QueryBuildingMode::Compatible));
-        self::assertSame('', QueryString::compose($recursive, queryBuildingMode: QueryBuildingMode::EnumCompatible));
+        self::assertSame('', QueryString::compose($recursive, composeMode: QueryComposeMode::Native));
+        self::assertSame('', QueryString::compose($recursive, composeMode: QueryComposeMode::Compatible));
+        self::assertSame('', QueryString::compose($recursive, composeMode: QueryComposeMode::EnumCompatible));
 
         $this->expectException(TypeError::class);
-        QueryString::compose($recursive, queryBuildingMode: QueryBuildingMode::Safe);
+        QueryString::compose($recursive, composeMode: QueryComposeMode::Safe);
     }
 
     public function test_it_throws_if_a_array_recursion_is_detected(): void
@@ -780,43 +780,43 @@ final class QueryStringTest extends TestCase
         $recursive = [];
         $recursive['self'] = &$recursive;
 
-        self::assertSame('', QueryString::compose($recursive, queryBuildingMode: QueryBuildingMode::Native));
-        self::assertSame('', QueryString::compose($recursive, queryBuildingMode: QueryBuildingMode::Compatible));
-        self::assertSame('', QueryString::compose($recursive, queryBuildingMode: QueryBuildingMode::EnumCompatible));
+        self::assertSame('', QueryString::compose($recursive, composeMode: QueryComposeMode::Native));
+        self::assertSame('', QueryString::compose($recursive, composeMode: QueryComposeMode::Compatible));
+        self::assertSame('', QueryString::compose($recursive, composeMode: QueryComposeMode::EnumCompatible));
 
         $this->expectException(ValueError::class);
-        self::assertSame('', QueryString::compose($recursive, queryBuildingMode: QueryBuildingMode::Safe));
+        self::assertSame('', QueryString::compose($recursive, composeMode: QueryComposeMode::Safe));
     }
 
     public function test_it_throws_if_a_resource_is_present(): void
     {
         $tmpfile = [tmpfile()];
-        self::assertSame('', QueryString::compose($tmpfile, queryBuildingMode: QueryBuildingMode::Native));
-        self::assertSame('', QueryString::compose($tmpfile, queryBuildingMode: QueryBuildingMode::Compatible));
-        self::assertSame('', QueryString::compose($tmpfile, queryBuildingMode: QueryBuildingMode::EnumCompatible));
+        self::assertSame('', QueryString::compose($tmpfile, composeMode: QueryComposeMode::Native));
+        self::assertSame('', QueryString::compose($tmpfile, composeMode: QueryComposeMode::Compatible));
+        self::assertSame('', QueryString::compose($tmpfile, composeMode: QueryComposeMode::EnumCompatible));
 
         $this->expectException(TypeError::class);
 
-        QueryString::compose($tmpfile, queryBuildingMode: QueryBuildingMode::Safe);
+        QueryString::compose($tmpfile, composeMode: QueryComposeMode::Safe);
     }
 
     public function test_it_throws_if_a_non_backed_enum_is_given_in_enum_native_mode(): void
     {
         $this->expectException(TypeError::class);
 
-        QueryString::compose(['pure' => PureEnum::One], queryBuildingMode: QueryBuildingMode::EnumCompatible);
+        QueryString::compose(['pure' => PureEnum::One], composeMode: QueryComposeMode::EnumCompatible);
     }
 
     public function test_it_throws_if_a_non_backed_enum_is_given_in_strict_mode(): void
     {
         $this->expectException(TypeError::class);
 
-        QueryString::compose(['pure' => PureEnum::One], queryBuildingMode: QueryBuildingMode::Safe);
+        QueryString::compose(['pure' => PureEnum::One], composeMode: QueryComposeMode::Safe);
     }
 
     public function test_it_does_not_fail_if_a_non_backed_enum_is_given_in_compatible_mode(): void
     {
-        self::assertSame('pure%5Bname%5D=One', QueryString::compose(['pure' => PureEnum::One], queryBuildingMode: QueryBuildingMode::Compatible));
+        self::assertSame('pure%5Bname%5D=One', QueryString::compose(['pure' => PureEnum::One], composeMode: QueryComposeMode::Compatible));
     }
 
     public function test_it_handles_backed_enums(): void
@@ -825,27 +825,27 @@ final class QueryStringTest extends TestCase
         $compatible = 'bar%5Bname%5D=One&bar%5Bvalue%5D=Rimwe';
         $enumNative = 'bar=Rimwe';
 
-        self::assertSame((PHP_VERSION_ID < 80400 ? $compatible : $enumNative).'&baz=1', QueryString::compose($params, queryBuildingMode: QueryBuildingMode::Native));
-        self::assertSame($compatible.'&baz=1', QueryString::compose($params, queryBuildingMode: QueryBuildingMode::Compatible));
-        self::assertSame($enumNative.'&baz=1', QueryString::compose($params, queryBuildingMode: QueryBuildingMode::EnumCompatible));
-        self::assertSame($enumNative.'&baz=1', QueryString::compose($params, queryBuildingMode: QueryBuildingMode::Safe));
+        self::assertSame((PHP_VERSION_ID < 80400 ? $compatible : $enumNative).'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::Native));
+        self::assertSame($compatible.'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::Compatible));
+        self::assertSame($enumNative.'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::EnumCompatible));
+        self::assertSame($enumNative.'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::Safe));
 
     }
 
     public function test_it_can_handles_empty_array(): void
     {
-        self::assertSame('', QueryString::compose([], queryBuildingMode: QueryBuildingMode::Native));
-        self::assertSame('', QueryString::compose([], queryBuildingMode: QueryBuildingMode::Compatible));
-        self::assertSame('', QueryString::compose([], queryBuildingMode: QueryBuildingMode::EnumCompatible));
-        self::assertNull(QueryString::compose([], queryBuildingMode: QueryBuildingMode::Safe));
+        self::assertSame('', QueryString::compose([], composeMode: QueryComposeMode::Native));
+        self::assertSame('', QueryString::compose([], composeMode: QueryComposeMode::Compatible));
+        self::assertSame('', QueryString::compose([], composeMode: QueryComposeMode::EnumCompatible));
+        self::assertNull(QueryString::compose([], composeMode: QueryComposeMode::Safe));
     }
 
     public function test_it_can_convert_list_without_indices_in_safe_mode(): void
     {
         $data = ['a' => ['foo', false, 1.23]];
 
-        self::assertSame('a%5B%5D=foo&a%5B%5D=0&a%5B%5D=1.23', QueryString::compose($data, queryBuildingMode: QueryBuildingMode::Safe));
-        self::assertSame('a%5B0%5D=foo&a%5B1%5D=0&a%5B2%5D=1.23', QueryString::compose($data, queryBuildingMode: QueryBuildingMode::Native));
+        self::assertSame('a%5B%5D=foo&a%5B%5D=0&a%5B%5D=1.23', QueryString::compose($data, composeMode: QueryComposeMode::Safe));
+        self::assertSame('a%5B0%5D=foo&a%5B1%5D=0&a%5B2%5D=1.23', QueryString::compose($data, composeMode: QueryComposeMode::Native));
     }
 }
 
