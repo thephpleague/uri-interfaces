@@ -30,6 +30,7 @@ use Stringable;
  * @method int|null indexOf(string $key, int $nth = 0) Returns the offset of the pair based on its key and its nth occurrence; negative occurrences are supported
  * @method int|null indexOfValue(?string $value, int $nth = 0) Returns the offset of the pair based on its value and its nth occurrence; negative occurrences are supported
  * @method array pair(int $offset) Returns the key/value pair at the given numeric offset; negative occurrences are supported
+ * @method int countDistinctKeys() Returns the total number of distinct keys
  * @method string|null valueAt(int $offset): Returns the value at the given numeric offset; negative occurrences are supported
  * @method string keyAt(int $offset): Returns the key at the given numeric offset; negative occurrences are supported
  * @method self normalize() returns the normalized string representation of the component
