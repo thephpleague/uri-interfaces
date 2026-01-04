@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use BackedEnum;
 use Deprecated;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\Idna\Converter as IdnaConverter;
@@ -141,7 +142,7 @@ final class UriString
      * @link https://tools.ietf.org/html/rfc3986#section-5.3
      * @link https://tools.ietf.org/html/rfc3986#section-7.5
      */
-    public static function toIriString(Stringable|string $uri): string
+    public static function toIriString(BackedEnum|Stringable|string $uri): string
     {
         $components = UriString::parse($uri);
         $port = null;
@@ -345,8 +346,16 @@ final class UriString
      *
      * @throws SyntaxError if the BaseUri is not absolute or in absence of a BaseUri if the uri is not absolute
      */
-    public static function resolve(Stringable|string $uri, Stringable|string|null $baseUri = null): string
+    public static function resolve(BackedEnum|Stringable|string $uri, BackedEnum|Stringable|string|null $baseUri = null): string
     {
+        if ($uri instanceof BackedEnum) {
+            $uri = (string) $uri->value;
+        }
+
+        if ($baseUri instanceof BackedEnum) {
+            $baseUri = (string) $baseUri->value;
+        }
+
         $uri = (string) $uri;
         if ('' === $uri) {
             $uri = $baseUri ?? throw new SyntaxError('The uri can not be the empty string when there\'s no base URI.');
@@ -516,8 +525,12 @@ final class UriString
      *
      * @return ComponentMap
      */
-    public static function parse(Stringable|string|int $uri): array
+    public static function parse(BackedEnum|Stringable|string|int $uri): array
     {
+        if ($uri instanceof BackedEnum) {
+            $uri = $uri->value;
+        }
+
         $uri = (string) $uri;
         if (isset(self::URI_SHORTCUTS[$uri])) {
             /** @var ComponentMap $components */
@@ -622,13 +635,16 @@ final class UriString
      *
      * @return AuthorityMap
      */
-    public static function parseAuthority(Stringable|string|null $authority): array
+    public static function parseAuthority(BackedEnum|Stringable|string|null $authority): array
     {
         $components = ['user' => null, 'pass' => null, 'host' => null, 'port' => null];
         if (null === $authority) {
             return $components;
         }
 
+        if ($authority instanceof BackedEnum) {
+            $authority = $authority->value;
+        }
         $authority = (string) $authority;
         $components['host'] = '';
         if ('' === $authority) {
@@ -684,13 +700,25 @@ final class UriString
     /**
      * Tells whether the scheme component is valid.
      */
-    public static function isValidScheme(Stringable|string|null $scheme): bool
+    public static function isValidScheme(BackedEnum|Stringable|string|null $scheme): bool
     {
+        if ($scheme instanceof BackedEnum) {
+            $scheme = $scheme->value;
+        }
+
         return null === $scheme || 1 === preg_match('/^[A-Za-z]([-A-Za-z\d+.]+)?$/', (string) $scheme);
     }
 
-    private static function normalizeHost(?string $host): ?string
+    private static function normalizeHost(BackedEnum|Stringable|string|null $host): ?string
     {
+        if ($host instanceof BackedEnum) {
+            $host = $host->value;
+        }
+
+        if (null !== $host) {
+            $host = (string) $host;
+        }
+
         if (null === $host || false !== filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             return $host;
         }

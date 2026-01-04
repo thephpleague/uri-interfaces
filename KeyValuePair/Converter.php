@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri\KeyValuePair;
 
+use BackedEnum;
 use League\Uri\Contracts\UriComponentInterface;
 use League\Uri\Exceptions\SyntaxError;
 use Stringable;
@@ -114,9 +115,10 @@ final class Converter
     /**
      * @return array<non-empty-list<string|null>>
      */
-    public function toPairs(Stringable|string|int|float|bool|null $value): array
+    public function toPairs(BackedEnum|Stringable|string|int|float|bool|null $value): array
     {
         $value = match (true) {
+            $value instanceof BackedEnum => (string) $value->value,
             $value instanceof UriComponentInterface => $value->value(),
             $value instanceof Stringable, is_int($value) => (string) $value,
             false === $value => '0',
@@ -139,9 +141,10 @@ final class Converter
         );
     }
 
-    private static function vString(Stringable|string|bool|int|float|null $value): ?string
+    private static function vString(BackedEnum|Stringable|string|bool|int|float|null $value): ?string
     {
         return match (true) {
+            $value instanceof BackedEnum => (string) $value->value,
             $value => '1',
             false === $value => '0',
             null === $value => null,

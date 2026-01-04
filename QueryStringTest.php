@@ -743,7 +743,7 @@ final class QueryStringTest extends TestCase
         ];
 
         yield 'basic encoding from php-src tests backed enum' => [
-            'variable' => ['backed' => BackedEnum::Two],
+            'variable' => ['backed' => EnumBacked::Two],
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => 'backed%5Bname%5D=Two&backed%5Bvalue%5D=Kabiri',
@@ -751,7 +751,7 @@ final class QueryStringTest extends TestCase
         ];
 
         yield 'basic encoding from php-src tests backed enum in modern handled form' => [
-            'variable' => ['backed' => BackedEnum::Two],
+            'variable' => ['backed' => EnumBacked::Two],
             'separator' => '&',
             'encoding' => PHP_QUERY_RFC3986,
             'expected' => 'backed=Kabiri',
@@ -821,7 +821,7 @@ final class QueryStringTest extends TestCase
 
     public function test_it_handles_backed_enums(): void
     {
-        $params = ['bar' => BackedEnum::One, 'baz' => 1];
+        $params = ['bar' => EnumBacked::One, 'baz' => 1];
         $compatible = 'bar%5Bname%5D=One&bar%5Bvalue%5D=Rimwe';
         $enumNative = 'bar=Rimwe';
 
@@ -855,7 +855,7 @@ enum PureEnum
     case Two;
 }
 
-enum BackedEnum: string
+enum EnumBacked: string
 {
     case One = 'Rimwe';
     case Two = 'Kabiri';

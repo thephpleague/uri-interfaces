@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+/**
+ * @method self tap(callable $callback) Executes the given callback with the current instance and returns the instance unchanged.
+ */
 interface Conditionable
 {
     /**

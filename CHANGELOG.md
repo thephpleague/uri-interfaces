@@ -8,6 +8,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 - `QueryString::compose` and `QueryString::composeFromValue` a userland improved `http_build_query` method.
 - `QueryExtractMode` and `QueryComposeMode` Enum to improve query parsing and building.
+- Added support for `BackedEnum`
 
 ### Fixed
 

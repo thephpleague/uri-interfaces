@@ -271,7 +271,7 @@ final class QueryString
      * @throws SyntaxError
      */
     public static function extract(
-        Stringable|string|bool|null $query,
+        BackedEnum|Stringable|string|bool|null $query,
         string $separator = '&',
         int $encType = PHP_QUERY_RFC3986,
         QueryExtractMode $extractMode = QueryExtractMode::Unmangled,
@@ -291,7 +291,7 @@ final class QueryString
      * @throws SyntaxError
      */
     public static function extractFromValue(
-        Stringable|string|bool|null $query,
+        BackedEnum|Stringable|string|bool|null $query,
         ?Converter $converter = null,
         QueryExtractMode $extractMode = QueryExtractMode::Unmangled,
     ): array {
@@ -327,7 +327,7 @@ final class QueryString
      *
      * @return array<int, array{0:string, 1:string|null}>
      */
-    public static function parse(Stringable|string|bool|null $query, string $separator = '&', int $encType = PHP_QUERY_RFC3986): array
+    public static function parse(BackedEnum|Stringable|string|bool|null $query, string $separator = '&', int $encType = PHP_QUERY_RFC3986): array
     {
         return self::parseFromValue($query, Converter::fromEncodingType($encType)->withSeparator($separator));
     }
@@ -339,7 +339,7 @@ final class QueryString
      *
      * @return array<int, array{0:string, 1:string|null}>
      */
-    public static function parseFromValue(Stringable|string|bool|null $query, ?Converter $converter = null): array
+    public static function parseFromValue(BackedEnum|Stringable|string|bool|null $query, ?Converter $converter = null): array
     {
         return self::decodePairs(
             ($converter ?? Converter::fromRFC3986())->toPairs($query),
