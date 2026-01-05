@@ -19,7 +19,6 @@ use Deprecated;
 use League\Uri\Contracts\UriComponentInterface;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\IPv6\Converter as IPv6Converter;
-use PhpBench\Report\Func\FitToAxis;
 use SensitiveParameter;
 use Stringable;
 
