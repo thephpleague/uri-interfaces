@@ -26,6 +26,26 @@ enum QueryComposeMode
     case Compatible;
 
     /**
+     * PHP 8.4+ enum-compatible lenient mode.
+     *
+     * Provides stable support for BackedEnum values.
+     * UnitEnum values are skipped.
+     * Uses get_object_vars() for non-enum objects.
+     * Unserializable values are skipped.
+     *
+     * Behaves like {@see QueryComposeMode::EnumCompatible}
+     * but does not throw for UnitEnum values.
+     *
+     * Mirrors http_build_query behavior in PHP 8.4+,
+     * except that error cases are silently ignored
+     * instead of throwing.
+     *
+     * This mode is tolerant by design and skips entries that would otherwise
+     * result in an exception in {@see QueryComposeMode::EnumCompatible}.
+     */
+    case EnumLenient;
+
+    /**
      * PHP 8.4+ mode.
      *
      * Provides stable support for BackedEnum values.
@@ -34,8 +54,6 @@ enum QueryComposeMode
      * Unserializable values are skipped.
      *
      * http_build_query behavior in PHP 8.4+.
-     *
-     * Non-enum behavior may evolve in future versions.
      */
     case EnumCompatible;
 

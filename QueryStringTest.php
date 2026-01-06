@@ -23,6 +23,7 @@ use TypeError;
 use ValueError;
 
 use function date_create;
+use function http_build_query;
 use function tmpfile;
 
 use const PHP_QUERY_RFC1738;
@@ -807,6 +808,11 @@ final class QueryStringTest extends TestCase
         QueryString::compose(['pure' => PureEnum::One], composeMode: QueryComposeMode::EnumCompatible);
     }
 
+    public function test_it_silently_ignore_if_a_non_backed_enum_is_given_in_enum_lenient_mode(): void
+    {
+        self::assertSame('foo=bar', QueryString::compose(['pure' => PureEnum::One, 'foo' => 'bar'], composeMode: QueryComposeMode::EnumLenient));
+    }
+
     public function test_it_throws_if_a_non_backed_enum_is_given_in_strict_mode(): void
     {
         $this->expectException(TypeError::class);
@@ -827,6 +833,7 @@ final class QueryStringTest extends TestCase
 
         self::assertSame((PHP_VERSION_ID < 80400 ? $compatible : $enumNative).'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::Native));
         self::assertSame($compatible.'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::Compatible));
+        self::assertSame($enumNative.'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::EnumLenient));
         self::assertSame($enumNative.'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::EnumCompatible));
         self::assertSame($enumNative.'&baz=1', QueryString::compose($params, composeMode: QueryComposeMode::Safe));
 
@@ -836,6 +843,7 @@ final class QueryStringTest extends TestCase
     {
         self::assertSame('', QueryString::compose([], composeMode: QueryComposeMode::Native));
         self::assertSame('', QueryString::compose([], composeMode: QueryComposeMode::Compatible));
+        self::assertSame('', QueryString::compose([], composeMode: QueryComposeMode::EnumLenient));
         self::assertSame('', QueryString::compose([], composeMode: QueryComposeMode::EnumCompatible));
         self::assertNull(QueryString::compose([], composeMode: QueryComposeMode::Safe));
     }
@@ -846,6 +854,18 @@ final class QueryStringTest extends TestCase
 
         self::assertSame('a%5B%5D=foo&a%5B%5D=0&a%5B%5D=1.23', QueryString::compose($data, composeMode: QueryComposeMode::Safe));
         self::assertSame('a%5B0%5D=foo&a%5B1%5D=0&a%5B2%5D=1.23', QueryString::compose($data, composeMode: QueryComposeMode::Native));
+    }
+
+    public function test_it_can_handle_null_value_differently_with_composed_mode(): void
+    {
+        $data = ['module' => null, 'action' => '', 'page' => true];
+
+        self::assertSame('module&action=&page=1', QueryString::compose($data, composeMode: QueryComposeMode::Safe));
+        self::assertSame('action=&page=1', QueryString::compose($data, composeMode: QueryComposeMode::EnumLenient));
+        self::assertSame('action=&page=1', QueryString::compose($data, composeMode: QueryComposeMode::EnumCompatible));
+        self::assertSame('action=&page=1', QueryString::compose($data, composeMode: QueryComposeMode::Compatible));
+        self::assertSame('action=&page=1', QueryString::compose($data, composeMode: QueryComposeMode::Native));
+        self::assertSame('action=&page=1', http_build_query($data));
     }
 }
 

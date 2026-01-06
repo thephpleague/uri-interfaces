@@ -147,6 +147,10 @@ final class QueryString
         ?Converter $converter = null,
         QueryComposeMode $composeMode = QueryComposeMode::Native,
     ): ?string {
+        if (QueryComposeMode::EnumLenient === $composeMode && $data instanceof UnitEnum && !$data instanceof BackedEnum) {
+            return '';
+        }
+
         QueryComposeMode::Safe !== $composeMode || is_array($data) || throw new TypeError('In safe mode only arrays are supported.');
 
         $converter ??= Converter::fromRFC3986();
@@ -173,7 +177,7 @@ final class QueryString
         SplObjectStorage $seenObjects = new SplObjectStorage(),
     ): iterable {
         QueryComposeMode::Safe !== $composeMode || is_array($data) || throw new TypeError('In safe mode only arrays are supported.');
-        QueryComposeMode::EnumCompatible !== $composeMode || !$data instanceof UnitEnum || throw new TypeError('Argument #1 ($data) must not be an enum, '.((new ReflectionEnum($data::class))->isBacked() ? 'Backed' : 'Pure').' given') ;
+        in_array($composeMode, [QueryComposeMode::EnumCompatible, QueryComposeMode::EnumLenient], true) || !$data instanceof UnitEnum || throw new TypeError('Argument #1 ($data) must not be an enum, '.((new ReflectionEnum($data::class))->isBacked() ? 'Backed' : 'Pure').' given') ;
 
         if (is_object($data)) {
             if ($seenObjects->contains($data)) {
@@ -205,8 +209,16 @@ final class QueryString
                 continue;
             }
 
-            if (null === $value || is_scalar($value)) {
+            if (is_scalar($value)) {
                 yield [$name, $value];
+
+                continue;
+            }
+
+            if (null === $value) {
+                if (QueryComposeMode::Safe === $composeMode) {
+                    yield [$name, $value];
+                }
 
                 continue;
             }
@@ -222,6 +234,10 @@ final class QueryString
             }
 
             if ($value instanceof UnitEnum) {
+                if (QueryComposeMode::EnumLenient === $composeMode) {
+                    continue;
+                }
+
                 QueryComposeMode::Compatible === $composeMode || throw new TypeError('Unbacked enum '.$value::class.' cannot be converted to a string');
 
                 $value = get_object_vars($value);
