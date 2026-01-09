@@ -10,6 +10,11 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `QueryExtractMode` and `QueryComposeMode` Enum to improve query parsing and building.
 - Added support for `BackedEnum`
 - `FragmentDirective::toFragmentValue`
+- `DomainHostInteraface::isSubdomainOf`
+- `DomainHostInteraface::hasSubdomain`
+- `DomainHostInteraface::isSiblingOf`
+- `DomainHostInteraface::parentHost`
+- `DomainHostInteraface::commonAncestorWith`
 
 ### Fixed
 
