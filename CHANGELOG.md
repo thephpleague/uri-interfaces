@@ -15,6 +15,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 - `DomainHostInteraface::isSiblingOf`
 - `DomainHostInteraface::parentHost`
 - `DomainHostInteraface::commonAncestorWith`
+- Added the `Transformable` interface
 
 ### Fixed
 
