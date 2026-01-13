@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace League\Uri\Contracts;
 
+use BackedEnum;
 use Countable;
 use Deprecated;
 use Iterator;
 use IteratorAggregate;
 use League\Uri\QueryComposeMode;
+use League\Uri\StringCoercionMode;
 use Stringable;
 
 /**
@@ -35,8 +37,8 @@ use Stringable;
  * @method string keyAt(int $offset): Returns the key at the given numeric offset; negative occurrences are supported
  * @method self normalize() returns the normalized string representation of the component
  * @method self withoutPairByKey(string ...$keys) Returns an instance without pairs with the specified keys.
- * @method self withoutPairByValue(Stringable|string|int|bool|null ...$values) Returns an instance without pairs with the specified values.
- * @method self withoutPairByKeyValue(string $key, Stringable|string|int|bool|null $value) Returns an instance without pairs with the specified key/value pair
+ * @method self withoutPairByValue(array|BackedEnum|Stringable|string|int|bool|null $values, StringCoercionMode $coercionMode = StringCoercionMode::Native) Returns an instance without pairs with the specified values.
+ * @method self withoutPairByKeyValue(string $key, BackedEnum|Stringable|string|int|bool|null $value, StringCoercionMode $coercionMode = StringCoercionMode::Native) Returns an instance without pairs with the specified key/value pair
  * @method bool hasPair(string $key, ?string $value) Tells whether the pair exists in the query.
  * @method array getList(string $name) Returns the list associated with the given name or an empty array if it does not exist.
  * @method bool hasList(string ...$names) Tells whether the parameter list exists in the query.

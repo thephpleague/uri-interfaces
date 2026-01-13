@@ -17,6 +17,7 @@ use BackedEnum;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\KeyValuePair\Converter;
 use ReflectionEnum;
+use ReflectionException;
 use SplObjectStorage;
 use Stringable;
 use TypeError;
@@ -26,6 +27,7 @@ use ValueError;
 use function array_is_list;
 use function array_key_exists;
 use function array_keys;
+use function get_debug_type;
 use function get_object_vars;
 use function http_build_query;
 use function implode;
@@ -65,15 +67,15 @@ final class QueryString
      * @see QueryString::buildFromPairs()
      * @see https://datatracker.ietf.org/doc/html/rfc3986#section-2.2
      *
-     * @param iterable<array{0:string, 1:string|float|int|bool|null}> $pairs
+     * @param iterable<array{0:string, 1:mixed}> $pairs
      * @param non-empty-string $separator
      *
      * @throws SyntaxError If the encoding type is invalid
      * @throws SyntaxError If a pair is invalid
      */
-    public static function build(iterable $pairs, string $separator = '&', int $encType = PHP_QUERY_RFC3986): ?string
+    public static function build(iterable $pairs, string $separator = '&', int $encType = PHP_QUERY_RFC3986, StringCoercionMode $coercionMode = StringCoercionMode::Native): ?string
     {
-        return self::buildFromPairs($pairs, Converter::fromEncodingType($encType)->withSeparator($separator));
+        return self::buildFromPairs($pairs, Converter::fromEncodingType($encType)->withSeparator($separator), $coercionMode);
     }
 
     /**
@@ -90,12 +92,12 @@ final class QueryString
      *
      * @see https://datatracker.ietf.org/doc/html/rfc3986#section-2.2
      *
-     * @param iterable<array{0:string, 1:string|float|int|bool|null}> $pairs
+     * @param iterable<array{0:string, 1:mixed}> $pairs
      *
      * @throws SyntaxError If the encoding type is invalid
      * @throws SyntaxError If a pair is invalid
      */
-    public static function buildFromPairs(iterable $pairs, ?Converter $converter = null): ?string
+    public static function buildFromPairs(iterable $pairs, ?Converter $converter = null, StringCoercionMode $coercionMode = StringCoercionMode::Native): ?string
     {
         $keyValuePairs = [];
         foreach ($pairs as $pair) {
@@ -103,10 +105,17 @@ final class QueryString
                 throw new SyntaxError('A pair must be a sequential array starting at `0` and containing two elements.');
             }
 
-            $keyValuePairs[] = [(string) Encoder::encodeQueryKeyValue($pair[0]), match(null) {
-                $pair[1] => null,
-                default => Encoder::encodeQueryKeyValue($pair[1]),
-            }];
+            [$key, $value] = $pair;
+            $coercionMode->isCoercible($value) || throw new SyntaxError('Converting a type `'.get_debug_type($value).'` into a string is not supported by the '.(StringCoercionMode::Native === $coercionMode ? 'PHP Native' : 'Ecmascript').' coercion mode.');
+
+            try {
+                $key = $coercionMode->coerce($key);
+                $value = $coercionMode->coerce($value);
+            } catch (TypeError $typeError) {
+                throw new SyntaxError('The pair can not be converted to build a query string.', previous: $typeError);
+            }
+
+            $keyValuePairs[] = [(string) Encoder::encodeQueryKeyValue($key), null === $value ? null : Encoder::encodeQueryKeyValue($value)];
         }
 
         return ($converter ?? Converter::fromRFC3986())->toValue($keyValuePairs);
@@ -167,6 +176,8 @@ final class QueryString
      * @param SplObjectStorage<object, null> $seenObjects
      *
      * @throws TypeError if a resource is found it the input array
+     * @throws ValueError if a recursion is detected
+     * @throws ReflectionException if reflection is not possible on the Enum
      *
      * @return iterable<array{0: array-key, 1: string|int|float|bool|null}>
      */

@@ -72,7 +72,7 @@ final class ConverterTest extends TestCase
     public function testEncodingValueByType(): void
     {
         self::assertSame(
-            'string=string;true=1;false=0;integer=42;float=42.0;null',
+            'string=string;true=1;false=0;integer=42;float=42;null',
             Converter::new(';')->toValue([
                 ['string', 'string'],
                 ['true', true],

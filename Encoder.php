@@ -16,17 +16,16 @@ namespace League\Uri;
 use BackedEnum;
 use Closure;
 use Deprecated;
-use League\Uri\Contracts\UriComponentInterface;
 use League\Uri\Exceptions\SyntaxError;
 use League\Uri\IPv6\Converter as IPv6Converter;
 use SensitiveParameter;
 use Stringable;
+use Throwable;
 
 use function explode;
 use function filter_var;
 use function gettype;
 use function in_array;
-use function is_scalar;
 use function preg_match;
 use function preg_replace_callback;
 use function rawurldecode;
@@ -440,19 +439,14 @@ final class Encoder
 
     private static function filterComponent(mixed $component): ?string
     {
-        if ($component instanceof BackedEnum) {
-            $component = $component->value;
+        try {
+            return StringCoercionMode::Native->coerce($component);
+        } catch (Throwable $exception) {
+            throw new SyntaxError(
+                sprintf('The component must be a scalar value `%s` given.', gettype($component)),
+                previous: $exception
+            );
         }
-
-        return match (true) {
-            true === $component => '1',
-            false === $component => '0',
-            $component instanceof UriComponentInterface => $component->value(),
-            $component instanceof Stringable,
-            is_scalar($component) => (string) $component,
-            null === $component => null,
-            default => throw new SyntaxError(sprintf('The component must be a scalar value `%s` given.', gettype($component))),
-        };
     }
 
     /**
