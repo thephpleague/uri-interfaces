@@ -15,7 +15,6 @@ namespace League\Uri;
 
 use BackedEnum;
 use DateTimeInterface;
-use IntlDateFormatter;
 use League\Uri\Contracts\FragmentDirective;
 use League\Uri\Contracts\UriComponentInterface;
 use League\Uri\Contracts\UriInterface;
@@ -26,7 +25,6 @@ use Uri\WhatWg\Url as WhatWgUrl;
 
 use function array_is_list;
 use function array_map;
-use function extension_loaded;
 use function get_debug_type;
 use function implode;
 use function is_array;
