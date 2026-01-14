@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace League\Uri;
 
+use League\Uri\Components\FragmentDirectives\TextDirective;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -50,6 +51,9 @@ final class StringCoercionModeTest extends TestCase
                     return 'ok';
                 }
             }, 'ok'],
+
+            [new \Uri\Rfc3986\Uri('https://example.com'), 'https://example.com'],
+            [new TextDirective('start', 'end'), 'start,end'],
         ];
     }
 
@@ -94,6 +98,9 @@ final class StringCoercionModeTest extends TestCase
             }, 'ok'],
             [fn () => 42, '[object Object]'],
             [TestUnitEnum::One, '[object Object]'],
+
+            [new \Uri\WhatWg\Url('https://0:0@0:0/0?0#0'), 'https://0:0@0.0.0.0:0/0?0#0'],
+            [new TextDirective('start', 'end'), 'start,end'],
         ];
     }
 

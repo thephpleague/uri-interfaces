@@ -14,12 +14,19 @@ declare(strict_types=1);
 namespace League\Uri;
 
 use BackedEnum;
+use DateTimeInterface;
+use IntlDateFormatter;
+use League\Uri\Contracts\FragmentDirective;
 use League\Uri\Contracts\UriComponentInterface;
+use League\Uri\Contracts\UriInterface;
 use Stringable;
 use TypeError;
+use Uri\Rfc3986\Uri as Rfc3986Uri;
+use Uri\WhatWg\Url as WhatWgUrl;
 
 use function array_is_list;
 use function array_map;
+use function extension_loaded;
 use function get_debug_type;
 use function implode;
 use function is_array;
@@ -65,6 +72,7 @@ enum StringCoercionMode
      * - Backed Enum: converted to their backing value and then stringify see int and string
      * - Array as list are flatten into a string list using the "," character as separator
      * - Associative array, Unit Enum, any object without stringification semantics is coerced to "[object Object]".
+     * - DateTimeInterface object are stringify following EcmaScript `Date.prototype.toString()` semantics
      */
     case Ecmascript;
 
@@ -75,6 +83,8 @@ enum StringCoercionMode
         return self::Ecmascript === $this
             ? !is_resource($value)
             : match (true) {
+                $value instanceof Rfc3986Uri,
+                $value instanceof WhatWgUrl,
                 $value instanceof BackedEnum,
                 $value instanceof Stringable,
                 is_scalar($value),
@@ -86,8 +96,12 @@ enum StringCoercionMode
     public function coerce(mixed $value): ?string
     {
         $value = match (true) {
+            $value instanceof UriComponentInterface,
+            $value instanceof FragmentDirective => $value->value(),
+            $value instanceof UriInterface,
+            $value instanceof WhatWgUrl => $value->toAsciiString(),
+            $value instanceof Rfc3986Uri => $value->toString(),
             $value instanceof BackedEnum => $value->value,
-            $value instanceof UriComponentInterface => $value->value(),
             $value instanceof Stringable => (string) $value,
             default => $value,
         };

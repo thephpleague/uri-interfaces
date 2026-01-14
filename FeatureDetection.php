@@ -44,7 +44,6 @@ final class FeatureDetection
         $isSupported = $isSupported ?? (function_exists('\idn_to_ascii') && defined('\INTL_IDNA_VARIANT_UTS46'));
 
         $isSupported || throw new MissingFeature('Support for IDN host requires the `intl` extension for best performance or run "composer require symfony/polyfill-intl-idn" to install a polyfill.');
-
     }
 
     public static function supportsIPv4Conversion(): void
