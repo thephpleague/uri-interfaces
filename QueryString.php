@@ -192,7 +192,7 @@ final class QueryString
 
         if (is_object($data)) {
             if ($seenObjects->contains($data)) {
-                QueryComposeMode::Safe !== $composeMode || throw new ValueError('composition failed; object recursion detected.');
+                QueryComposeMode::Safe !== $composeMode || throw new ValueError('composition failed; circular reference detected.');
 
                 return;
             }
@@ -201,8 +201,8 @@ final class QueryString
             $data = get_object_vars($data);
         }
 
-        if (self::isRecursive($data)) {
-            QueryComposeMode::Safe !== $composeMode || throw new ValueError('composition failed; array recursion detected.');
+        if (self::hasCircularReference($data)) {
+            QueryComposeMode::Safe !== $composeMode || throw new ValueError('composition failed; circular reference detected.');
 
             return;
         }
@@ -266,7 +266,7 @@ final class QueryString
      * Array recursion detection.
      * @see https://stackoverflow.com/questions/9042142/detecting-infinite-array-recursion-in-php
      */
-    private static function isRecursive(array &$arr): bool
+    private static function hasCircularReference(array &$arr): bool
     {
         if (isset($arr[self::RECURSION_MARKER])) {
             return true;
@@ -275,7 +275,7 @@ final class QueryString
         try {
             $arr[self::RECURSION_MARKER] = true;
             foreach ($arr as $key => &$value) {
-                if (self::RECURSION_MARKER !== $key && is_array($value) && self::isRecursive($value)) {
+                if (self::RECURSION_MARKER !== $key && is_array($value) && self::hasCircularReference($value)) {
                     return true;
                 }
             }

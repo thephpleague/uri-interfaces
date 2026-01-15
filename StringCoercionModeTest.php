@@ -14,11 +14,13 @@ declare(strict_types=1);
 namespace League\Uri;
 
 use League\Uri\Components\FragmentDirectives\TextDirective;
+use League\Uri\Components\Query;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Stringable;
 use TypeError;
+use ValueError;
 
 final class StringCoercionModeTest extends TestCase
 {
@@ -53,7 +55,8 @@ final class StringCoercionModeTest extends TestCase
             }, 'ok'],
 
             [new \Uri\Rfc3986\Uri('https://example.com'), 'https://example.com'],
-            [new TextDirective('start', 'end'), 'start,end'],
+            [new TextDirective('start', 'end'), 'text=start,end'],
+            [Query::new(), null],
         ];
     }
 
@@ -100,7 +103,8 @@ final class StringCoercionModeTest extends TestCase
             [TestUnitEnum::One, '[object Object]'],
 
             [new \Uri\WhatWg\Url('https://0:0@0:0/0?0#0'), 'https://0:0@0.0.0.0:0/0?0#0'],
-            [new TextDirective('start', 'end'), 'start,end'],
+            [new TextDirective('start', 'end'), 'text=start,end'],
+            [Query::new(), ''],
         ];
     }
 
@@ -123,7 +127,7 @@ final class StringCoercionModeTest extends TestCase
         $a = [];
         $a[] = &$a;
 
-        $this->expectException(TypeError::class);
+        $this->expectException(ValueError::class);
 
         StringCoercionMode::Ecmascript->coerce($a);
     }
@@ -136,7 +140,7 @@ final class StringCoercionModeTest extends TestCase
         $b[] = &$a;
         $a[] = &$b;
 
-        $this->expectException(TypeError::class);
+        $this->expectException(ValueError::class);
 
         StringCoercionMode::Ecmascript->coerce($a);
     }

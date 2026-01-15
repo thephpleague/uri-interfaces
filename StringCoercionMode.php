@@ -14,14 +14,12 @@ declare(strict_types=1);
 namespace League\Uri;
 
 use BackedEnum;
-use DateTimeInterface;
-use League\Uri\Contracts\FragmentDirective;
 use League\Uri\Contracts\UriComponentInterface;
-use League\Uri\Contracts\UriInterface;
 use Stringable;
 use TypeError;
 use Uri\Rfc3986\Uri as Rfc3986Uri;
 use Uri\WhatWg\Url as WhatWgUrl;
+use ValueError;
 
 use function array_is_list;
 use function array_map;
@@ -70,7 +68,6 @@ enum StringCoercionMode
      * - Backed Enum: converted to their backing value and then stringify see int and string
      * - Array as list are flatten into a string list using the "," character as separator
      * - Associative array, Unit Enum, any object without stringification semantics is coerced to "[object Object]".
-     * - DateTimeInterface object are stringify following EcmaScript `Date.prototype.toString()` semantics
      */
     case Ecmascript;
 
@@ -82,30 +79,33 @@ enum StringCoercionMode
             ? !is_resource($value)
             : match (true) {
                 $value instanceof Rfc3986Uri,
-                $value instanceof WhatWgUrl,
-                $value instanceof BackedEnum,
-                $value instanceof Stringable,
+                    $value instanceof WhatWgUrl,
+                    $value instanceof BackedEnum,
+                    $value instanceof Stringable,
                 is_scalar($value),
-                null === $value => true,
+                    null === $value => true,
                 default => false,
             };
     }
 
+    /**
+     * @throws TypeError if the type is not supported by the specific case
+     * @throws ValueError if circular reference is detected
+     */
     public function coerce(mixed $value): ?string
     {
-        $value = match (true) {
-            $value instanceof UriComponentInterface,
-            $value instanceof FragmentDirective => $value->value(),
-            $value instanceof UriInterface,
-            $value instanceof WhatWgUrl => $value->toAsciiString(),
-            $value instanceof Rfc3986Uri => $value->toString(),
-            $value instanceof BackedEnum => $value->value,
-            $value instanceof Stringable => (string) $value,
-            default => $value,
-        };
-
-        if (self::Ecmascript === $this) {
-            return match (true) {
+        return match ($this) {
+            self::Ecmascript => match (true) {
+                $value instanceof Rfc3986Uri => $value->toString(),
+                $value instanceof WhatWgUrl => $value->toAsciiString(),
+                $value instanceof BackedEnum => (string) $value->value,
+                $value instanceof Stringable => $value->__toString(),
+                is_object($value) => '[object Object]',
+                is_array($value) => match (true) {
+                    self::hasCircularReference($value) => throw new ValueError('Recursive array structure detected; unable to coerce value.'),
+                    array_is_list($value) => implode(',', array_map($this->coerce(...), $value)),
+                    default => '[object Object]',
+                },
                 true === $value => 'true',
                 false === $value => 'false',
                 null === $value => 'null',
@@ -114,23 +114,21 @@ enum StringCoercionMode
                     is_infinite($value) => 0 < $value ? 'Infinity' : '-Infinity',
                     default => (string) json_encode($value, JSON_PRESERVE_ZERO_FRACTION),
                 },
-                is_object($value) => '[object Object]',
-                is_array($value) => match (true) {
-                    self::isRecursive($value) => throw new TypeError('Recursive array structure detected; unable to coerce value.'),
-                    array_is_list($value) => implode(',', array_map($this->coerce(...), $value)),
-                    default => '[object Object]',
-                },
-                !is_scalar($value) => throw new TypeError('Unable to coerce value of type "'.get_debug_type($value).'"'),
-                default => (string) $value,
-            };
-        }
-
-        return match (true) {
-            false === $value => '0',
-            true === $value => '1',
-            null === $value => null,
-            !is_scalar($value) => throw new TypeError('Unable to coerce value of type "'.get_debug_type($value).'"'),
-            default => (string) $value,
+                is_scalar($value) => (string) $value,
+                default => throw new TypeError('Unable to coerce value of type "'.get_debug_type($value).'" with "'.$this->name.'" coercion.'),
+            },
+            self::Native => match (true) {
+                $value instanceof UriComponentInterface => $value->value(),
+                $value instanceof WhatWgUrl => $value->toAsciiString(),
+                $value instanceof Rfc3986Uri => $value->toString(),
+                $value instanceof BackedEnum => (string) $value->value,
+                $value instanceof Stringable => $value->__toString(),
+                false === $value => '0',
+                true === $value => '1',
+                null === $value => null,
+                is_scalar($value) => (string) $value,
+                default => throw new TypeError('Unable to coerce value of type "'.get_debug_type($value).'" with "'.$this->name.'" coercion.'),
+            },
         };
     }
 
@@ -138,7 +136,7 @@ enum StringCoercionMode
      * Array recursion detection.
      * @see https://stackoverflow.com/questions/9042142/detecting-infinite-array-recursion-in-php
      */
-    private static function isRecursive(array &$arr): bool
+    private static function hasCircularReference(array &$arr): bool
     {
         if (isset($arr[self::RECURSION_MARKER])) {
             return true;
@@ -147,7 +145,7 @@ enum StringCoercionMode
         try {
             $arr[self::RECURSION_MARKER] = true;
             foreach ($arr as $key => &$value) {
-                if (self::RECURSION_MARKER !== $key && is_array($value) && self::isRecursive($value)) {
+                if (self::RECURSION_MARKER !== $key && is_array($value) && self::hasCircularReference($value)) {
                     return true;
                 }
             }
