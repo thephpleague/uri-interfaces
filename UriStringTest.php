@@ -1101,13 +1101,21 @@ final class UriStringTest extends TestCase
         ];
     }
 
-    public function test_it_does_resolves_uri_against_authority_less_absolte_path(): void
+    public function test_it_does_resolves_uri_against_authority_less_absolute_path(): void
     {
-        self::assertSame('foo:/c', UriString::resolve('../../c', 'foo:/a/b'));
+        self::assertSame('foo:c', UriString::resolve('../../c', 'foo:/a/b'));
     }
 
     public function test_it_can_resolve_uri_when_dot_segment_leave_the_path_relative(): void
     {
         self::assertSame('https://user:pass@host/toto', UriString::resolve('https://user:pass@host/./.././toto'));
+    }
+
+    public function test_it_resolve_correctly_uri_issue_184(): void
+    {
+        $baseUri = 'http://a/b/c/d;p?q';
+
+        self::assertSame('g:h', UriString::resolve('g:h', $baseUri));
+        self::assertSame('foo:g', UriString::resolve('foo:g', $baseUri));
     }
 }
