@@ -367,13 +367,11 @@ final class UriString
             $baseUriComponents = self::parse($baseUri);
         }
 
-        if (null === $baseUriComponents['scheme']) {
-            throw new SyntaxError('The base URI must be an absolute URI or null; If the base URI is null the URI must be an absolute URI.');
-        }
+        null !== $baseUriComponents['scheme'] || throw new SyntaxError('The base URI must be an absolute URI or null; If the base URI is null the URI must be an absolute URI.');
 
         $authority = self::buildAuthority($uriComponents);
         $path = self::removeDotSegments($uriComponents['path']);
-        if (null !== $authority && '' !== $path && '/' !== $path[0]) {
+        if ('' !== $path && '/' !== $path[0] && (null !== $authority || $uriComponents['path'] !== $path)) {
             $path = '/'.$path;
         }
 
@@ -385,14 +383,14 @@ final class UriString
             return self::buildUri($baseUriComponents['scheme'], $authority, $path, $uriComponents['query'], $uriComponents['fragment']);
         }
 
-        [$path, $query] = self::resolvePathAndQuery($uriComponents, $baseUriComponents);
-        $authority = self::buildAuthority($baseUriComponents);
-        $path = self::removeDotSegments($path);
-        if (null !== $authority && '' !== $path && '/' !== $path[0]) {
+        [$resolvedPath, $query] = self::resolvePathAndQuery($uriComponents, $baseUriComponents);
+        $baseAuthority = self::buildAuthority($baseUriComponents);
+        $path = self::removeDotSegments($resolvedPath);
+        if ('' !== $path && '/' !== $path[0] && (null !== $baseAuthority || $resolvedPath !== $path)) {
             $path = '/'.$path;
         }
 
-        return self::buildUri($baseUriComponents['scheme'], $authority, $path, $query, $uriComponents['fragment']);
+        return self::buildUri($baseUriComponents['scheme'], $baseAuthority, $path, $query, $uriComponents['fragment']);
     }
 
     /**

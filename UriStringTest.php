@@ -24,8 +24,6 @@ use function rawurlencode;
 #[CoversClass(UriString::class)]
 final class UriStringTest extends TestCase
 {
-    private const BASE_URI = 'http://a/b/c/d;p?q';
-
     #[DataProvider('validUriProvider')]
     public function testParseSucced(Stringable|string|int $uri, array $expected): void
     {
@@ -995,47 +993,121 @@ final class UriStringTest extends TestCase
 
     public static function resolveProvider(): array
     {
+        $baseUri = 'http://a/b/c/d;p?q';
+
         return [
-            'base uri'                => [self::BASE_URI, '',              self::BASE_URI],
-            'scheme'                  => [self::BASE_URI, 'http://d/e/f',  'http://d/e/f'],
-            'path 1'                  => [self::BASE_URI, 'g',             'http://a/b/c/g'],
-            'path 2'                  => [self::BASE_URI, './g',           'http://a/b/c/g'],
-            'path 3'                  => [self::BASE_URI, 'g/',            'http://a/b/c/g/'],
-            'path 4'                  => [self::BASE_URI, '/g',            'http://a/g'],
-            'authority'               => [self::BASE_URI, '//g',           'http://g'],
-            'query'                   => [self::BASE_URI, '?y',            'http://a/b/c/d;p?y'],
-            'path + query'            => [self::BASE_URI, 'g?y',           'http://a/b/c/g?y'],
-            'fragment'                => [self::BASE_URI, '#s',            'http://a/b/c/d;p?q#s'],
-            'path + fragment'         => [self::BASE_URI, 'g#s',           'http://a/b/c/g#s'],
-            'path + query + fragment' => [self::BASE_URI, 'g?y#s',         'http://a/b/c/g?y#s'],
-            'single dot 1'            => [self::BASE_URI, '.',             'http://a/b/c/'],
-            'single dot 2'            => [self::BASE_URI, './',            'http://a/b/c/'],
-            'single dot 3'            => [self::BASE_URI, './g/.',         'http://a/b/c/g/'],
-            'single dot 4'            => [self::BASE_URI, 'g/./h',         'http://a/b/c/g/h'],
-            'double dot 1'            => [self::BASE_URI, '..',            'http://a/b/'],
-            'double dot 2'            => [self::BASE_URI, '../',           'http://a/b/'],
-            'double dot 3'            => [self::BASE_URI, '../g',          'http://a/b/g'],
-            'double dot 4'            => [self::BASE_URI, '../..',         'http://a/'],
-            'double dot 5'            => [self::BASE_URI, '../../',        'http://a/'],
-            'double dot 6'            => [self::BASE_URI, '../../g',       'http://a/g'],
-            'double dot 7'            => [self::BASE_URI, '../../../g',    'http://a/g'],
-            'double dot 8'            => [self::BASE_URI, '../../../../g', 'http://a/g'],
-            'double dot 9'            => [self::BASE_URI, 'g/../h' ,       'http://a/b/c/h'],
-            'mulitple slashes'        => [self::BASE_URI, 'foo////g',      'http://a/b/c/foo////g'],
-            'complex path 1'          => [self::BASE_URI, ';x',            'http://a/b/c/;x'],
-            'complex path 2'          => [self::BASE_URI, 'g;x',           'http://a/b/c/g;x'],
-            'complex path 3'          => [self::BASE_URI, 'g;x?y#s',       'http://a/b/c/g;x?y#s'],
-            'complex path 4'          => [self::BASE_URI, 'g;x=1/./y',     'http://a/b/c/g;x=1/y'],
-            'complex path 5'          => [self::BASE_URI, 'g;x=1/../y',    'http://a/b/c/y'],
-            'dot segments presence 1' => [self::BASE_URI, '/./g',          'http://a/g'],
-            'dot segments presence 2' => [self::BASE_URI, '/../g',         'http://a/g'],
-            'dot segments presence 3' => [self::BASE_URI, 'g.',            'http://a/b/c/g.'],
-            'dot segments presence 4' => [self::BASE_URI, '.g',            'http://a/b/c/.g'],
-            'dot segments presence 5' => [self::BASE_URI, 'g..',           'http://a/b/c/g..'],
-            'dot segments presence 6' => [self::BASE_URI, '..g',           'http://a/b/c/..g'],
+            'base uri'                => [$baseUri, '',              $baseUri],
+            'scheme'                  => [$baseUri, 'http://d/e/f',  'http://d/e/f'],
+            'path 1'                  => [$baseUri, 'g',             'http://a/b/c/g'],
+            'path 2'                  => [$baseUri, './g',           'http://a/b/c/g'],
+            'path 3'                  => [$baseUri, 'g/',            'http://a/b/c/g/'],
+            'path 4'                  => [$baseUri, '/g',            'http://a/g'],
+            'authority'               => [$baseUri, '//g',           'http://g'],
+            'query'                   => [$baseUri, '?y',            'http://a/b/c/d;p?y'],
+            'path + query'            => [$baseUri, 'g?y',           'http://a/b/c/g?y'],
+            'fragment'                => [$baseUri, '#s',            'http://a/b/c/d;p?q#s'],
+            'path + fragment'         => [$baseUri, 'g#s',           'http://a/b/c/g#s'],
+            'path + query + fragment' => [$baseUri, 'g?y#s',         'http://a/b/c/g?y#s'],
+            'single dot 1'            => [$baseUri, '.',             'http://a/b/c/'],
+            'single dot 2'            => [$baseUri, './',            'http://a/b/c/'],
+            'single dot 3'            => [$baseUri, './g/.',         'http://a/b/c/g/'],
+            'single dot 4'            => [$baseUri, 'g/./h',         'http://a/b/c/g/h'],
+            'double dot 1'            => [$baseUri, '..',            'http://a/b/'],
+            'double dot 2'            => [$baseUri, '../',           'http://a/b/'],
+            'double dot 3'            => [$baseUri, '../g',          'http://a/b/g'],
+            'double dot 4'            => [$baseUri, '../..',         'http://a/'],
+            'double dot 5'            => [$baseUri, '../../',        'http://a/'],
+            'double dot 6'            => [$baseUri, '../../g',       'http://a/g'],
+            'double dot 7'            => [$baseUri, '../../../g',    'http://a/g'],
+            'double dot 8'            => [$baseUri, '../../../../g', 'http://a/g'],
+            'double dot 9'            => [$baseUri, 'g/../h' ,       'http://a/b/c/h'],
+            'mulitple slashes'        => [$baseUri, 'foo////g',      'http://a/b/c/foo////g'],
+            'complex path 1'          => [$baseUri, ';x',            'http://a/b/c/;x'],
+            'complex path 2'          => [$baseUri, 'g;x',           'http://a/b/c/g;x'],
+            'complex path 3'          => [$baseUri, 'g;x?y#s',       'http://a/b/c/g;x?y#s'],
+            'complex path 4'          => [$baseUri, 'g;x=1/./y',     'http://a/b/c/g;x=1/y'],
+            'complex path 5'          => [$baseUri, 'g;x=1/../y',    'http://a/b/c/y'],
+            'dot segments presence 1' => [$baseUri, '/./g',          'http://a/g'],
+            'dot segments presence 2' => [$baseUri, '/../g',         'http://a/g'],
+            'dot segments presence 3' => [$baseUri, 'g.',            'http://a/b/c/g.'],
+            'dot segments presence 4' => [$baseUri, '.g',            'http://a/b/c/.g'],
+            'dot segments presence 5' => [$baseUri, 'g..',           'http://a/b/c/g..'],
+            'dot segments presence 6' => [$baseUri, '..g',           'http://a/b/c/..g'],
             'origin uri without path' => ['http://h:b@a', 'b/../y',        'http://h:b@a/y'],
-            'not same origin'         => [self::BASE_URI, 'ftp://a/b/c/d', 'ftp://a/b/c/d'],
+            'not same origin'         => [$baseUri, 'ftp://a/b/c/d', 'ftp://a/b/c/d'],
         ];
+    }
+
+    #[DataProvider('extraResolutionProvider')]
+    public function test_rfc3986_resolution(string $baseUri, string $expected, string $uri): void
+    {
+        self::assertSame($expected, UriString::resolve($uri, $baseUri));
+    }
+
+    /**
+     * @return iterable<list<string>>
+     */
+    public static function extraResolutionProvider(): iterable
+    {
+        $baseUri = 'http://a/b/c/d;p?q';
+
+        // From RFC 3986.
+        yield [$baseUri, 'g:h', 'g:h'];
+        yield [$baseUri, 'http://a/b/c/g', 'g'];
+        yield [$baseUri, 'http://a/b/c/g', './g'];
+        yield [$baseUri, 'http://a/b/c/g/', 'g/'];
+        yield [$baseUri, 'http://a/g', '/g'];
+        yield [$baseUri, 'http://g', '//g'];
+        yield [$baseUri, 'http://a/b/c/d;p?y', '?y'];
+        yield [$baseUri, 'http://a/b/c/g?y', 'g?y'];
+        yield [$baseUri, 'http://a/b/c/d;p?q#s', '#s'];
+        yield [$baseUri, 'http://a/b/c/g#s', 'g#s'];
+        yield [$baseUri, 'http://a/b/c/g?y#s', 'g?y#s'];
+        yield [$baseUri, 'http://a/b/c/;x', ';x'];
+        yield [$baseUri, 'http://a/b/c/g;x', 'g;x'];
+        yield [$baseUri, 'http://a/b/c/g;x?y#s', 'g;x?y#s'];
+        yield [$baseUri, 'http://a/b/c/d;p?q', ''];
+        yield [$baseUri, 'http://a/b/c/', '.'];
+        yield [$baseUri, 'http://a/b/c/', './'];
+        yield [$baseUri, 'http://a/b/', '..'];
+        yield [$baseUri, 'http://a/b/', '../'];
+        yield [$baseUri, 'http://a/b/g', '../g'];
+        yield [$baseUri, 'http://a/', '../..'];
+        yield [$baseUri, 'http://a/', '../../'];
+        yield [$baseUri, 'http://a/g', '../../g'];
+        yield [$baseUri, 'http://a/g', '../../../g'];
+        yield [$baseUri, 'http://a/g', '../../../../g'];
+        yield [$baseUri, 'http://a/g', '/./g'];
+        yield [$baseUri, 'http://a/g', '/../g'];
+        yield [$baseUri, 'http://a/b/c/g.', 'g.'];
+        yield [$baseUri, 'http://a/b/c/.g', '.g'];
+        yield [$baseUri, 'http://a/b/c/g..', 'g..'];
+        yield [$baseUri, 'http://a/b/c/..g', '..g'];
+        yield [$baseUri, 'http://a/b/g', './../g'];
+        yield [$baseUri, 'http://a/b/c/g/', './g/.'];
+        yield [$baseUri, 'http://a/b/c/g/h', 'g/./h'];
+        yield [$baseUri, 'http://a/b/c/h', 'g/../h'];
+        yield [$baseUri, 'http://a/b/c/g;x=1/y', 'g;x=1/./y'];
+        yield [$baseUri, 'http://a/b/c/y', 'g;x=1/../y'];
+        yield [$baseUri, 'http://a/b/c/g?y/./x', 'g?y/./x'];
+        yield [$baseUri, 'http://a/b/c/g?y/../x', 'g?y/../x'];
+        yield [$baseUri, 'http://a/b/c/g#s/./x', 'g#s/./x'];
+        yield [$baseUri, 'http://a/b/c/g#s/../x', 'g#s/../x'];
+
+        // Additional tests (not from RFC 3986).
+        yield [$baseUri, 'foo:g', 'foo:g'];
+        yield [$baseUri, 'http://a/b/g;p/h;s', '../g;p/h;s'];
+
+        $baseUri = 'http://a?q';
+        yield [$baseUri, 'http://a?p', '?p'];
+        yield [$baseUri, 'http://a/b/c', 'b/c'];
+
+        $baseUri = 'foo:/a/b?q';
+        yield [$baseUri, 'foo:/a/b?p', '?p'];
+        yield [$baseUri, 'foo:/c', '../c'];
+        yield [$baseUri, 'foo:/a/c', 'c'];
+        yield [$baseUri, 'foo:/c', '../../c'];
+        yield [$baseUri, 'foo:/c', '/c'];
     }
 
     #[Test]
@@ -1103,7 +1175,7 @@ final class UriStringTest extends TestCase
 
     public function test_it_does_resolves_uri_against_authority_less_absolute_path(): void
     {
-        self::assertSame('foo:c', UriString::resolve('../../c', 'foo:/a/b'));
+        self::assertSame('foo:/c', UriString::resolve('../../c', 'foo:/a/b'));
     }
 
     public function test_it_can_resolve_uri_when_dot_segment_leave_the_path_relative(): void
