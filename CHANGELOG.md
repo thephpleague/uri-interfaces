@@ -10,7 +10,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Fixed
 
-- None
+- `Host::isIp` is fixed to be more strict.
+- `UriString::resolve` regression from previous minor version fixed see issue [#184](https://github.com/thephpleague/uri-src/issues/184)
 
 ### Deprecated
 
