@@ -59,7 +59,7 @@ final class Encoder
      *
      * @see https://www.rfc-editor.org/rfc/rfc3986.html#section-2.3
      */
-    private const REGEXP_UNRESERVED_CHARACTERS = ',%(2[DdEe]|3[0-9]|4[1-9A-Fa-f]|5[AaFf]|6[1-9A-Fa-f]|7[0-9A-Ea-e]),';
+    private const REGEXP_UNRESERVED_CHARACTERS = ',%(2[DdEe]|3[0-9]|4[1-9A-Fa-f]|5[0-9AaFf]|6[1-9A-Fa-f]|7[0-9AaEe]),';
 
     /**
      * Tell whether the user component is correctly encoded.
