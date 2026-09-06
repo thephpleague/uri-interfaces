@@ -425,6 +425,12 @@ final class UriString
             $newPath .= '/';
         }
 
+        // A ".." overshooting the root must not turn an absolute path into a
+        // rootless one; RFC3986 §5.2.4 keeps the leading slash (as BaseUri does).
+        if (str_starts_with($path, '/') && !str_starts_with($newPath, '/')) {
+            return '/'.$newPath;
+        }
+
         return $newPath;
     }
 
