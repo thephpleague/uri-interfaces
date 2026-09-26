@@ -324,7 +324,7 @@ final class Encoder
         $decoder = static function (array $matches): string {
             $encodedChar = strtoupper($matches[0]);
 
-            return in_array($encodedChar, ['%26', '%3D', '%20', '%23', '%3F'], true) ? $encodedChar : rawurldecode($encodedChar);
+            return in_array($encodedChar, ['%26', '%3D', '%20', '%23', '%3F', '%2F'], true) ? $encodedChar : rawurldecode($encodedChar);
         };
 
         return self::decode($path, $decoder);
@@ -361,7 +361,7 @@ final class Encoder
      */
     public static function decodeFragment(BackedEnum|Stringable|string|null $path): ?string
     {
-        return self::decode($path, static fn (array $matches): string => '%20' === $matches[0] ? $matches[0] : rawurldecode($matches[0]));
+        return self::decode($path, static fn (array $matches): string => in_array($matches[0], ['%20', '%2F'], true) ? $matches[0] : rawurldecode($matches[0]));
     }
 
     /**
