@@ -281,18 +281,30 @@ final class UriString
         $components['host'] = self::normalizeHost($components['host']);
         $path = $components['path'];
         $authority = self::buildAuthority($components);
-        //dot segment only happens when:
-        // - the path is absolute
-        // - the scheme and/or the authority are defined
-        if ('/' === ($path[0] ?? '') || '' !== $components['scheme'].$authority) {
-            $path = self::removeDotSegments($path);
+
+        // Dot-segment removal applies to:
+        // - absolute paths
+        // - paths with a scheme or authority
+        // - relative paths containing dot segments
+        if ('/' === ($path[0] ?? '') || null !== $components['scheme'] || null !== $authority) {
+            $path = self::removeDotSegments(strtr($path, ['%2E' => '.', '%2e' => '.']));
         }
 
-        // if there is an authority, the path must be absolute
-        if ('' !== $path && '/' !== $path[0]) {
-            if (null !== $authority) {
-                $path = '/'.$path;
-            }
+        // If there is an authority, the path must be absolute.
+        if ('' !== $path && '/' !== $path[0] && null !== $authority) {
+            $path = '/'.$path;
+        }
+
+        // A relative path whose first segment contains ':' must be
+        // prefixed with './' to remain a path-noscheme.
+        if (
+            null === $components['scheme']
+            && null === $authority
+            && '' !== $path
+            && '/' !== $path[0]
+            && str_contains(explode('/', $path, 2)[0], ':')
+        ) {
+            $path = './'.$path;
         }
 
         $components['path'] = (string) Encoder::normalizePath($path);
@@ -563,7 +575,7 @@ final class UriString
         preg_match(self::REGEXP_URI_PARTS, $uri, $parts);
         $parts += ['query' => '', 'fragment' => ''];
 
-        if (':' === ($parts['scheme']  ?? null) || 1 !== preg_match(self::REGEXP_URI_SCHEME, $parts['scontent'] ?? '')) {
+        if (':' === ($parts['scheme'] ?? null) || 1 !== preg_match(self::REGEXP_URI_SCHEME, $parts['scontent'] ?? '')) {
             throw new SyntaxError(sprintf('The uri `%s` contains an invalid scheme', $uri));
         }
 
@@ -608,10 +620,7 @@ final class UriString
             return;
         }
 
-        if (str_starts_with($path, '//')) {
-            throw new SyntaxError('If there is no authority the path `'.$path.'` cannot start with a `//`.');
-        }
-
+        !str_starts_with($path, '//') || throw new SyntaxError('If there is no authority the path `'.$path.'` cannot start with a `//`.');
         if (null !== $scheme || false === ($pos = strpos($path, ':'))) {
             return;
         }
