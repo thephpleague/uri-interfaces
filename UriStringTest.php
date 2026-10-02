@@ -1230,4 +1230,42 @@ final class UriStringTest extends TestCase
         self::assertSame('foo:/a', UriString::normalize('foo:/../a'));
         self::assertSame('file:/etc/passwd', UriString::normalize('file:/../etc/passwd'));
     }
+
+    #[DataProvider('multipleSlashPathProvider')]
+    public function test_it_keeps_the_root_when_normalizing_path_with_multiple_slash(string $input, string $expected): void
+    {
+        self::assertSame($expected, UriString::normalize($input));
+    }
+
+    /**
+     * @return iterable<non-empty-string, list<non-empty-string>>
+     */
+    public static function multipleSlashPathProvider(): iterable
+    {
+        yield 'scheme with leading dot segments' => [
+            'scheme:..///foo/bar',
+            'scheme:.///foo/bar',
+        ];
+
+        yield 'scheme with an intermediate dot segment' => [
+            'scheme:a/..///foo/bar',
+            'scheme:.///foo/bar',
+        ];
+
+        yield 'absolute path with dot segments' => [
+            'scheme:/a/..//foo/bar',
+            'scheme:/.//foo/bar',
+        ];
+
+        yield 'scheme with query and fragment' => [
+            'scheme:..///foo/bar?query#fragment',
+            'scheme:.///foo/bar?query#fragment',
+        ];
+
+        yield 'authority with dot segments' => [
+            'scheme://host/a/..//foo/bar',
+            'scheme://host//foo/bar',
+        ];
+    }
+
 }

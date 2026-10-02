@@ -274,20 +274,41 @@ final class UriString
     public static function parseNormalized(Stringable|string $uri): array
     {
         $components = self::parse($uri);
+
         if (null !== $components['scheme']) {
             $components['scheme'] = strtolower($components['scheme']);
         }
 
         $components['host'] = self::normalizeHost($components['host']);
+
         $path = $components['path'];
         $authority = self::buildAuthority($components);
+        $absolutePath = str_starts_with($path, '/');
+
+        // A leading `/.` is used internally to protect a path starting with
+        // `//` from being interpreted as an authority.
+        if (null === $authority && str_starts_with($path, '/.//')) {
+            $path = substr($path, 2);
+        }
 
         // Dot-segment removal applies to:
         // - absolute paths
         // - paths with a scheme or authority
         // - relative paths containing dot segments
-        if ('/' === ($path[0] ?? '') || null !== $components['scheme'] || null !== $authority) {
-            $path = self::removeDotSegments(strtr($path, ['%2E' => '.', '%2e' => '.']));
+        if (
+            '/' === ($path[0] ?? '')
+            || null !== $components['scheme']
+            || null !== $authority
+        ) {
+            $path = self::removeDotSegments(
+                strtr($path, ['%2E' => '.', '%2e' => '.'])
+            );
+        }
+
+        // A path starting with `//` would be interpreted as an authority when
+        // serialized after a scheme (or as a network-path reference otherwise).
+        if (null === $authority && str_starts_with($path, '//')) {
+            $path = ($absolutePath ? '/.' : './').$path;
         }
 
         // If there is an authority, the path must be absolute.
