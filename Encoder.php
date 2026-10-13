@@ -436,7 +436,7 @@ final class Encoder
         return self::encode($component, $pattern);
     }
 
-    public static function encodeQueryKeyValue(mixed $component): ?string
+    public static function encodeQueryKeyValue(mixed $component): string
     {
         static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.']+|'.self::REGEXP_PART_ENCODED.'/';
         $encoder = static fn (array $found): string => 1 === preg_match('/[^'.self::REGEXP_PART_UNRESERVED.']/', rawurldecode($found[0])) ? rawurlencode($found[0]) : $found[0];
