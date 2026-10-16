@@ -2,7 +2,7 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
-## [Next](https://github.com/thephpleague/uri-interfaces/compare/7.8.1...master) - TBD
+## [7.9.0](https://github.com/thephpleague/uri-interfaces/compare/7.8.1...7.9.0) - 2026-10-16
 
 ### Added
 
@@ -10,7 +10,8 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Fixed
 
-- `Encoder` URI component encodig
+- `Encoder` URI component encoding [#191](https://github.com/thephpleague/uri-src/pull/191)
+- Preserve the root when removeDotSegments pops past it (RFC 3986 §5.2.4) [#190](https://github.com/thephpleague/uri-src/pull/190)
 - `UriString` URI normalization algorithm to be inline with PHP's Uri extension
 
 ### Deprecated
