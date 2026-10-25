@@ -2,6 +2,26 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## [7.9.1](https://github.com/thephpleague/uri-interfaces/compare/7.9.0...7.9.1) - 2026-10-25
+
+### Added 
+
+- None
+
+### Fixed
+
+- `Encoder::normalizeHost` Lowercase percent-decoded letters when normalizing the host [#227](https://github.com/thephpleague/uri-src/pull/227) by [wleeaf](https://github.com/wleeaf)
+- Drop the base URI fragment when resolving an empty reference [#226](https://github.com/thephpleague/uri-src/pull/226) by [wleeaf](https://github.com/wleeaf)
+- Fix data URI with only ;base64 parameter being rejected [#225](https://github.com/thephpleague/uri-src/pull/225) by [ViniTou](https://github.com/ViniTou)
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [7.9.0](https://github.com/thephpleague/uri-interfaces/compare/7.8.1...7.9.0) - 2026-10-16
 
 ### Added
