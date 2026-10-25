@@ -1108,6 +1108,10 @@ final class UriStringTest extends TestCase
         yield [$baseUri, 'foo:/a/c', 'c'];
         yield [$baseUri, 'foo:/c', '../../c'];
         yield [$baseUri, 'foo:/c', '/c'];
+
+        $baseUri = 'http://a/b?q#f';
+        yield [$baseUri, 'http://a/b?q', ''];
+        yield [$baseUri, 'http://a/b?q#s', '#s'];
     }
 
     #[Test]

@@ -392,6 +392,8 @@ final class UriString
         $uri = (string) $uri;
         if ('' === $uri) {
             $uri = $baseUri ?? throw new SyntaxError("The uri can not be the empty string when there's no base URI.");
+            // RFC3986 §5.2.2: the target fragment always comes from the reference.
+            $uri = explode('#', (string) $uri, 2)[0];
         }
 
         $uriComponents = self::parse($uri);
