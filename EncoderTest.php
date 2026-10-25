@@ -248,6 +248,31 @@ final class EncoderTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('provideEncodedHost')]
+    public function it_normalizes_the_host(string $host, string $expected): void
+    {
+        self::assertSame($expected, Encoder::normalizeHost($host));
+    }
+
+    public static function provideEncodedHost(): iterable
+    {
+        yield 'decoded letters are lowercased' => [
+            'host' => 'Ex%41mple.com',
+            'expected' => 'example.com',
+        ];
+
+        yield 'fully encoded letters are lowercased' => [
+            'host' => '%45%58.COM',
+            'expected' => 'ex.com',
+        ];
+
+        yield 'non ASCII characters stay encoded' => [
+            'host' => 'b%c3%a9b%C3%A9.be',
+            'expected' => 'b%C3%A9b%C3%A9.be',
+        ];
+    }
+
+    #[Test]
     public function it_decodes_the_unreserved_set_idempotently(): void
     {
         $once = Encoder::decodeUnreservedCharacters('%50%51%7B%7E');
