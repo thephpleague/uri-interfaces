@@ -703,12 +703,20 @@ final class UriString
      */
     private static function filterPort(string $port): ?int
     {
-        return match (true) {
-            '' === $port => null,
-            1 === preg_match('/^0+$/', $port) => 0,
-            1 === preg_match('/^\d+$/', $port) && false !== filter_var(ltrim($port, '0'), FILTER_VALIDATE_INT) => (int) $port,
-            default => throw new SyntaxError(sprintf('The port `%s` is invalid', $port)),
-        };
+        if ('' === $port) {
+            return null;
+        }
+
+        $filteredPort = ltrim($port, '0');
+        if ('' === $filteredPort) {
+            return 0;
+        }
+
+        $filteredPort = filter_var($filteredPort, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
+
+        return false !== $filteredPort
+            ? $filteredPort
+            : throw new SyntaxError(sprintf('The port `%s` is invalid', $port));
     }
 
     /**
