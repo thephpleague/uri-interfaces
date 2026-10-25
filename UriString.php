@@ -29,6 +29,7 @@ use function explode;
 use function filter_var;
 use function function_exists;
 use function implode;
+use function ltrim;
 use function preg_match;
 use function sprintf;
 use function str_replace;
@@ -37,6 +38,7 @@ use function strtolower;
 use function substr;
 
 use const FILTER_FLAG_IPV4;
+use const FILTER_VALIDATE_INT;
 use const FILTER_VALIDATE_IP;
 
 /**
@@ -703,7 +705,8 @@ final class UriString
     {
         return match (true) {
             '' === $port => null,
-            1 === preg_match('/^\d*$/', $port) => (int) $port,
+            1 === preg_match('/^0+$/', $port) => 0,
+            1 === preg_match('/^\d+$/', $port) && false !== filter_var(ltrim($port, '0'), FILTER_VALIDATE_INT) => (int) $port,
             default => throw new SyntaxError(sprintf('The port `%s` is invalid', $port)),
         };
     }
