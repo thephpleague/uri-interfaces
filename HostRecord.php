@@ -53,6 +53,8 @@ final class HostRecord implements JsonSerializable
     private const MAXIMUM_HOST_CACHED = 100;
 
     private const REGEXP_NON_ASCII_PATTERN = '/[^\x20-\x7f]/';
+    private const REGEXP_PART_UNRESERVED = 'A-Za-z\d_\-.~';
+    private const REGEXP_CHARS_ENCODED = ',%[A-Fa-f0-9]{2},';
 
     /**
      * @see https://tools.ietf.org/html/rfc3986#section-3.2.2
@@ -350,51 +352,45 @@ final class HostRecord implements JsonSerializable
         }
 
         if (str_starts_with($host, '[')) {
-            str_ends_with($host, ']') || throw new SyntaxError('The host '.$host.' is not a valid IPv6 host.');
+            str_ends_with($host, ']') || throw new SyntaxError('The host '.$host.' is not a valid IP host.');
 
             $ipHost = substr($host, 1, -1);
             if (1 === preg_match(self::REGEXP_IP_FUTURE, $ipHost, $matches)) {
-                return !in_array($matches['version'], ['4', '6'], true) ? ($inMemoryCache[$host] = new self(
-                    value: $host,
-                    type: HostType::IpvFuture,
-                    format: HostFormat::Ascii,
-                )) : throw new SyntaxError('The host '.$host.' is not a valid IPvFuture host.');
+                !in_array($matches['version'], ['4', '6'], true) || throw new SyntaxError('The host '.$host.' is not a valid IPvFuture host.');
+
+                return $inMemoryCache[$host] = new self($host, HostType::IpvFuture, HostFormat::Ascii);
             }
 
-            if (self::isValidIpv6Hostname($ipHost)) {
-                return $inMemoryCache[$host] = new self(
-                    value: $host,
-                    type: HostType::Ipv6,
-                    format: HostFormat::Ascii,
-                );
-            }
+            self::isValidIpv6Hostname($ipHost) ||  throw new SyntaxError('The host '.$host.' is not a valid IP host.');
 
-            throw new SyntaxError('The host '.$host.' is not a valid IPv6 host.');
+            return $inMemoryCache[$host] = new self($host, HostType::Ipv6, HostFormat::Ascii);
         }
 
-        $domainName = rawurldecode($host);
-        $format = HostFormat::Unicode;
-        if (1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $domainName)) {
-            $domainName = strtolower($domainName);
-            $format = HostFormat::Ascii;
-        }
+        $domainName = (string) preg_replace_callback(
+            self::REGEXP_CHARS_ENCODED,
+            static function (array $matches): string {
+                $encoded = $matches[0];
+                $decoded = rawurldecode($encoded);
+
+                return 1 === preg_match('/^['.self::REGEXP_PART_UNRESERVED.']$/i', $decoded)
+                    ? strtolower($decoded)
+                    : strtoupper($encoded);
+            },
+            $host,
+        );
+
+        $format = 1 === preg_match(self::REGEXP_NON_ASCII_PATTERN, $domainName)
+            ? HostFormat::Unicode
+            : HostFormat::Ascii;
 
         if (1 === preg_match(self::REGEXP_REGISTERED_NAME, $domainName)) {
-            return $inMemoryCache[$host] = new self(
-                value: $host,
-                type: HostType::RegisteredName,
-                format: $format,
-            );
+            return $inMemoryCache[$host] = new self($host, HostType::RegisteredName, $format);
         }
 
         (HostFormat::Ascii !== $format && 1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $domainName)) || throw new SyntaxError('`'.$host.'` is an invalid domain name : the host contains invalid characters.');
         IdnConverter::toAsciiOrFail($domainName);
 
-        return $inMemoryCache[$host] = new self(
-            value: $host,
-            type: HostType::RegisteredName,
-            format: $format,
-        );
+        return $inMemoryCache[$host] = new self($host, HostType::RegisteredName, $format);
     }
 
     /**

@@ -82,4 +82,41 @@ final class HostRecordTest extends TestCase
             'isDomain' => false,
         ];
     }
+
+    #[Test]
+    #[DataProvider('provideRecordsForRegisteredNameTesting')]
+    public function it_can_parse_host_issue_230(
+        string $host,
+        bool $isIp,
+        bool $isRegisteredName,
+        bool $isDomain
+    ): void {
+        self::assertSame($isIp, HostRecord::isIp($host));
+        self::assertSame($isRegisteredName, HostRecord::isRegisteredName($host));
+        self::assertSame($isDomain, HostRecord::isDomain($host));
+    }
+
+    public static function provideRecordsForRegisteredNameTesting(): iterable
+    {
+        yield 'a host containing an encoded reserved character (1)' => [
+            'host' => 'exa%3Cmple.com',
+            'isIp' => false,
+            'isRegisteredName' => true,
+            'isDomain' => false,
+        ];
+
+        yield 'a host containing encoded reserved character (2)' => [
+            'host' => 'example.com%2F.example.org',
+            'isIp' => false,
+            'isRegisteredName' => true,
+            'isDomain' => false,
+        ];
+
+        yield 'a host containing an encoded invalid unicoded character' => [
+            'host' => 'a'.rawurlencode('⒈').'.com',
+            'isIp' => false,
+            'isRegisteredName' => true,
+            'isDomain' => false,
+        ];
+    }
 }

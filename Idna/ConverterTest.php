@@ -35,7 +35,6 @@ final class ConverterTest extends TestCase
         return [
             'invalid IDN domain' => ['a⒈com'],
             'invalid IDN domain full size' => ['％００.com'],
-            'invalid IDN domain full size rawurlencode ' => ['%ef%bc%85%ef%bc%94%ef%bc%91.com'],
             'invalid character in host ' => ['to to.com'],
             'contains disallow character' => ['bébé.'.str_repeat('A', 70).'.'.str_repeat('A', 200)],
         ];
@@ -85,7 +84,7 @@ final class ConverterTest extends TestCase
             ],
             'domain with URLencoded data' => [
                 'domain' => 'b%C3%A9b%C3%A9.be',
-                'expectedDomain' => 'bébé.be',
+                'expectedDomain' => 'b%C3%A9b%C3%A9.be',
             ],
         ];
     }

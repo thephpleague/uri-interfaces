@@ -310,7 +310,7 @@ final class Encoder
      */
     public static function isQueryEncoded(BackedEnum|Stringable|string|null $encoded): bool
     {
-        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.'\/?%]+|'.self::REGEXP_PART_ENCODED.'/';
+        static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':@\/?%]|'.self::REGEXP_PART_ENCODED.'/';
         if ($encoded instanceof BackedEnum) {
             $encoded = $encoded->value;
         }
@@ -353,7 +353,6 @@ final class Encoder
     public static function isFragmentEncoded(BackedEnum|Stringable|string|null $encoded): bool
     {
         static $pattern = '/[^'.self::REGEXP_PART_UNRESERVED.self::REGEXP_PART_SUBDELIM.':@\/?%]|'.self::REGEXP_PART_ENCODED.'/';
-
         if ($encoded instanceof BackedEnum) {
             $encoded = $encoded->value;
         }
@@ -417,11 +416,16 @@ final class Encoder
 
         $host = strtolower($host);
 
-        return (!str_contains($host, '%')) ? $host : preg_replace_callback(
-            '/%[a-f0-9]{2}/',
-            fn (array $matches) => 1 === preg_match('/%([0-7][0-9a-f])/', $matches[0]) ? strtolower(rawurldecode($matches[0])) : strtoupper($matches[0]),
-            $host
-        );
+        return !str_contains($host, '%')
+            ? $host
+            : preg_replace_callback(self::REGEXP_CHARS_ENCODED, static function (array $matches): string {
+                $encoded = $matches[0];
+                $decoded = rawurldecode($encoded);
+
+                return 1 === preg_match('/^['.self::REGEXP_PART_UNRESERVED.']$/i', $decoded)
+                    ? strtolower($decoded)
+                    : strtoupper($encoded);
+            }, $host);
     }
 
     /**
