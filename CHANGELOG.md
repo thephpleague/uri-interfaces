@@ -6,7 +6,7 @@ All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
 ### Added
 
-- None
+- `HostRecord::encoded`
 
 ### Fixed
 

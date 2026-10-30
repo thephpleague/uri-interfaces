@@ -166,7 +166,13 @@ final class Converter
         idn_to_utf8($domain, $flags->toBytes(), INTL_IDNA_VARIANT_UTS46, $idnaInfo);
 
         if ([] === $idnaInfo) {
-            return Result::fromIntl(['result' => strtolower($domain), 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
+            return Result::fromIntl(['result' => (string) preg_replace_callback(
+                '/%[A-Fa-f0-9]{2}|[^%]+|%/',
+                static fn (array $matches): string => str_starts_with($matches[0], '%')
+                    ? strtoupper($matches[0])
+                    : strtolower($matches[0]),
+                $domain,
+            ), 'isTransitionalDifferent' => false, 'errors' => Error::NONE->value]);
         }
 
         return Result::fromIntl($idnaInfo);

@@ -31,9 +31,12 @@ use function in_array;
 use function inet_pton;
 use function is_object;
 use function preg_match;
+use function preg_replace_callback;
 use function rawurldecode;
+use function rawurlencode;
 use function strpos;
 use function strtolower;
+use function strtoupper;
 use function substr;
 
 use const FILTER_FLAG_IPV4;
@@ -123,6 +126,8 @@ final class HostRecord implements JsonSerializable
     private bool $unicodeIsLoaded = false;
     private ?string $hostAsUnicode = null;
     private bool $isIpVersionLoaded = false;
+    private ?string $hostAsEncoded = null;
+    private bool $encodedIsLoaded = false;
     private ?string $ipVersion = null;
     private bool $isIpValueLoaded = false;
     private ?string $ipValue = null;
@@ -143,18 +148,16 @@ final class HostRecord implements JsonSerializable
     {
         if (!$this->asciiIsLoaded) {
             $this->asciiIsLoaded = true;
-            $this->hostAsAscii = (function (): ?string {
-                if (HostType::RegisteredName !== $this->type || null === $this->value) {
-                    return $this->value;
-                }
+            if (null ===  $this->value || '' === $this->value || HostType::RegisteredName !== $this->type) {
+                return $this->hostAsAscii = $this->value;
+            }
 
-                $formattedHost = rawurldecode($this->value);
-                if ($formattedHost === $this->value) {
-                    return $this->isDomainType() ? IdnConverter::toAscii($this->value)->domain() : strtolower($formattedHost);
-                }
-
-                return Encoder::normalizeHost($this->value);
-            })();
+            $this->hostAsAscii = self::normalized($this->value);
+            $normalizedValue = str_contains($this->hostAsAscii, '%') ? rawurldecode($this->hostAsAscii) : $this->hostAsAscii;
+            $result = IdnConverter::toAscii($normalizedValue);
+            if (!$result->hasErrors()) {
+                return $this->hostAsAscii = $result->domain();
+            }
         }
 
         return $this->hostAsAscii;
@@ -164,16 +167,40 @@ final class HostRecord implements JsonSerializable
     {
         if (!$this->unicodeIsLoaded) {
             $this->unicodeIsLoaded = true;
-            $this->hostAsUnicode = $this->value;
-            if ($this->isDomainType() && null !== $this->value) {
-                $result = IdnConverter::toUnicode($this->value);
-                if (!$result->hasErrors()) {
-                    $this->hostAsUnicode = $result->domain();
-                }
+            if (null ===  $this->value || '' === $this->value || HostType::RegisteredName !== $this->type) {
+                return $this->hostAsUnicode = $this->value;
+            }
+
+            $this->hostAsUnicode = self::normalized($this->value);
+            $normalizedValue = str_contains($this->hostAsUnicode, '%') ? rawurldecode($this->hostAsUnicode) : $this->hostAsUnicode;
+            if (!self::isValidRegisteredName($normalizedValue)) {
+                return $this->hostAsUnicode;
+            }
+
+            $result = IdnConverter::toUnicode($normalizedValue);
+            if (!$result->hasErrors()) {
+                return $this->hostAsUnicode = $result->domain();
             }
         }
 
         return $this->hostAsUnicode;
+    }
+
+    public function percentEncoded(): ?string
+    {
+        if (!$this->encodedIsLoaded) {
+            $this->encodedIsLoaded = true;
+            $unicode = $this->toUnicode();
+            return $this->hostAsEncoded = (null === $unicode || '' === $unicode || HostType::RegisteredName !== $this->type)
+                ? $unicode
+                : (string) preg_replace_callback(
+                    '/'.self::REGEXP_CHARS_ENCODED.'|[^'.self::REGEXP_PART_UNRESERVED.']/u',
+                    static fn (array $matches): string => str_starts_with($matches[0], '%') ? strtoupper($matches[0]) : rawurlencode($matches[0]),
+                    $unicode,
+                );
+        }
+
+        return $this->hostAsEncoded;
     }
 
     public function isDomainType(): bool
@@ -366,19 +393,7 @@ final class HostRecord implements JsonSerializable
             return $inMemoryCache[$host] = new self($host, HostType::Ipv6, HostFormat::Ascii);
         }
 
-        $domainName = (string) preg_replace_callback(
-            self::REGEXP_CHARS_ENCODED,
-            static function (array $matches): string {
-                $encoded = $matches[0];
-                $decoded = rawurldecode($encoded);
-
-                return 1 === preg_match('/^['.self::REGEXP_PART_UNRESERVED.']$/i', $decoded)
-                    ? strtolower($decoded)
-                    : strtoupper($encoded);
-            },
-            $host,
-        );
-
+        $domainName = self::normalized($host);
         $format = 1 === preg_match(self::REGEXP_NON_ASCII_PATTERN, $domainName)
             ? HostFormat::Unicode
             : HostFormat::Ascii;
@@ -391,6 +406,33 @@ final class HostRecord implements JsonSerializable
         IdnConverter::toAsciiOrFail($domainName);
 
         return $inMemoryCache[$host] = new self($host, HostType::RegisteredName, $format);
+    }
+
+    private static function normalized(?string $value): string
+    {
+        return (string) preg_replace_callback(self::REGEXP_CHARS_ENCODED, static function (array $matches): string {
+            $encoded = $matches[0];
+            $decoded = rawurldecode($encoded);
+
+            return 1 === preg_match('/^['.self::REGEXP_PART_UNRESERVED.']$/i', $decoded)
+                ? strtolower($decoded)
+                : strtoupper($encoded);
+        }, strtolower((string) $value));
+    }
+
+    private static function isValidRegisteredName(?string $host): bool
+    {
+        if (null === $host || '' === $host) {
+            return true;
+        }
+
+        $host = self::normalized($host);
+
+        return 1 === preg_match(self::REGEXP_REGISTERED_NAME, $host) || (
+                1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $host) &&
+                1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $host) &&
+                !IdnConverter::toAscii($host)->hasErrors()
+            );
     }
 
     /**
