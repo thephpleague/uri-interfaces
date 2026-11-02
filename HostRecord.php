@@ -429,10 +429,10 @@ final class HostRecord implements JsonSerializable
         $host = self::normalized($host);
 
         return 1 === preg_match(self::REGEXP_REGISTERED_NAME, $host) || (
-                1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $host) &&
+            1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $host) &&
                 1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $host) &&
                 !IdnConverter::toAscii($host)->hasErrors()
-            );
+        );
     }
 
     /**
