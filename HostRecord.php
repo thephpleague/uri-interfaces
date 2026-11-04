@@ -54,7 +54,6 @@ final class HostRecord implements JsonSerializable
      * @var int
      */
     private const MAXIMUM_HOST_CACHED = 100;
-
     private const REGEXP_NON_ASCII_PATTERN = '/[^\x20-\x7f]/';
     private const REGEXP_PART_UNRESERVED = 'A-Za-z\d_\-.~';
     private const REGEXP_CHARS_ENCODED = ',%[A-Fa-f0-9]{2},';
@@ -259,7 +258,7 @@ final class HostRecord implements JsonSerializable
         return $this->ipValue;
     }
 
-    public static function isValid(BackedEnum|Stringable|string|null $host): bool
+    public static function isValid(self|BackedEnum|Stringable|string|null $host): bool
     {
         try {
             HostRecord::from($host);
@@ -270,7 +269,7 @@ final class HostRecord implements JsonSerializable
         }
     }
 
-    public static function isIpv4(Stringable|string|null $host): bool
+    public static function isIpv4(self|BackedEnum|Stringable|string|null $host): bool
     {
         try {
             return HostType::Ipv4 === HostRecord::from($host)->type;
@@ -279,7 +278,7 @@ final class HostRecord implements JsonSerializable
         }
     }
 
-    public static function isIpv6(Stringable|string|null $host): bool
+    public static function isIpv6(self|BackedEnum|Stringable|string|null $host): bool
     {
         try {
             return HostType::Ipv6 === HostRecord::from($host)->type;
@@ -288,7 +287,7 @@ final class HostRecord implements JsonSerializable
         }
     }
 
-    public static function isIpvFuture(Stringable|string|null $host): bool
+    public static function isIpvFuture(self|BackedEnum|Stringable|string|null $host): bool
     {
         try {
             return HostType::IpvFuture === HostRecord::from($host)->type;
@@ -297,14 +296,16 @@ final class HostRecord implements JsonSerializable
         }
     }
 
-    public static function isIp(Stringable|string|null $host): bool
+    public static function isIp(self|BackedEnum|Stringable|string|null $host): bool
     {
-        return self::isIpv4($host)
-            || self::isIpv6($host)
-            || self::isIpvFuture($host);
+        try {
+            return null !== HostRecord::from($host)->ipValue();
+        } catch (Throwable) {
+            return false;
+        }
     }
 
-    public static function isRegisteredName(Stringable|string|null $host): bool
+    public static function isRegisteredName(self|BackedEnum|Stringable|string|null $host): bool
     {
         try {
             return HostType::RegisteredName === HostRecord::from($host)->type;
@@ -313,7 +314,7 @@ final class HostRecord implements JsonSerializable
         }
     }
 
-    public static function isDomain(Stringable|string|null $host): bool
+    public static function isDomain(self|BackedEnum|Stringable|string|null $host): bool
     {
         try {
             return HostRecord::from($host)->isDomainType();
@@ -334,8 +335,12 @@ final class HostRecord implements JsonSerializable
     /**
      * @throws SyntaxError
      */
-    public static function from(BackedEnum|Stringable|string|null $host): self
+    public static function from(self|BackedEnum|Stringable|string|null $host): self
     {
+        if ($host instanceof self) {
+            return $host;
+        }
+
         if ($host instanceof BackedEnum) {
             $host = $host->value;
         }
@@ -345,20 +350,12 @@ final class HostRecord implements JsonSerializable
         }
 
         if (null === $host) {
-            return new self(
-                value: null,
-                type: HostType::RegisteredName,
-                format: HostFormat::Ascii,
-            );
+            return new self(null, HostType::RegisteredName, HostFormat::Ascii);
         }
 
         $host = (string) $host;
         if ('' === $host) {
-            return new self(
-                value: '',
-                type: HostType::RegisteredName,
-                format: HostFormat::Ascii,
-            );
+            return new self('', HostType::RegisteredName, HostFormat::Ascii);
         }
 
         static $inMemoryCache = [];
@@ -371,11 +368,7 @@ final class HostRecord implements JsonSerializable
         }
 
         if ($host === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            return $inMemoryCache[$host] = new self(
-                value: $host,
-                type: HostType::Ipv4,
-                format: HostFormat::Ascii,
-            );
+            return $inMemoryCache[$host] = new self($host, HostType::Ipv4, HostFormat::Ascii);
         }
 
         if (str_starts_with($host, '[')) {
@@ -408,8 +401,15 @@ final class HostRecord implements JsonSerializable
         return $inMemoryCache[$host] = new self($host, HostType::RegisteredName, $format);
     }
 
-    private static function normalized(?string $value): string
+    /**
+     * @return ($value is null ? null : string)
+     */
+    private static function normalized(?string $value): ?string
     {
+        if (null === $value || '' === $value) {
+            return $value;
+        }
+
         return (string) preg_replace_callback(self::REGEXP_CHARS_ENCODED, static function (array $matches): string {
             $encoded = $matches[0];
             $decoded = rawurldecode($encoded);
@@ -417,7 +417,7 @@ final class HostRecord implements JsonSerializable
             return 1 === preg_match('/^['.self::REGEXP_PART_UNRESERVED.']$/i', $decoded)
                 ? strtolower($decoded)
                 : strtoupper($encoded);
-        }, strtolower((string) $value));
+        }, strtolower($value));
     }
 
     private static function isValidRegisteredName(?string $host): bool
@@ -429,9 +429,9 @@ final class HostRecord implements JsonSerializable
         $host = self::normalized($host);
 
         return 1 === preg_match(self::REGEXP_REGISTERED_NAME, $host) || (
-            1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $host) &&
-                1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $host) &&
-                !IdnConverter::toAscii($host)->hasErrors()
+            1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $host)
+            && 1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $host)
+            && !IdnConverter::toAscii($host)->hasErrors()
         );
     }
 
