@@ -191,13 +191,13 @@ final class QueryString
         in_array($composeMode, [QueryComposeMode::EnumCompatible, QueryComposeMode::EnumLenient], true) || !$data instanceof UnitEnum || throw new TypeError('Argument #1 ($data) must not be an enum, '.((new ReflectionEnum($data::class))->isBacked() ? 'Backed' : 'Pure').' given') ;
 
         if (is_object($data)) {
-            if ($seenObjects->contains($data)) {
+            if ($seenObjects->offsetExists($data)) {
                 QueryComposeMode::Safe !== $composeMode || throw new ValueError('composition failed; circular reference detected.');
 
                 return;
             }
 
-            $seenObjects->attach($data);
+            $seenObjects->offsetSet($data);
             $data = get_object_vars($data);
         }
 
