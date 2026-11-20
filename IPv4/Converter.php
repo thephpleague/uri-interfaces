@@ -50,8 +50,12 @@ final class Converter
         '/^(?<number>\d+)$/' => 10,
     ];
 
+    private const REGEXP_IPV4_CANONICAL = '/^(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/';
+
     private const IPV6_6TO4_PREFIX = '2002:';
     private const IPV4_MAPPED_PREFIX = '::ffff:';
+
+    private static ?self $environmentInstance = null;
 
     private readonly mixed $maxIPv4Number;
 
@@ -94,9 +98,13 @@ final class Converter
      */
     public static function fromEnvironment(): self
     {
+        if (null !== self::$environmentInstance) {
+            return self::$environmentInstance;
+        }
+
         FeatureDetection::supportsIPv4Conversion();
 
-        return match (true) {
+        return self::$environmentInstance = match (true) {
             extension_loaded('gmp') => self::fromGMP(),
             extension_loaded('bcmath') => self::fromBCMath(),
             default => self::fromNative(),
@@ -227,6 +235,10 @@ final class Converter
                 count($hexParts) < 2 => null,
                 default => long2ip((int) hexdec($hexParts[0]) * 65536 + (int) hexdec($hexParts[1])),
             };
+        }
+
+        if (1 === preg_match(self::REGEXP_IPV4_CANONICAL, $host)) {
+            return $host;
         }
 
         if (1 !== preg_match(self::REGEXP_IPV4_HOST, $host)) {

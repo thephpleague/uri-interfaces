@@ -77,6 +77,36 @@ final class ConverterTest extends TestCase
         ];
     }
 
+    #[DataProvider('providerDottedDecimalHost')]
+    public function testToDecimalWithDottedDecimalHost(string $input, ?string $expected): void
+    {
+        self::assertSame($expected, Converter::fromGMP()->toDecimal($input));
+        self::assertSame($expected, Converter::fromNative()->toDecimal($input));
+        self::assertSame($expected, Converter::fromBCMath()->toDecimal($input));
+        self::assertSame($expected, Converter::fromEnvironment()->toDecimal($input));
+    }
+
+    public static function providerDottedDecimalHost(): array
+    {
+        return [
+            'all zeros' => ['0.0.0.0', '0.0.0.0'],
+            'all max' => ['255.255.255.255', '255.255.255.255'],
+            'loopback' => ['127.0.0.1', '127.0.0.1'],
+            'mixed label lengths' => ['1.22.199.250', '1.22.199.250'],
+            'leading zero is octal' => ['010.0.0.1', '8.0.0.1'],
+            'leading zero on last label' => ['1.2.3.04', '1.2.3.4'],
+            'zero padded label' => ['127.000.000.001', '127.0.0.1'],
+            'trailing dot' => ['127.0.0.1.', '127.0.0.1'],
+            'last label above 255 is not canonical' => ['1.2.3.256', '1.2.4.0'],
+            'too many labels' => ['1.2.3.4.5', null],
+        ];
+    }
+
+    public function testFromEnvironmentReusesTheSameInstance(): void
+    {
+        self::assertSame(Converter::fromEnvironment(), Converter::fromEnvironment());
+    }
+
     #[DataProvider('providerInvalidHost')]
     public function testParseWithInvalidHost(?string $input): void
     {
