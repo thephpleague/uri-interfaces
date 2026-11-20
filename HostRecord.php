@@ -363,12 +363,16 @@ final class HostRecord implements JsonSerializable
             return $inMemoryCache[$host];
         }
 
-        if (self::MAXIMUM_HOST_CACHED < count($inMemoryCache)) {
-            unset($inMemoryCache[array_key_first($inMemoryCache)]);
-        }
+        $cache = static function (self $instance) use (&$inMemoryCache, $host): self {
+            if (self::MAXIMUM_HOST_CACHED <= count($inMemoryCache)) {
+                unset($inMemoryCache[array_key_first($inMemoryCache)]);
+            }
+
+            return $inMemoryCache[$host] = $instance;
+        };
 
         if ($host === filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            return $inMemoryCache[$host] = new self($host, HostType::Ipv4, HostFormat::Ascii);
+            return $cache(new self($host, HostType::Ipv4, HostFormat::Ascii));
         }
 
         if (str_starts_with($host, '[')) {
@@ -378,12 +382,12 @@ final class HostRecord implements JsonSerializable
             if (1 === preg_match(self::REGEXP_IP_FUTURE, $ipHost, $matches)) {
                 !in_array($matches['version'], ['4', '6'], true) || throw new SyntaxError('The host '.$host.' is not a valid IPvFuture host.');
 
-                return $inMemoryCache[$host] = new self($host, HostType::IpvFuture, HostFormat::Ascii);
+                return $cache(new self($host, HostType::IpvFuture, HostFormat::Ascii));
             }
 
             self::isValidIpv6Hostname($ipHost) ||  throw new SyntaxError('The host '.$host.' is not a valid IP host.');
 
-            return $inMemoryCache[$host] = new self($host, HostType::Ipv6, HostFormat::Ascii);
+            return $cache(new self($host, HostType::Ipv6, HostFormat::Ascii));
         }
 
         $domainName = self::normalized($host);
@@ -392,13 +396,13 @@ final class HostRecord implements JsonSerializable
             : HostFormat::Ascii;
 
         if (1 === preg_match(self::REGEXP_REGISTERED_NAME, $domainName)) {
-            return $inMemoryCache[$host] = new self($host, HostType::RegisteredName, $format);
+            return $cache(new self($host, HostType::RegisteredName, $format));
         }
 
         (HostFormat::Ascii !== $format && 1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $domainName)) || throw new SyntaxError('`'.$host.'` is an invalid domain name : the host contains invalid characters.');
         IdnConverter::toAsciiOrFail($domainName);
 
-        return $inMemoryCache[$host] = new self($host, HostType::RegisteredName, $format);
+        return $cache(new self($host, HostType::RegisteredName, $format));
     }
 
     /**
@@ -429,10 +433,10 @@ final class HostRecord implements JsonSerializable
         $host = self::normalized($host);
 
         return 1 === preg_match(self::REGEXP_REGISTERED_NAME, $host) || (
-            1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $host)
-            && 1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $host)
-            && !IdnConverter::toAscii($host)->hasErrors()
-        );
+                1 !== preg_match(self::REGEXP_NON_ASCII_PATTERN, $host)
+                && 1 !== preg_match(self::REGEXP_INVALID_HOST_CHARS, $host)
+                && !IdnConverter::toAscii($host)->hasErrors()
+            );
     }
 
     /**
