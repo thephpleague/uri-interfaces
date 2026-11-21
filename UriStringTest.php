@@ -1183,6 +1183,29 @@ final class UriStringTest extends TestCase
         self::assertSame('foo:/c', UriString::resolve('../../c', 'foo:/a/b'));
     }
 
+    #[DataProvider('rootlessBaseResolutionProvider')]
+    public function test_it_keeps_the_path_rootless_when_resolving_against_a_rootless_base(string $uri, string $baseUri, string $expected): void
+    {
+        self::assertSame($expected, UriString::resolve($uri, $baseUri));
+    }
+
+    /**
+     * @return iterable<string, array{0:string, 1:string, 2:string}>
+     */
+    public static function rootlessBaseResolutionProvider(): iterable
+    {
+        yield 'single dot segment' => ['./c', 'foo:a/b', 'foo:a/c'];
+        yield 'dot segment only' => ['.', 'foo:a/b', 'foo:a/'];
+        yield 'double dot segment' => ['../c', 'foo:a/b/d', 'foo:a/c'];
+        yield 'base without slash' => ['./c', 'urn:x', 'urn:c'];
+        yield 'reference with scheme' => ['foo:./c', 'http://a/b/c/d;p?q', 'foo:c'];
+        yield 'reference with scheme and double dot' => ['foo:a/../c', 'http://a/b/c/d;p?q', 'foo:c'];
+        yield 'lone dot against a base without slash' => ['.', 'urn:x', 'urn:'];
+        yield 'reference with scheme and lone dot' => ['foo:.', 'http://a/b/c/d;p?q', 'foo:'];
+        yield 'reference with scheme and lone double dot' => ['foo:..', 'http://a/b/c/d;p?q', 'foo:'];
+        yield 'no dot segment' => ['c', 'foo:a/b', 'foo:a/c'];
+    }
+
     public function test_it_can_resolve_uri_when_dot_segment_leave_the_path_relative(): void
     {
         self::assertSame('https://user:pass@host/toto', UriString::resolve('https://user:pass@host/./.././toto'));
@@ -1227,6 +1250,8 @@ final class UriStringTest extends TestCase
         yield 'relative plain'        => ['path' => 'a/b/../c',         'expected' => 'a/c'];
         yield 'relative overshoot'    => ['path' => 'a/../b',           'expected' => 'b'];
         yield 'relative leading dot'  => ['path' => './a',              'expected' => 'a'];
+        yield 'lone dot'              => ['path' => '.',                'expected' => ''];
+        yield 'lone dotdot'           => ['path' => '..',               'expected' => ''];
         yield 'relative complex'      => ['path' => 'mid/content=5/../6', 'expected' => 'mid/6'];
     }
 

@@ -408,7 +408,7 @@ final class UriString
 
         $authority = self::buildAuthority($uriComponents);
         $path = self::removeDotSegments($uriComponents['path']);
-        if ('' !== $path && '/' !== $path[0] && (null !== $authority || $uriComponents['path'] !== $path)) {
+        if ('' !== $path && '/' !== $path[0] && null !== $authority) {
             $path = '/'.$path;
         }
 
@@ -423,7 +423,7 @@ final class UriString
         [$resolvedPath, $query] = self::resolvePathAndQuery($uriComponents, $baseUriComponents);
         $baseAuthority = self::buildAuthority($baseUriComponents);
         $path = self::removeDotSegments($resolvedPath);
-        if ('' !== $path && '/' !== $path[0] && (null !== $baseAuthority || $resolvedPath !== $path)) {
+        if ('' !== $path && '/' !== $path[0] && null !== $baseAuthority) {
             $path = '/'.$path;
         }
 
@@ -440,6 +440,11 @@ final class UriString
         $path = (string) $path;
         if (!str_contains($path, '.')) {
             return $path;
+        }
+
+        // RFC3986 §5.2.4 step 2D: a lone "." or ".." is removed, leaving an empty path.
+        if (isset(self::DOT_SEGMENTS[$path])) {
+            return '';
         }
 
         $reducer = function (array $carry, string $segment): array {
