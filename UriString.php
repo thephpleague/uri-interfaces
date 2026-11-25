@@ -122,7 +122,7 @@ final class UriString
      * @link https://tools.ietf.org/html/rfc3986#section-3.3
      * @var string
      */
-    private const REGEXP_INVALID_PATH = ',^(([^/]*):)(.*)?/,';
+    private const REGEXP_INVALID_PATH = ',^[^/]*:,';
 
     /**
      * Host and Port splitter regular expression.

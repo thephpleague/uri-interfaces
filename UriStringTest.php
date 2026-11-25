@@ -755,6 +755,8 @@ final class UriStringTest extends TestCase
             'invalid ipv6 scoped (1)' => ['scheme://[::1%25%23]/path?query#fragment'],
             'invalid ipv6 scoped (2)' => ['scheme://[fe80::1234::%251]/path?query#fragment'],
             'invalid char on URI' => ["scheme://host/path/\r\n/toto"],
+            'invalid path with only a colon' => [':'],
+            'invalid path with an empty first segment and a colon' => ['::1?q#f'],
             'invalid path only URI' => ['2620:0:1cfe:face:b00c::3'],
             'invalid path PHP bug #72811' => ['[::1]:80'],
             'invalid ipvfuture' => ['//[v6.::1]/p?q#f'],
