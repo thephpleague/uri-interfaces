@@ -2,6 +2,26 @@
 
 All Notable changes to `League\Uri\Interfaces` will be documented in this file
 
+## [7.10.1](https://github.com/thephpleague/uri-interfaces/compare/7.10.0...7.10.1) - 2026-11-28
+
+### Added
+
+- None
+
+### Fixed
+
+- Keep rootless paths rootless when resolving dot segments [#238](https://github.com/thephpleague/uri-src/pull/238) by [bardrop](https://github.com/bardrop)
+- URLSearchParams: Replace PHP 8.6 deprecated spl_object_hash [#239](https://github.com/thephpleague/uri-src/pull/239) by [reedy](https://github.com/reedy)
+- Reject invalid references when resolving in the polyfill [#241](https://github.com/thephpleague/uri-src/pull/241) by [bardrop](https://github.com/bardrop)
+
+### Deprecated
+
+- None
+
+### Removed
+
+- None
+
 ## [7.10.0](https://github.com/thephpleague/uri-interfaces/compare/7.9.1...7.10.0) - 2026-11-04
 
 ### Added
